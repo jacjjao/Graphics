@@ -1,7 +1,6 @@
 #pragma once
 
 #include <chrono>
-#include <ratio>
 #include <cstdint>
 
 class Duration

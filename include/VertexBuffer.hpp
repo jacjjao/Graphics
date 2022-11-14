@@ -7,12 +7,11 @@
 class VertexBuffer
 {
 public:
-    using vector_type = std::vector<Vertex2D>;
-    using value_type = vector_type::value_type;
-    using iterator = vector_type::iterator;
-    using const_iterator = vector_type::const_iterator;
-    using reverse_iterator = vector_type::reverse_iterator;
-    using const_reverse_iterator = vector_type::const_reverse_iterator;
+    using value_type = std::vector<Vertex2D>::value_type;
+    using iterator = std::vector<Vertex2D>::iterator;
+    using const_iterator = std::vector<Vertex2D>::const_iterator;
+    using reverse_iterator = std::vector<Vertex2D>::reverse_iterator;
+    using const_reverse_iterator = std::vector<Vertex2D>::const_reverse_iterator;
 
     explicit VertexBuffer(size_t size);
     ~VertexBuffer();
@@ -26,7 +25,7 @@ public:
     void create();
 
     [[nodiscard]] size_t size() const noexcept;
-    [[nodiscard]] bool isAvailable() const;
+    [[nodiscard]] bool isAvailable() const noexcept;
     [[nodiscard]] iterator begin() noexcept;
     [[nodiscard]] iterator end() noexcept;
     [[nodiscard]] const_iterator cbegin() const noexcept;
@@ -42,6 +41,6 @@ public:
     static void unbind();
 
 private:
-    vector_type m_vertices;
+    std::vector<Vertex2D> m_vertices;
     uint32_t m_id;
 };

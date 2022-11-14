@@ -28,7 +28,7 @@ private:
     void updateVboData();
     void create();
 
-    glm::ivec2 m_pos;
+    glm::ivec2 m_position;
     uint32_t m_width, m_height;
     Color m_color;
 

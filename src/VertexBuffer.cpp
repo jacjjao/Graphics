@@ -16,11 +16,11 @@ void VertexBuffer::create()
     glCheck(glGenBuffers(1, &m_id));
     bind();
     const auto size_in_bytes = static_cast<GLsizei>(m_vertices.size() * sizeof(Vertex2D));
-    glCheck(glBufferData(GL_ARRAY_BUFFER, size_in_bytes, m_vertices.data(), GL_STREAM_DRAW));
+    glCheck(glBufferData(GL_ARRAY_BUFFER, size_in_bytes, m_vertices.data(), GL_DYNAMIC_DRAW));
     unbind();
 }
 
-bool VertexBuffer::isAvailable() const
+bool VertexBuffer::isAvailable() const noexcept
 {
     return m_id != 0;
 }

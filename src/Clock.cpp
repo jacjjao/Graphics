@@ -1,4 +1,5 @@
 #include "../include/Clock.hpp"
+#include <ratio>
 
 Duration::Duration(const std::chrono::high_resolution_clock::duration duration) : m_duration(duration)
 {
