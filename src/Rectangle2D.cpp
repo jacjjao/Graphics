@@ -8,22 +8,22 @@ Rectangle2D::Rectangle2D(const glm::ivec2 position, const uint32_t width, const 
 {
 }
 
-void Rectangle2D::setColor(const Color color)
+void Rectangle2D::setColor(const Color color) noexcept
 {
     m_color = color;
 }
 
-void Rectangle2D::setPosition(const glm::ivec2 position)
+void Rectangle2D::setPosition(const glm::ivec2 position) noexcept
 {
     m_position = position;
 }
 
-void Rectangle2D::setWidth(const uint32_t width)
+void Rectangle2D::setWidth(const uint32_t width) noexcept
 {
     m_width = width;
 }
 
-void Rectangle2D::setHeight(const uint32_t height)
+void Rectangle2D::setHeight(const uint32_t height) noexcept
 {
     m_height = height;
 }

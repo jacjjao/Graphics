@@ -17,10 +17,10 @@ public:
 
     void draw();
     void update();
-    void setPosition(glm::ivec2 position);
-    void setColor(Color color);
-    void setWidth(uint32_t width);
-    void setHeight(uint32_t height);
+    void setPosition(glm::ivec2 position) noexcept;
+    void setColor(Color color) noexcept;
+    void setWidth(uint32_t width) noexcept;
+    void setHeight(uint32_t height) noexcept;
 
     [[nodiscard]] glm::ivec2 getPosition() const noexcept;
 

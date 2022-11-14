@@ -18,6 +18,7 @@ add_executable(${PROJECT_NAME}
 	"include/Utility.hpp"
 	"include/Clock.hpp"
 	"include/ElementBuffer.hpp"
+	"include/FileSystem.hpp"
 
 	#sources
 	"src/glCheck.cpp"
@@ -29,6 +30,7 @@ add_executable(${PROJECT_NAME}
 	"src/Clock.cpp"
 	"src/ElementBuffer.cpp"
 	"src/Utility.cpp"
+	"src/FileSystem.cpp"
 	"demo/main.cpp"
 )
 
