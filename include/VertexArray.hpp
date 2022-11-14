@@ -22,7 +22,7 @@ public:
     void create();
     void update();
 
-    [[nodiscard]] bool is_available() const;
+    [[nodiscard]] bool isAvailable() const;
     [[nodiscard]] size_t size() const noexcept;
     [[nodiscard]] iterator begin() noexcept;
     [[nodiscard]] iterator end() noexcept;

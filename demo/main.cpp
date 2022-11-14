@@ -9,7 +9,6 @@
 #include <memory>
 #include <cmath>
 #include <numbers>
-#include <ratio>
 
 #include "../include/FileSystem.hpp"
 #include "../include/ShaderProgram.hpp"
@@ -55,7 +54,7 @@ int main()
 
     glm::ivec2 pos = {950, 550};
     rect = std::make_unique<Rectangle2D>(pos, 100, 100);
-    rect->set_color(Color::White);
+    rect->setColor(Color::White);
 
     Clock clock{};
     while (!glfwWindowShouldClose(window))
@@ -65,12 +64,12 @@ int main()
         glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        auto tp = clock.get_elapsed_time().as_seconds();
+        auto tp = clock.getElapsedTime().asSeconds();
         Color color{};
         color.r = 255.0 * fabs(sin(tp));
         color.g = 255.0 * fabs(sin(tp + std::numbers::pi / 3.0));
         color.b = 255.0 * fabs(sin(tp + std::numbers::pi * 2.0 / 3.0));
-        rect->set_color(color);
+        rect->setColor(color);
         rect->update();
 
         shaderProgram.use();
@@ -90,7 +89,7 @@ int main()
 
 void processInput(GLFWwindow* window)
 {
-    auto pos = rect->get_pos();
+    auto pos = rect->getPosition();
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window, true);
@@ -99,25 +98,25 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
         pos.y -= 1;
-        rect->set_position(pos);
+        rect->setPosition(pos);
         rect->update();
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
         pos.y += 1;
-        rect->set_position(pos);
+        rect->setPosition(pos);
         rect->update();
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
         pos.x -= 1;
-        rect->set_position(pos);
+        rect->setPosition(pos);
         rect->update();
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
         pos.x += 1;
-        rect->set_position(pos);
+        rect->setPosition(pos);
         rect->update();
     }
 }

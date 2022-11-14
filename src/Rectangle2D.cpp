@@ -8,29 +8,29 @@ Rectangle2D::Rectangle2D(const glm::ivec2 position, const uint32_t width, const 
 {
 }
 
-void Rectangle2D::set_color(const Color color)
+void Rectangle2D::setColor(const Color color)
 {
     m_color = color;
 }
 
-void Rectangle2D::set_position(const glm::ivec2 position)
+void Rectangle2D::setPosition(const glm::ivec2 position)
 {
     m_pos = position;
 }
 
-void Rectangle2D::set_width(const uint32_t width)
+void Rectangle2D::setWidth(const uint32_t width)
 {
     m_width = width;
 }
 
-void Rectangle2D::set_height(const uint32_t height)
+void Rectangle2D::setHeight(const uint32_t height)
 {
     m_height = height;
 }
 
 void Rectangle2D::draw()
 {
-    if (!m_vao.is_available())
+    if (!m_vao.isAvailable())
     {
         create();
     }
@@ -41,14 +41,14 @@ void Rectangle2D::draw()
 
 void Rectangle2D::update()
 {
-    if (m_vao.is_available())
+    if (m_vao.isAvailable())
     {
-        update_vbo_data();
+        updateVboData();
         m_vao.update();
     }
 }
 
-void Rectangle2D::update_vbo_data()
+void Rectangle2D::updateVboData()
 {
     // update position
     auto pos_on_gl = util::pointToOpenGL({m_pos.x + m_width, m_pos.y});
@@ -72,7 +72,7 @@ void Rectangle2D::update_vbo_data()
 
 void Rectangle2D::create()
 {
-    update_vbo_data();
+    updateVboData();
 
     m_vao.create();
     m_vao.bind();
@@ -86,7 +86,7 @@ void Rectangle2D::create()
     ElementBuffer::unbind();
 }
 
-glm::ivec2 Rectangle2D::get_pos() const noexcept
+glm::ivec2 Rectangle2D::getPosition() const noexcept
 {
     return m_pos;
 }

@@ -4,15 +4,15 @@
 #include <ratio>
 #include <cstdint>
 
-class Time
+class Duration
 {
 public:
-    explicit Time(std::chrono::high_resolution_clock::duration duration);
+    explicit Duration(std::chrono::high_resolution_clock::duration duration);
 
-    [[nodiscard]] double as_seconds() const;
-    [[nodiscard]] uint64_t as_milliseconds() const;
-    [[nodiscard]] uint64_t as_microseconds() const;
-    [[nodiscard]] uint64_t as_nanoseconds() const;
+    [[nodiscard]] double asSeconds() const;
+    [[nodiscard]] uint64_t asMilliseconds() const;
+    [[nodiscard]] uint64_t asMicroseconds() const;
+    [[nodiscard]] uint64_t asNanoseconds() const;
 
 private:
     std::chrono::high_resolution_clock::duration m_duration;
@@ -24,7 +24,7 @@ public:
     Clock();
     void restart();
 
-    [[nodiscard]] Time get_elapsed_time() const;
+    [[nodiscard]] Duration getElapsedTime() const;
 
 private:
     std::chrono::high_resolution_clock::time_point m_now;

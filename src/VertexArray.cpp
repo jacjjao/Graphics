@@ -54,7 +54,7 @@ void VertexArray::update()
     m_vbo.update();
 }
 
-bool VertexArray::is_available() const
+bool VertexArray::isAvailable() const
 {
     return m_id != 0;
 }

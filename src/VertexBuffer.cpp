@@ -20,7 +20,7 @@ void VertexBuffer::create()
     unbind();
 }
 
-bool VertexBuffer::is_available() const
+bool VertexBuffer::isAvailable() const
 {
     return m_id != 0;
 }

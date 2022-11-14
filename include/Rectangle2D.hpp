@@ -17,15 +17,15 @@ public:
 
     void draw();
     void update();
-    void set_position(glm::ivec2 position);
-    void set_color(Color color);
-    void set_width(uint32_t width);
-    void set_height(uint32_t height);
+    void setPosition(glm::ivec2 position);
+    void setColor(Color color);
+    void setWidth(uint32_t width);
+    void setHeight(uint32_t height);
 
-    [[nodiscard]] glm::ivec2 get_pos() const noexcept;
+    [[nodiscard]] glm::ivec2 getPosition() const noexcept;
 
 private:
-    void update_vbo_data();
+    void updateVboData();
     void create();
 
     glm::ivec2 m_pos;

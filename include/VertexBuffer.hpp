@@ -26,7 +26,7 @@ public:
     void create();
 
     [[nodiscard]] size_t size() const noexcept;
-    [[nodiscard]] bool is_available() const;
+    [[nodiscard]] bool isAvailable() const;
     [[nodiscard]] iterator begin() noexcept;
     [[nodiscard]] iterator end() noexcept;
     [[nodiscard]] const_iterator cbegin() const noexcept;
