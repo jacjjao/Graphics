@@ -1,0 +1,6 @@
+BasedOnStyle: Microsoft
+SortIncludes: Never
+IndentWidth: 4
+AlwaysBreakTemplateDeclarations: Yes
+AccessModifierOffset: -4
+PointerAlignment: Left

@@ -1,0 +1,25 @@
+{
+    "tasks": [
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "cl.exe",
+            "args": [
+                "/EHsc",
+                "/Zi",
+                "/Fe:",
+                "Shoot them up.exe",
+                "${workspaceRoot}/Others/main.cpp"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ],
+    "version": "2.0.0",
+}
