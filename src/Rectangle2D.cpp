@@ -34,21 +34,12 @@ void Rectangle2D::draw()
     {
         create();
     }
-    m_vao.bind();
+    VertexArray::bind(m_vao);
     glCheck(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
     VertexArray::unbind();
 }
 
 void Rectangle2D::update()
-{
-    if (m_vao.isAvailable())
-    {
-        updateVboData();
-        m_vao.update();
-    }
-}
-
-void Rectangle2D::updateVboData()
 {
     // update position
     auto pos_on_gl = util::pointToOpenGL({m_position.x + m_width, m_position.y});
@@ -68,20 +59,24 @@ void Rectangle2D::updateVboData()
     {
         color = m_color;
     }
+
+    if (m_vao.isAvailable())
+    {
+        m_vao.update();
+    }
 }
 
 void Rectangle2D::create()
 {
-    updateVboData();
+    update();
 
     m_vao.create();
-    m_vao.bind();
+    VertexArray::bind(m_vao);
 
     m_ebo = {0, 1, 3, 1, 2, 3};
     m_ebo.create();
-    m_ebo.bind();
+    ElementBuffer::bind(m_ebo);
 
-    VertexBuffer::unbind();
     VertexArray::unbind();
     ElementBuffer::unbind();
 }

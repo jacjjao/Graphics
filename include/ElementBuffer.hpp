@@ -7,20 +7,21 @@
 class ElementBuffer
 {
 public:
-    explicit ElementBuffer(size_t size);
+    explicit ElementBuffer(size_t size = 0);
     ~ElementBuffer();
 
-    ElementBuffer(ElementBuffer&) = delete;
-    ElementBuffer& operator=(ElementBuffer&) = delete;
+    ElementBuffer(const ElementBuffer&) = delete;
+    ElementBuffer& operator=(const ElementBuffer&) = delete;
 
+    ElementBuffer& operator=(std::vector<uint32_t> indices);
     ElementBuffer& operator=(std::initializer_list<uint32_t> list);
 
-    void bind() const;
     void create();
     void destroy();
 
     [[nodiscard]] size_t size() const noexcept;
 
+    static void bind(const ElementBuffer& buffer);
     static void unbind();
 
 private:

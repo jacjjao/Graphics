@@ -19,7 +19,6 @@ public:
     VertexBuffer(VertexBuffer&) = delete;
     VertexBuffer& operator=(VertexBuffer&) = delete;
 
-    void bind() const;
     void destroy();
     void update();
     void create();
@@ -38,6 +37,7 @@ public:
     value_type& operator[](size_t index) noexcept;
     const value_type& operator[](size_t index) const noexcept;
 
+    static void bind(const VertexBuffer& vbo);
     static void unbind();
 
 private:

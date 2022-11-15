@@ -14,10 +14,10 @@ VertexBuffer::~VertexBuffer()
 void VertexBuffer::create()
 {
     glCheck(glGenBuffers(1, &m_id));
-    bind();
+    VertexBuffer::bind(*this);
     const auto size_in_bytes = static_cast<GLsizei>(m_vertices.size() * sizeof(Vertex2D));
     glCheck(glBufferData(GL_ARRAY_BUFFER, size_in_bytes, m_vertices.data(), GL_DYNAMIC_DRAW));
-    unbind();
+    VertexBuffer::unbind();
 }
 
 bool VertexBuffer::isAvailable() const noexcept
@@ -40,9 +40,9 @@ size_t VertexBuffer::size() const noexcept
     return m_vertices.size();
 }
 
-void VertexBuffer::bind() const
+void VertexBuffer::bind(const VertexBuffer& vbo)
 {
-    glCheck(glBindBuffer(GL_ARRAY_BUFFER, m_id));
+    glCheck(glBindBuffer(GL_ARRAY_BUFFER, vbo.m_id));
 }
 
 void VertexBuffer::unbind()
@@ -62,9 +62,9 @@ void VertexBuffer::destroy()
 void VertexBuffer::update()
 {
     const auto size_in_bytes = static_cast<GLsizei>(m_vertices.size() * sizeof(Vertex2D));
-    bind();
+    VertexBuffer::bind(*this);
     glCheck(glBufferSubData(GL_ARRAY_BUFFER, 0, size_in_bytes, m_vertices.data()));
-    unbind();
+    VertexBuffer::unbind();
 }
 
 VertexBuffer::iterator VertexBuffer::begin() noexcept

@@ -14,10 +14,9 @@ public:
     explicit VertexArray(size_t size);
     ~VertexArray();
 
-    VertexArray(VertexArray&) = delete;
-    VertexArray& operator=(VertexArray&) const = delete;
+    VertexArray(const VertexArray&) = delete;
+    VertexArray& operator=(const VertexArray&) const = delete;
 
-    void bind() const;
     void destroy();
     void create();
     void update();
@@ -36,6 +35,7 @@ public:
     value_type& operator[](size_t index) noexcept;
     const value_type& operator[](size_t index) const noexcept;
 
+    static void bind(const VertexArray& vao);
     static void unbind();
 
 private:

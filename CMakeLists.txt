@@ -19,6 +19,7 @@ add_executable(${PROJECT_NAME}
 	"include/Clock.hpp"
 	"include/ElementBuffer.hpp"
 	"include/FileSystem.hpp"
+	"include/Circle2D.hpp"
 
 	#sources
 	"src/glCheck.cpp"
@@ -31,6 +32,7 @@ add_executable(${PROJECT_NAME}
 	"src/ElementBuffer.cpp"
 	"src/Utility.cpp"
 	"src/FileSystem.cpp"
+	"src/Circle2D.cpp"
 	"demo/main.cpp"
 )
 

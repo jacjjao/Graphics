@@ -15,6 +15,7 @@
 #include "../include/Rectangle2D.hpp"
 #include "../include/Utility.hpp"
 #include "../include/Clock.hpp"
+#include "../include/Circle2D.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -54,26 +55,35 @@ int main()
 
     glm::ivec2 pos = {950, 550};
     rect = std::make_unique<Rectangle2D>(pos, 100, 100);
-    rect->setColor(Color::White);
+
+    pos = {1000, 600};
+    auto circle = std::make_unique<Circle2D>(pos, 50.0F);
 
     Clock clock{};
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
 
-        glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
+        glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
         glClear(GL_COLOR_BUFFER_BIT);
 
         auto tp = clock.getElapsedTime().asSeconds();
         Color color{};
-        color.r = 255.0 * fabs(sin(tp));
-        color.g = 255.0 * fabs(sin(tp + std::numbers::pi / 3.0));
-        color.b = 255.0 * fabs(sin(tp + std::numbers::pi * 2.0 / 3.0));
+        color.r = 255.0 * std::abs(std::sin(tp));
+        color.g = 255.0 * std::abs(std::sin(tp + std::numbers::pi / 3.0));
+        color.b = 255.0 * std::abs(std::sin(tp + std::numbers::pi * 2.0 / 3.0));
         rect->setColor(color);
         rect->update();
 
+        color.r = 255.0 * fabs(sin(tp + std::numbers::pi / 3.0));
+        color.g = 255.0 * fabs(sin(tp + std::numbers::pi * 2.0 / 3.0));
+        color.b = 255.0 * fabs(sin(tp + std::numbers::pi));
+        circle->setColor(color);
+        circle->update();
+
         shaderProgram.use();
         rect->draw();
+        circle->draw();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -81,6 +91,7 @@ int main()
 
     shaderProgram.destroy();
     rect.reset();
+    circle.reset();
 
     glfwTerminate();
 

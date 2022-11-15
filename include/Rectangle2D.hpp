@@ -25,7 +25,6 @@ public:
     [[nodiscard]] glm::ivec2 getPosition() const noexcept;
 
 private:
-    void updateVboData();
     void create();
 
     glm::ivec2 m_position;
