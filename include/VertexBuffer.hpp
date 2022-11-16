@@ -13,18 +13,32 @@ public:
     using reverse_iterator = std::vector<Vertex2D>::reverse_iterator;
     using const_reverse_iterator = std::vector<Vertex2D>::const_reverse_iterator;
 
-    explicit VertexBuffer(size_t size);
+    explicit VertexBuffer(size_t size = 0);
     ~VertexBuffer();
 
-    VertexBuffer(VertexBuffer&) = delete;
-    VertexBuffer& operator=(VertexBuffer&) = delete;
+    VertexBuffer(const VertexBuffer&) = delete;
+    VertexBuffer& operator=(const VertexBuffer&) = delete;
 
     void destroy();
     void update();
     void create();
 
+    void resize(size_t size);
+    void reserve(size_t size);
+    void push_back(const value_type& item);
+    void pop_back();
+    void clear() noexcept;
+
+    value_type& front() noexcept;
+    [[nodiscard]] const value_type& front() const noexcept;
+
+    value_type& back() noexcept;
+    [[nodiscard]] const value_type& back() const noexcept;
+
     [[nodiscard]] size_t size() const noexcept;
+
     [[nodiscard]] bool isAvailable() const noexcept;
+
     [[nodiscard]] iterator begin() noexcept;
     [[nodiscard]] iterator end() noexcept;
     [[nodiscard]] const_iterator cbegin() const noexcept;
@@ -42,5 +56,6 @@ public:
 
 private:
     std::vector<Vertex2D> m_vertices;
+    std::vector<Vertex2D> m_cache;
     uint32_t m_id;
 };

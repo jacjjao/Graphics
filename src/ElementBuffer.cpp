@@ -14,6 +14,10 @@ ElementBuffer::~ElementBuffer()
 
 void ElementBuffer::create()
 {
+    if (isAvailable())
+    {
+        return;
+    }
     glCheck(glGenBuffers(1, &m_id));
     ElementBuffer::bind(*this);
     const auto size_in_bytes = static_cast<GLsizei>(m_indices.size() * sizeof(uint32_t));
@@ -23,7 +27,7 @@ void ElementBuffer::create()
 
 void ElementBuffer::destroy()
 {
-    if (m_id != 0)
+    if (isAvailable())
     {
         glCheck(glDeleteBuffers(1, &m_id));
         m_id = 0;
@@ -33,6 +37,11 @@ void ElementBuffer::destroy()
 size_t ElementBuffer::size() const noexcept
 {
     return m_indices.size();
+}
+
+bool ElementBuffer::isAvailable() const noexcept
+{
+    return m_id != 0;
 }
 
 void ElementBuffer::bind(const ElementBuffer& buffer)

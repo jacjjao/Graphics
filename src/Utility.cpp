@@ -1,7 +1,7 @@
 #include "../include/Utility.hpp"
 #include <utility>
 
-glm::vec2 util::detail::pointToOpenGL(const glm::ivec2 point, const float half_width, const float half_height)
+glm::vec2 util::detail::pointToOpenGL(const glm::vec2 point, const float half_width, const float half_height)
 {
     const auto f_point_x = static_cast<float>(point.x);
     const auto f_point_y = static_cast<float>(point.y);
@@ -9,7 +9,7 @@ glm::vec2 util::detail::pointToOpenGL(const glm::ivec2 point, const float half_w
     return {(f_point_x - half_width) / half_width, (half_height - f_point_y) / half_height};
 }
 
-glm::vec2 util::detail::vectorToOpenGL(const glm::ivec2 vector, const float half_width, const float half_height)
+glm::vec2 util::detail::vectorToOpenGL(const glm::vec2 vector, const float half_width, const float half_height)
 {
     return {static_cast<float>(vector.x) / half_width, static_cast<float>(vector.y) / half_height};
 }

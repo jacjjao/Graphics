@@ -1,14 +1,14 @@
 #include "../include/Circle2D.hpp"
-#include "../include/Utility.hpp"
 #include "../include/glCheck.hpp"
 #include <glad/glad.h>
 #include <cmath>
 #include <glm/ext/vector_float2.hpp>
 #include <numbers>
 
-Circle2D::Circle2D(const glm::ivec2 position, const float radius, const size_t point_count)
+Circle2D::Circle2D(const glm::vec2 position, const float radius, const size_t point_count)
     : m_position{position}, m_radius{radius}, m_color{}, m_vao{point_count + 1} // including origin
 {
+    update();
 }
 
 void Circle2D::draw()
@@ -29,7 +29,7 @@ void Circle2D::update()
     const float slice = 2.0F * f_pi / f_point_count;
     const glm::vec2 f_position{m_position};
 
-    m_vao[0].position = util::pointToOpenGL(m_position);
+    m_vao[0].position = m_position;
     m_vao[0].color = m_color;
     for (int i = 1; i < m_vao.size(); i++)
     {
@@ -40,7 +40,7 @@ void Circle2D::update()
         position.x = f_position.x + m_radius * std::cos(theta);
         position.y = f_position.y - m_radius * std::sin(theta);
 
-        m_vao[i].position = util::pointToOpenGL({position});
+        m_vao[i].position = position;
         m_vao[i].color = m_color;
     }
 

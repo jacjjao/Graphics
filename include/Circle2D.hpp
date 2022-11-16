@@ -7,7 +7,7 @@
 class Circle2D
 {
 public:
-    explicit Circle2D(glm::ivec2 position, float radius, size_t point_count = 30);
+    explicit Circle2D(glm::vec2 position, float radius, size_t point_count = 30);
 
     void draw();
     void update();
@@ -16,7 +16,7 @@ public:
 private:
     void create();
 
-    glm::ivec2 m_position;
+    glm::vec2 m_position;
     float m_radius;
     Color m_color;
 

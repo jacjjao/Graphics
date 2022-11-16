@@ -21,6 +21,8 @@ public:
 
     [[nodiscard]] size_t size() const noexcept;
 
+    [[nodiscard]] bool isAvailable() const noexcept;
+
     static void bind(const ElementBuffer& buffer);
     static void unbind();
 

@@ -1,11 +1,11 @@
 #include "../include/Rectangle2D.hpp"
 #include "../include/glCheck.hpp"
-#include "../include/Utility.hpp"
 #include <glad/glad.h>
 
-Rectangle2D::Rectangle2D(const glm::ivec2 position, const uint32_t width, const uint32_t height)
+Rectangle2D::Rectangle2D(const glm::vec2 position, const uint32_t width, const uint32_t height)
     : m_vao{4}, m_ebo{6}, m_position{position}, m_width{width}, m_height{height}, m_color{}
 {
+    update();
 }
 
 void Rectangle2D::setColor(const Color color) noexcept
@@ -13,7 +13,7 @@ void Rectangle2D::setColor(const Color color) noexcept
     m_color = color;
 }
 
-void Rectangle2D::setPosition(const glm::ivec2 position) noexcept
+void Rectangle2D::setPosition(const glm::vec2 position) noexcept
 {
     m_position = position;
 }
@@ -42,18 +42,10 @@ void Rectangle2D::draw()
 void Rectangle2D::update()
 {
     // update position
-    auto pos_on_gl = util::pointToOpenGL({m_position.x + m_width, m_position.y});
-    m_vao[0].position = pos_on_gl;
-
-    pos_on_gl = util::pointToOpenGL({m_position.x + m_width, m_position.y + m_height});
-    m_vao[1].position = pos_on_gl;
-
-    pos_on_gl = util::pointToOpenGL({m_position.x, m_position.y + m_height});
-    m_vao[2].position = pos_on_gl;
-
-    pos_on_gl = util::pointToOpenGL(m_position);
-    m_vao[3].position = pos_on_gl;
-
+    m_vao[0].position = {m_position.x + m_width, m_position.y};
+    m_vao[1].position = {m_position.x + m_width, m_position.y + m_height};
+    m_vao[2].position = {m_position.x, m_position.y + m_height};
+    m_vao[3].position = m_position;
     // update color
     for (auto& [_, color] : m_vao)
     {
@@ -81,7 +73,7 @@ void Rectangle2D::create()
     ElementBuffer::unbind();
 }
 
-glm::ivec2 Rectangle2D::getPosition() const noexcept
+glm::vec2 Rectangle2D::getPosition() const noexcept
 {
     return m_position;
 }

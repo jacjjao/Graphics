@@ -24,7 +24,7 @@ void VertexArray::unbind()
 
 void VertexArray::destroy()
 {
-    if (m_id != 0)
+    if (isAvailable())
     {
         glCheck(glDeleteVertexArrays(1, &m_id));
         m_id = 0;
@@ -34,6 +34,11 @@ void VertexArray::destroy()
 
 void VertexArray::create()
 {
+    if (isAvailable())
+    {
+        return;
+    }
+
     glCheck(glGenVertexArrays(1, &m_id));
     m_vbo.create();
     VertexArray::bind(*this);
@@ -54,6 +59,17 @@ void VertexArray::update()
     m_vbo.update();
 }
 
+void VertexArray::draw()
+{
+    if (!isAvailable())
+    {
+        create();
+    }
+    VertexArray::bind(*this);
+    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(m_vbo.size()));
+    VertexArray::unbind();
+}
+
 bool VertexArray::isAvailable() const noexcept
 {
     return m_id != 0;
@@ -72,6 +88,51 @@ VertexArray::value_type& VertexArray::operator[](size_t index) noexcept
 const VertexArray::value_type& VertexArray::operator[](size_t index) const noexcept
 {
     return m_vbo[index];
+}
+
+void VertexArray::resize(const size_t size)
+{
+    m_vbo.resize(size);
+}
+
+void VertexArray::reserve(const size_t size)
+{
+    m_vbo.reserve(size);
+}
+
+void VertexArray::push_back(const VertexArray::value_type& item)
+{
+    m_vbo.push_back(item);
+}
+
+void VertexArray::pop_back()
+{
+    m_vbo.pop_back();
+}
+
+void VertexArray::clear() noexcept
+{
+    m_vbo.clear();
+}
+
+VertexArray::value_type& VertexArray::front() noexcept
+{
+    return m_vbo.front();
+}
+
+const VertexArray::value_type& VertexArray::front() const noexcept
+{
+    return m_vbo.front();
+}
+
+VertexArray::value_type& VertexArray::back() noexcept
+{
+    return m_vbo.back();
+}
+
+const VertexArray::value_type& VertexArray::back() const noexcept
+{
+    return m_vbo.back();
 }
 
 VertexArray::iterator VertexArray::begin() noexcept

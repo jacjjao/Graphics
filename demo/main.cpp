@@ -53,11 +53,16 @@ int main()
     ShaderProgram shaderProgram{FileSystem::getPath("/shader/shader.vert").c_str(),
                                 FileSystem::getPath("/shader/shader.frag").c_str()};
 
-    glm::ivec2 pos = {950, 550};
+    glm::vec2 pos = {200, 1000};
     rect = std::make_unique<Rectangle2D>(pos, 100, 100);
 
-    pos = {1000, 600};
+    pos = {1800, 1000};
     auto circle = std::make_unique<Circle2D>(pos, 50.0F);
+
+    VertexArray vao{3};
+    vao[0].position = {1000, 100};
+    vao[1].position = {1000 + 500 * std::sqrt(3) / 2.0, 850};
+    vao[2].position = {1000 - 500 * std::sqrt(3) / 2.0, 850};
 
     Clock clock{};
     while (!glfwWindowShouldClose(window))
@@ -69,21 +74,32 @@ int main()
 
         auto tp = clock.getElapsedTime().asSeconds();
         Color color{};
+
         color.r = 255.0 * std::abs(std::sin(tp));
         color.g = 255.0 * std::abs(std::sin(tp + std::numbers::pi / 3.0));
         color.b = 255.0 * std::abs(std::sin(tp + std::numbers::pi * 2.0 / 3.0));
-        rect->setColor(color);
-        rect->update();
+        vao[0].color = color;
 
-        color.r = 255.0 * fabs(sin(tp + std::numbers::pi / 3.0));
-        color.g = 255.0 * fabs(sin(tp + std::numbers::pi * 2.0 / 3.0));
-        color.b = 255.0 * fabs(sin(tp + std::numbers::pi));
+        color.r = color.g;
+        color.g = color.b;
+        color.b = 255.0 * std::abs(std::sin(tp + std::numbers::pi));
         circle->setColor(color);
+        vao[1].color = color;
+
+        color.r = color.g;
+        color.g = color.b;
+        color.b = 255.0 * std::abs(std::sin(tp + std::numbers::pi * 4.0 / 3.0));
+        rect->setColor(color);
+        vao[2].color = color;
+
+        rect->update();
         circle->update();
+        vao.update();
 
         shaderProgram.use();
         rect->draw();
         circle->draw();
+        vao.draw();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -92,6 +108,7 @@ int main()
     shaderProgram.destroy();
     rect.reset();
     circle.reset();
+    vao.destroy();
 
     glfwTerminate();
 
@@ -103,36 +120,36 @@ void processInput(GLFWwindow* window)
     auto pos = rect->getPosition();
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
-        glfwSetWindowShouldClose(window, true);
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
         return;
     }
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        pos.y -= 1;
+        pos.y -= 1.0F;
         rect->setPosition(pos);
         rect->update();
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        pos.y += 1;
+        pos.y += 1.0F;
         rect->setPosition(pos);
         rect->update();
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        pos.x -= 1;
+        pos.x -= 1.0F;
         rect->setPosition(pos);
         rect->update();
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        pos.x += 1;
+        pos.x += 1.0F;
         rect->setPosition(pos);
         rect->update();
     }
 }
 
-void framebuffer_size_callback(GLFWwindow*, int width, int height)
+void framebuffer_size_callback(GLFWwindow* /*unused*/, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
