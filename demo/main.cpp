@@ -50,8 +50,8 @@ int main()
         return -1;
     }
 
-    ShaderProgram shaderProgram{FileSystem::getPath("/shader/shader.vert").c_str(),
-                                FileSystem::getPath("/shader/shader.frag").c_str()};
+    ShaderProgram shaderProgram{FileSystem::getPath("/shader/2D/VertexShader.vert").c_str(),
+                                FileSystem::getPath("/shader/2D/FragmentShader.frag").c_str()};
 
     glm::vec2 pos = {200, 1000};
     rect = std::make_unique<Rectangle2D>(pos, 100, 100);
