@@ -1,12 +1,15 @@
 #include "../include/ShaderProgram.hpp"
 #include "../include/glCheck.hpp"
+#include "../include/FileSystem.hpp"
 
 #include <fstream>
+#include <glm/ext/quaternion_float.hpp>
 #include <sstream>
 
-#include <fmt/core.h>
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
+
+#include <iostream>
 
 ShaderProgram::ShaderProgram(const char* vertex_path, const char* fragment_path) : m_id(0)
 {
@@ -35,7 +38,7 @@ ShaderProgram::ShaderProgram(const char* vertex_path, const char* fragment_path)
     }
     catch (const std::ifstream::failure& e)
     {
-        fmt::print(stderr, "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ\n{}\n", e.what());
+        std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ\n" << e.what() << '\n';
     }
 
     const auto* v_shader_code = vertex_code.c_str();
@@ -48,7 +51,7 @@ ShaderProgram::ShaderProgram(const char* vertex_path, const char* fragment_path)
         if (!success)
         {
             glCheck(glGetShaderInfoLog(shader, 512, nullptr, info_log));
-            fmt::print(stderr, "ERROR::{}_SHADER::COMPILE\n{}\n", name, info_log);
+            std::cerr << "ERROR::" << name << "_SHADER::COMPILE\n" << info_log << '\n';
         }
     };
 
@@ -59,21 +62,23 @@ ShaderProgram::ShaderProgram(const char* vertex_path, const char* fragment_path)
         if (!success)
         {
             glCheck(glGetProgramInfoLog(program, 512, nullptr, info_log));
-            fmt::print(stderr, "ERROR::PROGRAM::LINK\n{}\n", info_log);
+            std::cerr << "ERROR::PROGRAM::LINK\n" << info_log << '\n';
         }
     };
 
-    GLuint vertex = glCreateShader(GL_VERTEX_SHADER);
+    GLuint vertex{};
+    glCheck(vertex = glCreateShader(GL_VERTEX_SHADER));
     glCheck(glShaderSource(vertex, 1, &v_shader_code, nullptr));
     glCheck(glCompileShader(vertex));
     checkShaderProgramCompileStatus(vertex, "VECTEX");
 
-    GLuint fragment = glCreateShader(GL_FRAGMENT_SHADER);
+    GLuint fragment{};
+    glCheck(fragment = glCreateShader(GL_FRAGMENT_SHADER));
     glCheck(glShaderSource(fragment, 1, &f_shader_code, nullptr));
     glCheck(glCompileShader(fragment));
     checkShaderProgramCompileStatus(fragment, "FRAGMENT");
 
-    m_id = glCreateProgram();
+    glCheck(m_id = glCreateProgram());
     glCheck(glAttachShader(m_id, vertex));
     glCheck(glAttachShader(m_id, fragment));
     glCheck(glLinkProgram(m_id));
@@ -107,32 +112,60 @@ uint32_t ShaderProgram::getID() const noexcept
     return m_id;
 }
 
-void ShaderProgram::setI(const char* name, const int32_t value) const
+void ShaderProgram::setI32(const std::string& name, const int32_t value)
 {
-    GLint location = glGetUniformLocation(m_id, name);
-    glCheck(glUniform1i(location, value));
+    auto loc = getLocation(name);
+    glCheck(glUniform1i(loc, value));
 }
 
-void ShaderProgram::setF(const char* name, const float value) const
+void ShaderProgram::setFloat(const std::string& name, const float value)
 {
-    GLint location = glGetUniformLocation(m_id, name);
-    glCheck(glUniform1f(location, value));
+    auto loc = getLocation(name);
+    glCheck(glUniform1f(loc, value));
 }
 
-void ShaderProgram::setMat4(const char* name, const glm::mat4 matrix) const
+void ShaderProgram::setMat4(const std::string& name, const glm::mat4 matrix)
 {
-    GLint location = glGetUniformLocation(m_id, name);
-    glCheck(glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix)));
+    auto loc = getLocation(name);
+    glCheck(glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(matrix)));
 }
 
-void ShaderProgram::setVec3(const char* name, const float x, const float y, const float z) const
+void ShaderProgram::setVec3(const std::string& name, const float x, const float y, const float z)
 {
-    GLint location = glGetUniformLocation(m_id, name);
-    glCheck(glUniform3f(location, x, y, z));
+    auto loc = getLocation(name);
+    glCheck(glUniform3f(loc, x, y, z));
 }
 
-void ShaderProgram::setVec3(const char* name, const glm::vec3 vec) const
+void ShaderProgram::setVec3(const std::string& name, const glm::vec3 vec)
 {
-    GLint location = glGetUniformLocation(m_id, name);
-    glCheck(glUniform3f(location, vec.x, vec.y, vec.z));
+    auto loc = getLocation(name);
+    glCheck(glUniform3f(loc, vec.x, vec.y, vec.z));
+}
+
+int32_t ShaderProgram::getLocation(const std::string& name)
+{
+    auto it = locations.find(name);
+    GLint loc = 0;
+    if (it == locations.end())
+    {
+        glCheck(loc = glGetUniformLocation(m_id, name.c_str()));
+        locations[name] = loc;
+    }
+    else
+    {
+        loc = it->second;
+    }
+    return loc;
+}
+
+ShaderProgram2D::ShaderProgram2D()
+    : ShaderProgram{FileSystem::getPath("/shader/2D/VertexShader.vert").c_str(),
+                    FileSystem::getPath("/shader/2D/FragmentShader.frag").c_str()}
+{
+}
+
+ShaderProgram2D& ShaderProgram2D::instance() noexcept
+{
+    static ShaderProgram2D program{};
+    return program;
 }

@@ -6,7 +6,7 @@
 #include <numbers>
 
 Circle2D::Circle2D(const glm::vec2 position, const float radius, const size_t point_count)
-    : m_position{position}, m_radius{radius}, m_color{}, m_vao{point_count + 1} // including origin
+    : m_position{position}, m_radius{radius}, m_color{}, m_vao{point_count + 1} // including center of the circle
 {
     update();
 }

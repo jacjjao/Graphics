@@ -2,19 +2,22 @@
 
 #include <glm/ext/vector_float2.hpp>
 #include <glm/ext/vector_int2.hpp>
-#include <functional>
 
-namespace util
+class Utility
 {
-namespace detail
-{
-glm::vec2 pointToOpenGL(glm::vec2 point, float half_width, float half_height);
-glm::vec2 vectorToOpenGL(glm::vec2 vector, float half_width, float half_height);
-} // namespace detail
+public:
+    static void initialize(float width, float height) noexcept;
+    static glm::vec2 pointToOpenGL(glm::vec2 point) noexcept;
+    static glm::vec2 vectorToOpenGL(glm::vec2 vector) noexcept;
+    static float getWindowWidth() noexcept;
+    static float getWindowHeight() noexcept;
+    static float getHalfWindowWidth() noexcept;
+    static float getHalfWindowHeight() noexcept;
 
-void initialize(unsigned width, unsigned height);
+private:
+    static glm::vec2 pointToGL(glm::vec2 point, float half_width, float half_height) noexcept;
+    static glm::vec2 vectorToGL(glm::vec2 vector, float half_width, float half_height) noexcept;
 
-inline std::function<glm::vec2(glm::vec2)> pointToOpenGL = nullptr;
-inline std::function<glm::vec2(glm::vec2)> vectorToOpenGL = nullptr;
-
-} // namespace util
+    static float window_width, window_height;
+    static float half_window_width, half_window_height;
+};

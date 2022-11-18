@@ -1,6 +1,6 @@
 #include "../include/glCheck.hpp"
 #include <glad/glad.h>
-#include <fmt/core.h>
+#include <iostream>
 
 void glCheckError(const char* file, const unsigned line, const char* function)
 {
@@ -8,6 +8,6 @@ void glCheckError(const char* file, const unsigned line, const char* function)
 
     if (error != GL_NO_ERROR)
     {
-        fmt::print(stderr, "[OpenGL Error] ({}): {} {}:{}\n", error, function, file, line);
+        std::cerr << "[OpenGL Error] (" << error << "): " << function << ' ' << file << ':' << line << '\n';
     }
 }

@@ -4,8 +4,8 @@
 #include <glm/ext/vector_float2.hpp>
 #include <glm/ext/vector_int2.hpp>
 #include <glm/ext/vector_uint2.hpp>
-#include <fmt/core.h>
 // standard
+#include <iostream>
 #include <memory>
 #include <cmath>
 #include <numbers>
@@ -27,7 +27,7 @@ std::unique_ptr<Rectangle2D> rect{};
 
 int main()
 {
-    util::initialize(SCR_WIDTH, SCR_HEIGHT);
+    Utility::initialize(SCR_WIDTH, SCR_HEIGHT);
 
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -37,7 +37,7 @@ int main()
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", nullptr, nullptr);
     if (window == nullptr)
     {
-        fmt::print(stderr, "Failed to create GLFW window\n");
+        std::cerr << "Failed to create GLFW window\n";
         glfwTerminate();
         return -1;
     }
@@ -46,23 +46,29 @@ int main()
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        fmt::print(stderr, "Failed to initialize GLAD\n");
+        std::cerr << "Failed to initialize GLAD\n";
         return -1;
     }
 
-    ShaderProgram shaderProgram{FileSystem::getPath("/shader/2D/VertexShader.vert").c_str(),
-                                FileSystem::getPath("/shader/2D/FragmentShader.frag").c_str()};
+    auto& shaderProgram = ShaderProgram2D::instance();
 
-    glm::vec2 pos = {200, 1000};
-    rect = std::make_unique<Rectangle2D>(pos, 100, 100);
+    glm::vec2 pos = {800, 600};
+    rect = std::make_unique<Rectangle2D>(100, 100);
+    rect->setPosition(pos);
 
-    pos = {1800, 1000};
+    auto rect2 = std::make_unique<Rectangle2D>(100, 100);
+    rect2->setColor(Color::Black);
+    rect2->setPosition({1000, 600});
+
+    pos = {1000, 1000};
     auto circle = std::make_unique<Circle2D>(pos, 50.0F);
 
     VertexArray vao{3};
-    vao[0].position = {1000, 100};
-    vao[1].position = {1000 + 500 * std::sqrt(3) / 2.0, 850};
-    vao[2].position = {1000 - 500 * std::sqrt(3) / 2.0, 850};
+    vao[0].position = {1000.0, 100.0};
+    vao[1].position = {1000.0 + 500.0 * std::sqrt(3.0) / 2.0, 850.0};
+    vao[2].position = {1000.0 - 500.0 * std::sqrt(3.0) / 2.0, 850.0};
+
+    // rect->scale({12.0F, 12.0F});
 
     Clock clock{};
     while (!glfwWindowShouldClose(window))
@@ -92,14 +98,19 @@ int main()
         rect->setColor(color);
         vao[2].color = color;
 
+        // rect->translate({0.1F, 0.0F});
+        // rect->scale({1.0001F, 1.0001F});
+        rect->rotate(0.1F);
+
         rect->update();
         circle->update();
         vao.update();
 
         shaderProgram.use();
         rect->draw();
-        circle->draw();
-        vao.draw();
+        // rect2->draw();
+        // circle->draw();
+        // vao.draw();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -107,6 +118,7 @@ int main()
 
     shaderProgram.destroy();
     rect.reset();
+    rect2.reset();
     circle.reset();
     vao.destroy();
 

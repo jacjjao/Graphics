@@ -69,7 +69,7 @@ void VertexBuffer::update()
 {
     for (size_t i = 0; i < m_vertices.size(); i++)
     {
-        m_cache[i].position = util::pointToOpenGL(m_vertices[i].position);
+        m_cache[i].position = Utility::pointToOpenGL(m_vertices[i].position);
         m_cache[i].color = m_vertices[i].color;
     }
     if (isAvailable())
