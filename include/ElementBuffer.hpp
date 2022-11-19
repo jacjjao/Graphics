@@ -13,8 +13,8 @@ public:
     ElementBuffer(const ElementBuffer&) = delete;
     ElementBuffer& operator=(const ElementBuffer&) = delete;
 
-    ElementBuffer& operator=(std::vector<uint32_t> indices);
-    ElementBuffer& operator=(std::initializer_list<uint32_t> list);
+    ElementBuffer& operator=(std::vector<uint32_t> indices) noexcept;
+    ElementBuffer& operator=(std::initializer_list<uint32_t> list) noexcept;
 
     void create();
     void destroy();

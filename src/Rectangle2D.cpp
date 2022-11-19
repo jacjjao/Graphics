@@ -9,16 +9,6 @@ Rectangle2D::Rectangle2D(const float width, const float height) : m_vao{4}, m_eb
     update();
 }
 
-void Rectangle2D::setWidth(const float width) noexcept
-{
-    m_width = width;
-}
-
-void Rectangle2D::setHeight(const float height) noexcept
-{
-    m_height = height;
-}
-
 void Rectangle2D::draw()
 {
     if (!m_vao.isAvailable())
@@ -51,6 +41,16 @@ void Rectangle2D::update()
     {
         m_vao.update();
     }
+}
+
+void Rectangle2D::setWidth(const float width) noexcept
+{
+    m_width = width;
+}
+
+void Rectangle2D::setHeight(const float height) noexcept
+{
+    m_height = height;
 }
 
 void Rectangle2D::create()

@@ -52,7 +52,7 @@ int main()
 
     auto& shaderProgram = ShaderProgram2D::instance();
 
-    glm::vec2 pos = {300, 600};
+    glm::vec2 pos = {300, 1000};
     rect = std::make_unique<Rectangle2D>(200, 200);
     rect->setPosition(pos);
 
@@ -97,8 +97,9 @@ int main()
         rect->setColor(color);
         vao[2].color = color;
 
-        circle->setRadius(50.0F * (1.0F + std::abs(std::sin(tp))));
+        circle->setRadius(50.0F * (std::sin(tp * 2) / 2.0F + 1.5F));
         rect->rotate(0.1F);
+        rect->translate({0.1F, 0.0F});
 
         rect->update();
         circle->update();

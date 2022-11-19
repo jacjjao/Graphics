@@ -13,7 +13,7 @@ public:
     using const_reverse_iterator = VertexBuffer::const_reverse_iterator;
 
     explicit VertexArray(size_t size = 0);
-    ~VertexArray();
+    ~VertexArray() override;
 
     VertexArray(const VertexArray&) = delete;
     VertexArray& operator=(const VertexArray&) const = delete;
@@ -21,7 +21,7 @@ public:
     void destroy();
     void create();
     void update();
-    void draw();
+    void draw() override;
 
     void resize(size_t size);
     void reserve(size_t size);

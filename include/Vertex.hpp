@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <glm/ext/vector_float2.hpp>
-#include <limits>
 
 class Color
 {
@@ -10,8 +9,7 @@ public:
     constexpr Color() = default;
 
     explicit constexpr Color(uint32_t value);
-    explicit constexpr Color(uint8_t red, uint8_t green, uint8_t blue,
-                             uint8_t alpha = std::numeric_limits<uint8_t>::max());
+    explicit constexpr Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
 
     constexpr Color& operator=(uint32_t value);
 

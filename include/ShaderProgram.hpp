@@ -37,6 +37,7 @@ private:
 class ShaderProgram2D : public ShaderProgram
 {
 public:
-    [[nodiscard]] static ShaderProgram2D& instance() noexcept;
     ShaderProgram2D();
+
+    [[nodiscard]] static ShaderProgram2D& instance() noexcept;
 };

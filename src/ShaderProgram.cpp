@@ -3,13 +3,11 @@
 #include "../include/FileSystem.hpp"
 
 #include <fstream>
-#include <glm/ext/quaternion_float.hpp>
 #include <sstream>
+#include <iostream>
 
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
-
-#include <iostream>
 
 ShaderProgram::ShaderProgram(const char* vertex_path, const char* fragment_path) : m_id(0)
 {
@@ -98,15 +96,6 @@ void ShaderProgram::use() const
     glCheck(glUseProgram(m_id));
 }
 
-void ShaderProgram::destroy()
-{
-    if (m_id > 0)
-    {
-        glCheck(glDeleteProgram(m_id));
-        m_id = 0;
-    }
-}
-
 uint32_t ShaderProgram::getID() const noexcept
 {
     return m_id;
@@ -142,11 +131,21 @@ void ShaderProgram::setVec3(const std::string& name, const glm::vec3 vec)
     glCheck(glUniform3f(loc, vec.x, vec.y, vec.z));
 }
 
+void ShaderProgram::destroy()
+{
+    if (m_id > 0)
+    {
+        glCheck(glDeleteProgram(m_id));
+        m_id = 0;
+    }
+}
+
 int32_t ShaderProgram::getLocation(const std::string& name)
 {
     auto it = locations.find(name);
     GLint loc = 0;
-    if (it == locations.end())
+    const bool is_found = (it == locations.end());
+    if (is_found)
     {
         glCheck(loc = glGetUniformLocation(m_id, name.c_str()));
         locations[name] = loc;

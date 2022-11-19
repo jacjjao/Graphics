@@ -12,6 +12,18 @@ ElementBuffer::~ElementBuffer()
     destroy();
 }
 
+ElementBuffer& ElementBuffer::operator=(std::vector<uint32_t> indices) noexcept
+{
+    m_indices = std::move(indices);
+    return *this;
+}
+
+ElementBuffer& ElementBuffer::operator=(const std::initializer_list<uint32_t> list) noexcept
+{
+    m_indices = list;
+    return *this;
+}
+
 void ElementBuffer::create()
 {
     if (isAvailable())
@@ -52,16 +64,4 @@ void ElementBuffer::bind(const ElementBuffer& buffer)
 void ElementBuffer::unbind()
 {
     glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
-}
-
-ElementBuffer& ElementBuffer::operator=(std::vector<uint32_t> indices)
-{
-    m_indices = std::move(indices);
-    return *this;
-}
-
-ElementBuffer& ElementBuffer::operator=(const std::initializer_list<uint32_t> list)
-{
-    m_indices = list;
-    return *this;
 }

@@ -12,16 +12,6 @@ VertexArray::~VertexArray()
     destroy();
 }
 
-void VertexArray::bind(const VertexArray& vao)
-{
-    glCheck(glBindVertexArray(vao.m_id));
-}
-
-void VertexArray::unbind()
-{
-    glCheck(glBindVertexArray(0));
-}
-
 void VertexArray::destroy()
 {
     if (isAvailable())
@@ -70,26 +60,6 @@ void VertexArray::draw()
     VertexArray::unbind();
 }
 
-bool VertexArray::isAvailable() const noexcept
-{
-    return m_id != 0;
-}
-
-size_t VertexArray::size() const noexcept
-{
-    return m_vbo.size();
-}
-
-VertexArray::value_type& VertexArray::operator[](size_t index) noexcept
-{
-    return m_vbo[index];
-}
-
-const VertexArray::value_type& VertexArray::operator[](size_t index) const noexcept
-{
-    return m_vbo[index];
-}
-
 void VertexArray::resize(const size_t size)
 {
     m_vbo.resize(size);
@@ -135,6 +105,16 @@ const VertexArray::value_type& VertexArray::back() const noexcept
     return m_vbo.back();
 }
 
+bool VertexArray::isAvailable() const noexcept
+{
+    return m_id != 0;
+}
+
+size_t VertexArray::size() const noexcept
+{
+    return m_vbo.size();
+}
+
 VertexArray::iterator VertexArray::begin() noexcept
 {
     return m_vbo.begin();
@@ -173,4 +153,24 @@ VertexArray::const_reverse_iterator VertexArray::crbegin() const noexcept
 VertexArray::const_reverse_iterator VertexArray::crend() const noexcept
 {
     return m_vbo.crend();
+}
+
+VertexArray::value_type& VertexArray::operator[](size_t index) noexcept
+{
+    return m_vbo[index];
+}
+
+const VertexArray::value_type& VertexArray::operator[](size_t index) const noexcept
+{
+    return m_vbo[index];
+}
+
+void VertexArray::bind(const VertexArray& vao)
+{
+    glCheck(glBindVertexArray(vao.m_id));
+}
+
+void VertexArray::unbind()
+{
+    glCheck(glBindVertexArray(0));
 }

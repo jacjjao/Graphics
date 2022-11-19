@@ -8,6 +8,7 @@ class Circle2D : public Shape
 {
 public:
     explicit Circle2D(float radius, size_t point_count = 30);
+    ~Circle2D() override = default;
 
     void draw() override;
     void update() override;

@@ -38,8 +38,8 @@ void Shape::scale(const glm::vec2 factor) noexcept
     glm::vec2 vector_to_center{Utility::getHalfWindowWidth() - m_position.x,
                                Utility::getHalfWindowHeight() - m_position.y};
 
-    bool rect_pos_is_in_the_center = (vector_to_center.x == 0.0F && vector_to_center.y == 0.0F);
-    if (rect_pos_is_in_the_center)
+    bool pos_is_in_the_center = (vector_to_center.x == 0.0F && vector_to_center.y == 0.0F);
+    if (pos_is_in_the_center)
     {
         m_model = glm::scale(m_model, {factor.x, factor.y, 0.0F});
     }
