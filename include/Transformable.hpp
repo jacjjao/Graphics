@@ -9,10 +9,23 @@ public:
     Transformable();
     virtual ~Transformable() = default;
 
-    virtual void translate(glm::vec2 vector) = 0;
-    virtual void scale(glm::vec2 factor) = 0;
-    virtual void rotate(float degree) = 0;
+    void translate(glm::vec2 vector) noexcept;
+    void scale(glm::vec2 factor) noexcept;
+    void rotate(float degree) noexcept;
 
-protected:
+    glm::mat4 getTransformMatrix() noexcept;
+
+    void setPosition(glm::vec2 position) noexcept;
+
+    [[nodiscard]] glm::vec2 getPosition() const noexcept;
+
+private:
+    bool should_update;
+    float dx, dy;
+    float dtheta;
+    glm::vec2 dscale;
+
+    glm::vec2 m_position;
+
     glm::mat4 m_model;
 };

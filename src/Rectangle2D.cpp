@@ -15,7 +15,7 @@ void Rectangle2D::draw()
     {
         create();
     }
-    ShaderProgram2D::instance().setMat4("model", m_model);
+    ShaderProgram2D::instance().setMat4("model", getTransformMatrix());
     VertexArray::bind(m_vao);
     glCheck(glDrawElements(GL_TRIANGLES, m_ebo.size(), GL_UNSIGNED_INT, 0));
     VertexArray::unbind();
@@ -27,11 +27,14 @@ void Rectangle2D::update()
     // update position
     const auto half_width = static_cast<float>(m_width) / 2.0F;
     const auto half_height = static_cast<float>(m_height) / 2.0F;
-    m_vao[0].position = {m_position.x + half_width, m_position.y - half_height}; // top right
-    m_vao[1].position = {m_position.x + half_width, m_position.y + half_height}; // bottom right
-    m_vao[2].position = {m_position.x - half_width, m_position.y + half_height}; // bottom left
-    m_vao[3].position = {m_position.x - half_width, m_position.y - half_height}; // top left
+    const auto pos = getPosition();
+
+    m_vao[0].position = {pos.x + half_width, pos.y - half_height}; // top right
+    m_vao[1].position = {pos.x + half_width, pos.y + half_height}; // bottom right
+    m_vao[2].position = {pos.x - half_width, pos.y + half_height}; // bottom left
+    m_vao[3].position = {pos.x - half_width, pos.y - half_height}; // top left
     // update color
+    auto m_color = getColor();
     for (auto& [_, color] : m_vao)
     {
         color = m_color;

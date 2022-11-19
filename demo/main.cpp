@@ -53,10 +53,10 @@ int main()
     auto& shaderProgram = ShaderProgram2D::instance();
 
     glm::vec2 pos = {300, 1000};
-    rect = std::make_unique<Rectangle2D>(200, 200);
+    rect = std::make_unique<Rectangle2D>(100, 100);
     rect->setPosition(pos);
 
-    pos = {1800, 1000};
+    pos = {1800, 900};
     auto circle = std::make_unique<Circle2D>(50.0F);
     circle->setPosition(pos);
 
@@ -66,6 +66,8 @@ int main()
     vao[2].position = {1000.0 - 500.0 * std::sqrt(3.0) / 2.0, 850.0};
 
     circle->scale({2.0F, 2.0F});
+    rect->scale({2.0F, 2.0F});
+    rect->translate({100, 0});
 
     Clock clock{};
     Clock timer{};
@@ -98,7 +100,8 @@ int main()
         vao[2].color = color;
 
         circle->setRadius(50.0F * (std::sin(tp * 2) / 2.0F + 1.5F));
-        rect->rotate(0.1F);
+        rect->rotate(-0.1F);
+        // rect->scale({1.0001F, 1.0001F});
         rect->translate({0.1F, 0.0F});
 
         rect->update();

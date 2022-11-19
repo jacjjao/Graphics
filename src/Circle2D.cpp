@@ -18,7 +18,7 @@ void Circle2D::draw()
     {
         create();
     }
-    ShaderProgram2D::instance().setMat4("model", m_model);
+    ShaderProgram2D::instance().setMat4("model", getTransformMatrix());
     VertexArray::bind(m_vao);
     glCheck(glDrawElements(GL_TRIANGLES, m_ebo.size(), GL_UNSIGNED_INT, 0));
     VertexArray::unbind();
@@ -30,21 +30,22 @@ void Circle2D::update()
     const auto f_point_count = static_cast<float>(m_vao.size() - 1);
     const auto f_pi = static_cast<float>(std::numbers::pi);
     const float slice = 2.0F * f_pi / f_point_count;
-    const glm::vec2 f_position{m_position};
+    auto pos = getPosition();
+    auto color = getColor();
 
-    m_vao[0].position = m_position;
-    m_vao[0].color = m_color;
+    m_vao[0].position = pos;
+    m_vao[0].color = color;
     for (int i = 1; i < m_vao.size(); i++)
     {
         const auto f_index = static_cast<float>(i);
         const float theta = slice * f_index;
 
         glm::vec2 position;
-        position.x = f_position.x + m_radius * std::cos(theta);
-        position.y = f_position.y - m_radius * std::sin(theta);
+        position.x = pos.x + m_radius * std::cos(theta);
+        position.y = pos.y - m_radius * std::sin(theta);
 
         m_vao[i].position = position;
-        m_vao[i].color = m_color;
+        m_vao[i].color = color;
     }
 
     if (m_vao.isAvailable())
