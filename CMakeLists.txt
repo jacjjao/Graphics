@@ -20,6 +20,8 @@ add_executable(${PROJECT_NAME}
 	"include/ElementBuffer.hpp"
 	"include/FileSystem.hpp"
 	"include/Circle2D.hpp"
+	"include/Shape.hpp"
+	"include/Transformable.hpp"
 
 	#sources
 	"src/glCheck.cpp"
@@ -33,6 +35,8 @@ add_executable(${PROJECT_NAME}
 	"src/Utility.cpp"
 	"src/FileSystem.cpp"
 	"src/Circle2D.cpp"
+	"src/Shape.cpp"
+	"src/Transformable.cpp"
 	"demo/main.cpp"
 )
 

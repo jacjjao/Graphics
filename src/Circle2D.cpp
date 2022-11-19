@@ -1,12 +1,13 @@
 #include "../include/Circle2D.hpp"
 #include "../include/glCheck.hpp"
+#include "../include/ShaderProgram.hpp"
 #include <glad/glad.h>
+#include <glm/ext/matrix_transform.hpp>
 #include <cmath>
-#include <glm/ext/vector_float2.hpp>
 #include <numbers>
 
-Circle2D::Circle2D(const glm::vec2 position, const float radius, const size_t point_count)
-    : m_position{position}, m_radius{radius}, m_color{}, m_vao{point_count + 1} // including center of the circle
+Circle2D::Circle2D(const float radius, const size_t point_count)
+    : m_radius{radius}, m_vao{point_count + 1} // including center of the circle
 {
     update();
 }
@@ -17,9 +18,11 @@ void Circle2D::draw()
     {
         create();
     }
+    ShaderProgram2D::instance().setMat4("model", m_model);
     VertexArray::bind(m_vao);
     glCheck(glDrawElements(GL_TRIANGLES, m_ebo.size(), GL_UNSIGNED_INT, 0));
     VertexArray::unbind();
+    ShaderProgram2D::instance().setMat4("model", glm::identity<glm::mat4>());
 }
 
 void Circle2D::update()
@@ -50,9 +53,9 @@ void Circle2D::update()
     }
 }
 
-void Circle2D::setColor(const Color color)
+void Circle2D::setRadius(const float radius) noexcept
 {
-    m_color = color;
+    m_radius = radius;
 }
 
 void Circle2D::create()

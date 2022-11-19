@@ -1,8 +1,9 @@
 #pragma once
 
 #include "VertexBuffer.hpp"
+#include "Drawable.hpp"
 
-class VertexArray
+class VertexArray : public Drawable
 {
 public:
     using value_type = VertexBuffer::value_type;

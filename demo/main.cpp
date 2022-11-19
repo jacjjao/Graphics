@@ -1,4 +1,5 @@
 // third party
+#include <cstdio>
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
 #include <glm/ext/vector_float2.hpp>
@@ -10,7 +11,6 @@
 #include <cmath>
 #include <numbers>
 
-#include "../include/FileSystem.hpp"
 #include "../include/ShaderProgram.hpp"
 #include "../include/Rectangle2D.hpp"
 #include "../include/Utility.hpp"
@@ -52,25 +52,24 @@ int main()
 
     auto& shaderProgram = ShaderProgram2D::instance();
 
-    glm::vec2 pos = {800, 600};
-    rect = std::make_unique<Rectangle2D>(100, 100);
+    glm::vec2 pos = {300, 600};
+    rect = std::make_unique<Rectangle2D>(200, 200);
     rect->setPosition(pos);
 
-    auto rect2 = std::make_unique<Rectangle2D>(100, 100);
-    rect2->setColor(Color::Black);
-    rect2->setPosition({1000, 600});
-
-    pos = {1000, 1000};
-    auto circle = std::make_unique<Circle2D>(pos, 50.0F);
+    pos = {1800, 1000};
+    auto circle = std::make_unique<Circle2D>(50.0F);
+    circle->setPosition(pos);
 
     VertexArray vao{3};
     vao[0].position = {1000.0, 100.0};
     vao[1].position = {1000.0 + 500.0 * std::sqrt(3.0) / 2.0, 850.0};
     vao[2].position = {1000.0 - 500.0 * std::sqrt(3.0) / 2.0, 850.0};
 
-    // rect->scale({12.0F, 12.0F});
+    circle->scale({2.0F, 2.0F});
 
     Clock clock{};
+    Clock timer{};
+    int fps_cnt = 0;
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
@@ -98,8 +97,7 @@ int main()
         rect->setColor(color);
         vao[2].color = color;
 
-        // rect->translate({0.1F, 0.0F});
-        // rect->scale({1.0001F, 1.0001F});
+        circle->setRadius(50.0F * (1.0F + std::abs(std::sin(tp))));
         rect->rotate(0.1F);
 
         rect->update();
@@ -108,17 +106,23 @@ int main()
 
         shaderProgram.use();
         rect->draw();
-        // rect2->draw();
-        // circle->draw();
-        // vao.draw();
+        circle->draw();
+        vao.draw();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+        if (timer.getElapsedTime().asSeconds() >= 1.0)
+        {
+            std::printf("FPS: %d\n", fps_cnt);
+            fps_cnt = 0;
+            timer.restart();
+        }
+        fps_cnt++;
     }
 
     shaderProgram.destroy();
     rect.reset();
-    rect2.reset();
     circle.reset();
     vao.destroy();
 
