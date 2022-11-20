@@ -240,7 +240,5 @@ private:
     std::vector<T> items_;
 };
 
-/* template <typename T>
-using Matrix4 = Matrix<T, 4, 4>; */
-
 using Matrix3 = Matrix<float, 3, 3>;
+using Matrix4 = Matrix<float, 4, 4>;

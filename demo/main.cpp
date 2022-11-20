@@ -99,7 +99,7 @@ int main()
 
             float factor = std::sin(tp * 2) / 2.0F + 1.5F;
             circle.scale({factor, factor});
-            rect->rotate(-0.1F);
+            rect->rotate(-0.05F);
             // rect->scale({1.0001F, 1.0001F});
             // rect->translate({0.1F, 0.0F});
 
@@ -135,7 +135,6 @@ int main()
 
 void processInput(GLFWwindow* window)
 {
-    auto pos = rect->getPosition();
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
@@ -143,27 +142,19 @@ void processInput(GLFWwindow* window)
     }
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        pos.y -= 1.0F;
-        rect->setPosition(pos);
-        rect->update();
+        rect->translate({0.0F, -1.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        pos.y += 1.0F;
-        rect->setPosition(pos);
-        rect->update();
+        rect->translate({0.0F, 1.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        pos.x -= 1.0F;
-        rect->setPosition(pos);
-        rect->update();
+        rect->translate({-1.0F, 0.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        pos.x += 1.0F;
-        rect->setPosition(pos);
-        rect->update();
+        rect->translate({1.0F, 0.0F});
     }
 }
 

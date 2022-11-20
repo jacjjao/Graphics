@@ -120,11 +120,11 @@ void ShaderProgram::setMat3(const std::string& name, const Matrix3& matrix) noex
     glCheck(glUniformMatrix3fv(loc, 1, GL_TRUE, matrix.data()));
 }
 
-/* void ShaderProgram::setMat4(const std::string& name, const Matrix4<float>& matrix) noexcept
+void ShaderProgram::setMat4(const std::string& name, const Matrix4& matrix) noexcept
 {
     auto loc = getLocation(name);
     glCheck(glUniformMatrix4fv(loc, 1, GL_TRUE, matrix.data()));
-} */
+}
 
 void ShaderProgram::setVec3(const std::string& name, const float x, const float y, const float z) noexcept
 {
