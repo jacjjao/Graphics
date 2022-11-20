@@ -1,7 +1,5 @@
 #pragma once
 
-#include <glm/ext/vector_float2.hpp>
-
 #include "Drawable.hpp"
 #include "Transformable.hpp"
 #include "Vertex.hpp"

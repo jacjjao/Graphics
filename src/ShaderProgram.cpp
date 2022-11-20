@@ -1,7 +1,6 @@
 #include "../include/ShaderProgram.hpp"
 
 #include <glad/glad.h>
-#include <glm/gtc/type_ptr.hpp>
 
 #include <fstream>
 #include <iostream>
@@ -115,10 +114,10 @@ void ShaderProgram::setFloat(const std::string& name, const float value) noexcep
     glCheck(glUniform1f(loc, value));
 }
 
-void ShaderProgram::setMat4(const std::string& name, const glm::mat4 matrix) noexcept
+void ShaderProgram::setMat4(const std::string& name, const Matrix4<float>& matrix) noexcept
 {
     auto loc = getLocation(name);
-    glCheck(glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(matrix)));
+    glCheck(glUniformMatrix4fv(loc, 1, GL_TRUE, matrix.data()));
 }
 
 void ShaderProgram::setVec3(const std::string& name, const float x, const float y, const float z) noexcept
@@ -127,7 +126,7 @@ void ShaderProgram::setVec3(const std::string& name, const float x, const float 
     glCheck(glUniform3f(loc, x, y, z));
 }
 
-void ShaderProgram::setVec3(const std::string& name, const glm::vec3 vec) noexcept
+void ShaderProgram::setVec3(const std::string& name, const Vector3<float> vec) noexcept
 {
     auto loc = getLocation(name);
     glCheck(glUniform3f(loc, vec.x, vec.y, vec.z));
@@ -146,8 +145,8 @@ int32_t ShaderProgram::getLocation(const std::string& name) noexcept
 {
     auto       it       = locations.find(name);
     GLint      loc      = 0;
-    const bool is_found = (it == locations.end());
-    if (is_found)
+    const bool is_found = (it != locations.end());
+    if (!is_found)
     {
         glCheck(loc = glGetUniformLocation(m_id, name.c_str()));
         locations[name] = loc;

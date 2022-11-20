@@ -1,7 +1,6 @@
 #include "../include/Circle2D.hpp"
 
 #include <glad/glad.h>
-#include <glm/ext/matrix_transform.hpp>
 
 #include <cmath>
 #include <numbers>
@@ -26,7 +25,7 @@ void Circle2D::draw() noexcept
     VertexArray::bind(m_vao);
     glCheck(glDrawElements(GL_TRIANGLES, m_ebo.size(), GL_UNSIGNED_INT, 0));
     VertexArray::unbind();
-    ShaderProgram2D::instance().setMat4("model", glm::identity<glm::mat4>());
+    ShaderProgram2D::instance().setMat4("model", Matrix4<float>::identity());
 }
 
 void Circle2D::update() noexcept
@@ -44,7 +43,7 @@ void Circle2D::update() noexcept
         const auto  f_index = static_cast<float>(i);
         const float theta   = slice * f_index;
 
-        glm::vec2 position;
+        Vector2<float> position{};
         position.x = pos.x + m_radius * std::cos(theta);
         position.y = pos.y - m_radius * std::sin(theta);
 

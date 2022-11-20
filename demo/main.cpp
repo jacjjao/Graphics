@@ -1,9 +1,6 @@
 // third party
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
-#include <glm/ext/vector_float2.hpp>
-#include <glm/ext/vector_int2.hpp>
-#include <glm/ext/vector_uint2.hpp>
 // standard
 #include <cmath>
 #include <iostream>
@@ -15,6 +12,7 @@
 #include "../include/Rectangle2D.hpp"
 #include "../include/ShaderProgram.hpp"
 #include "../include/Utility.hpp"
+#include "../include/Vector.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -51,8 +49,8 @@ int main()
 
     auto& shaderProgram = ShaderProgram2D::instance();
 
-    glm::vec2 pos = {300, 1000};
-    rect          = std::make_unique<Rectangle2D>(100, 100);
+    Vector2<float> pos = {300, 1000};
+    rect               = std::make_unique<Rectangle2D>(100, 100);
     rect->setPosition(pos);
 
     {
@@ -62,8 +60,8 @@ int main()
 
         VertexArray vao{3};
         vao[0].position = {1000.0, 100.0};
-        vao[1].position = {1000.0 + 500.0 * std::sqrt(3.0) / 2.0, 850.0};
-        vao[2].position = {1000.0 - 500.0 * std::sqrt(3.0) / 2.0, 850.0};
+        vao[1].position = {static_cast<float>(1000.0 + 500.0 * std::sqrt(3.0) / 2.0), 850.0};
+        vao[2].position = {static_cast<float>(1000.0 - 500.0 * std::sqrt(3.0) / 2.0), 850.0};
 
         circle.scale({2.0F, 2.0F});
         rect->scale({2.0F, 2.0F});
@@ -103,7 +101,7 @@ int main()
             circle.scale({factor, factor});
             rect->rotate(-0.1F);
             // rect->scale({1.0001F, 1.0001F});
-            rect->translate({0.1F, 0.0F});
+            // rect->translate({0.1F, 0.0F});
 
             rect->update();
             circle.update();

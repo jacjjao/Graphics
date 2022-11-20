@@ -1,11 +1,11 @@
 #pragma once
 
-#include <glm/mat4x4.hpp>
-#include <glm/vec3.hpp>
-
 #include <cstdint>
 #include <string>
 #include <unordered_map>
+
+#include "Matrix.hpp"
+#include "Vector.hpp"
 
 class ShaderProgram
 {
@@ -19,9 +19,9 @@ public:
 
     void setI32(const std::string& name, int32_t value) noexcept;
     void setFloat(const std::string& name, float value) noexcept;
-    void setMat4(const std::string& name, glm::mat4 matrix) noexcept;
+    void setMat4(const std::string& name, const Matrix4<float>& matrix) noexcept;
     void setVec3(const std::string& name, float x, float y, float z) noexcept;
-    void setVec3(const std::string& name, glm::vec3 vec) noexcept;
+    void setVec3(const std::string& name, Vector3<float> vec) noexcept;
 
     void destroy() noexcept;
 

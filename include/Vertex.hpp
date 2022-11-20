@@ -1,8 +1,8 @@
 #pragma once
 
-#include <glm/ext/vector_float2.hpp>
-
 #include <cstdint>
+
+#include "Vector.hpp"
 
 class Color
 {
@@ -25,6 +25,6 @@ public:
 
 struct Vertex2D
 {
-    glm::vec2 position;
-    Color     color;
+    Vector2<float> position;
+    Color          color;
 };

@@ -1,7 +1,6 @@
 #include "../include/Rectangle2D.hpp"
 
 #include <glad/glad.h>
-#include <glm/ext/matrix_transform.hpp>
 
 #include "../include/ShaderProgram.hpp"
 #include "../include/glCheck.hpp"
@@ -25,7 +24,7 @@ void Rectangle2D::draw() noexcept
     VertexArray::bind(m_vao);
     glCheck(glDrawElements(GL_TRIANGLES, m_ebo.size(), GL_UNSIGNED_INT, 0));
     VertexArray::unbind();
-    ShaderProgram2D::instance().setMat4("model", glm::identity<glm::mat4>());
+    ShaderProgram2D::instance().setMat4("model", Matrix4<float>::identity());
 }
 
 void Rectangle2D::update() noexcept

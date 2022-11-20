@@ -1,7 +1,7 @@
 #pragma once
 
-#include <glm/ext/matrix_float4x4.hpp>
-#include <glm/ext/vector_float2.hpp>
+#include "Matrix.hpp"
+#include "Vector.hpp"
 
 class Transformable
 {
@@ -9,23 +9,23 @@ public:
     Transformable() noexcept;
     virtual ~Transformable() = default;
 
-    void translate(glm::vec2 vector) noexcept;
-    void scale(glm::vec2 factor) noexcept;
+    void translate(Vector2<float> vector) noexcept;
+    void scale(Vector2<float> factor) noexcept;
     void rotate(float degree) noexcept;
 
-    glm::mat4 getTransformMatrix() noexcept;
+    Matrix4<float>& getTransformMatrix() noexcept;
 
-    void setPosition(glm::vec2 position) noexcept;
+    void setPosition(Vector2<float> position) noexcept;
 
-    [[nodiscard]] glm::vec2 getPosition() const noexcept;
+    [[nodiscard]] Vector2<float> getPosition() const noexcept;
 
 private:
-    bool      should_update;
-    float     dtheta;
-    glm::vec2 dvec;
-    glm::vec2 dscale;
+    bool           should_update;
+    float          dtheta;
+    Vector2<float> dvec;
+    Vector2<float> dscale;
 
-    glm::vec2 m_position;
+    Vector2<float> m_position;
 
-    glm::mat4 m_model;
+    Matrix4<float> m_model;
 };

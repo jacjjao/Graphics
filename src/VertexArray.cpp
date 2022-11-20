@@ -1,7 +1,6 @@
 #include "../include/VertexArray.hpp"
 
 #include <glad/glad.h>
-#include <glm/ext/vector_float2.hpp>
 
 #include "../include/glCheck.hpp"
 
