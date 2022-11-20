@@ -1,17 +1,18 @@
 #pragma once
 
-#include <cstdint>
 #include <glm/ext/vector_float2.hpp>
+
+#include <cstdint>
 
 class Color
 {
 public:
     constexpr Color() = default;
 
-    explicit constexpr Color(uint32_t value);
-    explicit constexpr Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
+    explicit constexpr Color(uint32_t value) noexcept;
+    explicit constexpr Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255) noexcept;
 
-    constexpr Color& operator=(uint32_t value);
+    constexpr Color& operator=(uint32_t value) noexcept;
 
     static const Color Red;
     static const Color Blue;
@@ -25,5 +26,5 @@ public:
 struct Vertex2D
 {
     glm::vec2 position;
-    Color color;
+    Color     color;
 };

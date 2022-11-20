@@ -1,43 +1,44 @@
 #pragma once
 
-#include <cstdint>
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
-#include <unordered_map>
+
+#include <cstdint>
 #include <string>
+#include <unordered_map>
 
 class ShaderProgram
 {
 public:
-    ShaderProgram(const char* vertex_path, const char* fragment_path);
-    ~ShaderProgram();
+    ShaderProgram(const char* vertex_path, const char* fragment_path) noexcept;
+    ~ShaderProgram() noexcept;
 
     void use() const;
 
     [[nodiscard]] uint32_t getID() const noexcept;
 
-    void setI32(const std::string& name, int32_t value);
-    void setFloat(const std::string& name, float value);
-    void setMat4(const std::string& name, glm::mat4 matrix);
-    void setVec3(const std::string& name, float x, float y, float z);
-    void setVec3(const std::string& name, glm::vec3 vec);
+    void setI32(const std::string& name, int32_t value) noexcept;
+    void setFloat(const std::string& name, float value) noexcept;
+    void setMat4(const std::string& name, glm::mat4 matrix) noexcept;
+    void setVec3(const std::string& name, float x, float y, float z) noexcept;
+    void setVec3(const std::string& name, glm::vec3 vec) noexcept;
 
-    void destroy();
+    void destroy() noexcept;
 
-    ShaderProgram(const ShaderProgram&) = delete;
+    ShaderProgram(const ShaderProgram&)            = delete;
     ShaderProgram& operator=(const ShaderProgram&) = delete;
 
 private:
-    int32_t getLocation(const std::string& name);
+    int32_t getLocation(const std::string& name) noexcept;
 
-    uint32_t m_id;
+    uint32_t                                 m_id;
     std::unordered_map<std::string, int32_t> locations;
 };
 
 class ShaderProgram2D : public ShaderProgram
 {
 public:
-    ShaderProgram2D();
+    ShaderProgram2D() noexcept;
 
     [[nodiscard]] static ShaderProgram2D& instance() noexcept;
 };

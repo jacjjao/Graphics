@@ -5,5 +5,5 @@
 class FileSystem
 {
 public:
-    static std::string getPath(const std::string& path);
+    static std::string getPath(const std::string& path) noexcept;
 };

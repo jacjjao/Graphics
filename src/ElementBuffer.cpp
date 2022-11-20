@@ -1,13 +1,16 @@
 #include "../include/ElementBuffer.hpp"
-#include "../include/glCheck.hpp"
+
 #include <glad/glad.h>
+
 #include <utility>
 
-ElementBuffer::ElementBuffer(const size_t size) : m_id(0), m_indices(size)
+#include "../include/glCheck.hpp"
+
+ElementBuffer::ElementBuffer(const size_t size) noexcept : m_id(0), m_indices(size)
 {
 }
 
-ElementBuffer::~ElementBuffer()
+ElementBuffer::~ElementBuffer() noexcept
 {
     destroy();
 }
@@ -24,7 +27,7 @@ ElementBuffer& ElementBuffer::operator=(const std::initializer_list<uint32_t> li
     return *this;
 }
 
-void ElementBuffer::create()
+void ElementBuffer::create() noexcept
 {
     if (isAvailable())
     {
@@ -37,7 +40,7 @@ void ElementBuffer::create()
     ElementBuffer::unbind();
 }
 
-void ElementBuffer::destroy()
+void ElementBuffer::destroy() noexcept
 {
     if (isAvailable())
     {
@@ -56,12 +59,12 @@ bool ElementBuffer::isAvailable() const noexcept
     return m_id != 0;
 }
 
-void ElementBuffer::bind(const ElementBuffer& buffer)
+void ElementBuffer::bind(const ElementBuffer& buffer) noexcept
 {
     glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.m_id));
 }
 
-void ElementBuffer::unbind()
+void ElementBuffer::unbind() noexcept
 {
     glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 }

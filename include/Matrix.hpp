@@ -1,10 +1,10 @@
 #pragma once
 
 #include <array>
-#include <cstdint>
-#include <vector>
-#include <utility>
 #include <concepts>
+#include <cstdint>
+#include <utility>
+#include <vector>
 
 namespace detail
 {
@@ -131,8 +131,7 @@ public:
         return lhs;
     }
 
-    friend Matrix<T, Height, Width>& operator-=(Matrix<T, Height, Width>& lhs,
-                                                const Matrix<T, Height, Width>& rhs) noexcept
+    friend Matrix<T, Height, Width>& operator-=(Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs) noexcept
     {
         for (size_t i = 0; i < Height; i++)
         {

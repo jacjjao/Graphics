@@ -1,7 +1,8 @@
 #include "../include/Clock.hpp"
+
 #include <ratio>
 
-Duration::Duration(const std::chrono::high_resolution_clock::duration duration) : m_duration(duration)
+Duration::Duration(const std::chrono::high_resolution_clock::duration duration) noexcept : m_duration(duration)
 {
 }
 
@@ -22,7 +23,7 @@ uint64_t Duration::asNanoseconds() const noexcept
     return std::chrono::duration_cast<std::chrono::duration<uint64_t, std::nano>>(m_duration).count();
 }
 
-Clock::Clock()
+Clock::Clock() noexcept
 {
     restart();
 }

@@ -1,8 +1,10 @@
 #include "../include/glCheck.hpp"
+
 #include <glad/glad.h>
+
 #include <iostream>
 
-void glCheckError(const char* file, const unsigned line, const char* function)
+void glCheckError(const char* file, const unsigned line, const char* function) noexcept
 {
     GLenum error = glGetError();
 

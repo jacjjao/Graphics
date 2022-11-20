@@ -6,9 +6,9 @@
 class Duration
 {
 public:
-    explicit Duration(std::chrono::high_resolution_clock::duration duration);
+    explicit Duration(std::chrono::high_resolution_clock::duration duration) noexcept;
 
-    [[nodiscard]] double asSeconds() const noexcept;
+    [[nodiscard]] double   asSeconds() const noexcept;
     [[nodiscard]] uint64_t asMilliseconds() const noexcept;
     [[nodiscard]] uint64_t asMicroseconds() const noexcept;
     [[nodiscard]] uint64_t asNanoseconds() const noexcept;
@@ -20,7 +20,7 @@ private:
 class Clock
 {
 public:
-    Clock();
+    Clock() noexcept;
 
     void restart() noexcept;
 

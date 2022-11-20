@@ -6,7 +6,7 @@
 class Transformable
 {
 public:
-    Transformable();
+    Transformable() noexcept;
     virtual ~Transformable() = default;
 
     void translate(glm::vec2 vector) noexcept;
@@ -20,9 +20,9 @@ public:
     [[nodiscard]] glm::vec2 getPosition() const noexcept;
 
 private:
-    bool should_update;
-    float dx, dy;
-    float dtheta;
+    bool      should_update;
+    float     dtheta;
+    glm::vec2 dvec;
     glm::vec2 dscale;
 
     glm::vec2 m_position;

@@ -1,18 +1,20 @@
 #include "../include/VertexArray.hpp"
-#include "../include/glCheck.hpp"
+
 #include <glad/glad.h>
 #include <glm/ext/vector_float2.hpp>
 
-VertexArray::VertexArray(const size_t size) : m_vbo{size}, m_id{0}
+#include "../include/glCheck.hpp"
+
+VertexArray::VertexArray(const size_t size) noexcept : m_vbo{size}, m_id{0}
 {
 }
 
-VertexArray::~VertexArray()
+VertexArray::~VertexArray() noexcept
 {
     destroy();
 }
 
-void VertexArray::destroy()
+void VertexArray::destroy() noexcept
 {
     if (isAvailable())
     {
@@ -22,7 +24,7 @@ void VertexArray::destroy()
     m_vbo.destroy();
 }
 
-void VertexArray::create()
+void VertexArray::create() noexcept
 {
     if (isAvailable())
     {
@@ -44,12 +46,12 @@ void VertexArray::create()
     VertexBuffer::unbind();
 }
 
-void VertexArray::update()
+void VertexArray::update() noexcept
 {
     m_vbo.update();
 }
 
-void VertexArray::draw()
+void VertexArray::draw() noexcept
 {
     if (!isAvailable())
     {
@@ -60,22 +62,22 @@ void VertexArray::draw()
     VertexArray::unbind();
 }
 
-void VertexArray::resize(const size_t size)
+void VertexArray::resize(const size_t size) noexcept
 {
     m_vbo.resize(size);
 }
 
-void VertexArray::reserve(const size_t size)
+void VertexArray::reserve(const size_t size) noexcept
 {
     m_vbo.reserve(size);
 }
 
-void VertexArray::push_back(const VertexArray::value_type& item)
+void VertexArray::push_back(const VertexArray::value_type& item) noexcept
 {
     m_vbo.push_back(item);
 }
 
-void VertexArray::pop_back()
+void VertexArray::pop_back() noexcept
 {
     m_vbo.pop_back();
 }
@@ -165,12 +167,12 @@ const VertexArray::value_type& VertexArray::operator[](size_t index) const noexc
     return m_vbo[index];
 }
 
-void VertexArray::bind(const VertexArray& vao)
+void VertexArray::bind(const VertexArray& vao) noexcept
 {
     glCheck(glBindVertexArray(vao.m_id));
 }
 
-void VertexArray::unbind()
+void VertexArray::unbind() noexcept
 {
     glCheck(glBindVertexArray(0));
 }

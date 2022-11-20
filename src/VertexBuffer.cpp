@@ -1,18 +1,20 @@
 #include "../include/VertexBuffer.hpp"
-#include "../include/glCheck.hpp"
-#include "../include/Utility.hpp"
+
 #include <glad/glad.h>
 
-VertexBuffer::VertexBuffer(const size_t size) : m_vertices(size), m_cache(size), m_id{0}
+#include "../include/Utility.hpp"
+#include "../include/glCheck.hpp"
+
+VertexBuffer::VertexBuffer(const size_t size) noexcept : m_vertices(size), m_cache(size), m_id{0}
 {
 }
 
-VertexBuffer::~VertexBuffer()
+VertexBuffer::~VertexBuffer() noexcept
 {
     destroy();
 }
 
-void VertexBuffer::destroy()
+void VertexBuffer::destroy() noexcept
 {
     if (isAvailable())
     {
@@ -21,12 +23,12 @@ void VertexBuffer::destroy()
     }
 }
 
-void VertexBuffer::update()
+void VertexBuffer::update() noexcept
 {
     for (size_t i = 0; i < m_vertices.size(); i++)
     {
         m_cache[i].position = Utility::pointToOpenGL(m_vertices[i].position);
-        m_cache[i].color = m_vertices[i].color;
+        m_cache[i].color    = m_vertices[i].color;
     }
     if (isAvailable())
     {
@@ -37,7 +39,7 @@ void VertexBuffer::update()
     }
 }
 
-void VertexBuffer::create()
+void VertexBuffer::create() noexcept
 {
     if (isAvailable())
     {
@@ -51,25 +53,25 @@ void VertexBuffer::create()
     VertexBuffer::unbind();
 }
 
-void VertexBuffer::resize(const size_t size)
+void VertexBuffer::resize(const size_t size) noexcept
 {
     m_vertices.resize(size);
     m_cache.resize(size);
 }
 
-void VertexBuffer::reserve(const size_t size)
+void VertexBuffer::reserve(const size_t size) noexcept
 {
     m_vertices.reserve(size);
     m_cache.reserve(size);
 }
 
-void VertexBuffer::push_back(const VertexBuffer::value_type& item)
+void VertexBuffer::push_back(const VertexBuffer::value_type& item) noexcept
 {
     m_vertices.push_back(item);
     m_cache.emplace_back();
 }
 
-void VertexBuffer::pop_back()
+void VertexBuffer::pop_back() noexcept
 {
     m_vertices.pop_back();
     m_cache.pop_back();
@@ -161,12 +163,12 @@ const VertexBuffer::value_type& VertexBuffer::operator[](const size_t index) con
     return m_vertices[index];
 }
 
-void VertexBuffer::bind(const VertexBuffer& vbo)
+void VertexBuffer::bind(const VertexBuffer& vbo) noexcept
 {
     glCheck(glBindBuffer(GL_ARRAY_BUFFER, vbo.m_id));
 }
 
-void VertexBuffer::unbind()
+void VertexBuffer::unbind() noexcept
 {
     glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }

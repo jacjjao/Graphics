@@ -1,15 +1,21 @@
 #include "../include/Rectangle2D.hpp"
-#include "../include/ShaderProgram.hpp"
-#include "../include/glCheck.hpp"
+
 #include <glad/glad.h>
 #include <glm/ext/matrix_transform.hpp>
 
-Rectangle2D::Rectangle2D(const float width, const float height) : m_vao{4}, m_ebo{6}, m_width{width}, m_height{height}
+#include "../include/ShaderProgram.hpp"
+#include "../include/glCheck.hpp"
+
+Rectangle2D::Rectangle2D(const float width, const float height) noexcept :
+m_vao{4},
+m_ebo{6},
+m_width{width},
+m_height{height}
 {
     update();
 }
 
-void Rectangle2D::draw()
+void Rectangle2D::draw() noexcept
 {
     if (!m_vao.isAvailable())
     {
@@ -22,12 +28,12 @@ void Rectangle2D::draw()
     ShaderProgram2D::instance().setMat4("model", glm::identity<glm::mat4>());
 }
 
-void Rectangle2D::update()
+void Rectangle2D::update() noexcept
 {
     // update position
-    const auto half_width = static_cast<float>(m_width) / 2.0F;
+    const auto half_width  = static_cast<float>(m_width) / 2.0F;
     const auto half_height = static_cast<float>(m_height) / 2.0F;
-    const auto pos = getPosition();
+    const auto pos         = getPosition();
 
     m_vao[0].position = {pos.x + half_width, pos.y - half_height}; // top right
     m_vao[1].position = {pos.x + half_width, pos.y + half_height}; // bottom right
@@ -56,7 +62,7 @@ void Rectangle2D::setHeight(const float height) noexcept
     m_height = height;
 }
 
-void Rectangle2D::create()
+void Rectangle2D::create() noexcept
 {
     update();
 

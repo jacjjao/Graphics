@@ -1,14 +1,15 @@
 #pragma once
 
+#include <glm/ext/vector_float2.hpp>
+
 #include "Drawable.hpp"
 #include "Transformable.hpp"
 #include "Vertex.hpp"
-#include <glm/ext/vector_float2.hpp>
 
 class Shape : public Drawable, public Transformable
 {
 public:
-    Shape();
+    Shape() = default;
 
     virtual void update() = 0;
 
