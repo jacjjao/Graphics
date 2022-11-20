@@ -13,7 +13,7 @@ public:
     void scale(Vector2<float> factor) noexcept;
     void rotate(float degree) noexcept;
 
-    Matrix4<float>& getTransformMatrix() noexcept;
+    Matrix3& getTransformMatrix() noexcept;
 
     void setPosition(Vector2<float> position) noexcept;
 
@@ -27,5 +27,5 @@ private:
 
     Vector2<float> m_position;
 
-    Matrix4<float> m_model;
+    Matrix3 m_model;
 };

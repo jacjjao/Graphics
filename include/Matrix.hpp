@@ -3,6 +3,7 @@
 #include <array>
 #include <concepts>
 #include <cstdint>
+#include <iostream>
 #include <vector>
 
 namespace detail
@@ -21,11 +22,23 @@ public:
 
     T& operator[](const size_t index) noexcept
     {
+#if (DEBUG)
+        if (index >= Width)
+        {
+            std::cerr << "Index out of bounds! Index: " << index << " Size: " << Width << '\n';
+        }
+#endif
         return ptr_[index];
     }
 
     const T& operator[](const size_t index) const noexcept
     {
+#if (DEBUG)
+        if (index >= Width)
+        {
+            std::cerr << "Index out of bounds! Index: " << index << " Size: " << Width << '\n';
+        }
+#endif
         return ptr_[index];
     }
 
@@ -48,6 +61,12 @@ public:
 
     const T& operator[](const size_t index) const noexcept
     {
+#if (DEBUG)
+        if (index >= Width)
+        {
+            std::cerr << "Index out of bounds! Index: " << index << " Size: " << Width << '\n';
+        }
+#endif
         return ptr_[index];
     }
 
@@ -87,11 +106,23 @@ public:
 
     detail::Row<T, Width> operator[](const size_t index) noexcept
     {
+#if (DEBUG)
+        if (index >= Height)
+        {
+            std::cerr << "Index out of bounds! Index: " << index << " Size: " << Height << '\n';
+        }
+#endif
         return detail::Row<T, Width>{&items_[index * Width]};
     }
 
     detail::ConstRow<T, Width> operator[](const size_t index) const noexcept
     {
+#if (DEBUG)
+        if (index >= Height)
+        {
+            std::cerr << "Index out of bounds! Index: " << index << " Size: " << Height << '\n';
+        }
+#endif
         return detail::ConstRow<T, Width>{&items_[index * Width]};
     }
 
@@ -209,5 +240,7 @@ private:
     std::vector<T> items_;
 };
 
-template <typename T>
-using Matrix4 = Matrix<T, 4, 4>;
+/* template <typename T>
+using Matrix4 = Matrix<T, 4, 4>; */
+
+using Matrix3 = Matrix<float, 3, 3>;

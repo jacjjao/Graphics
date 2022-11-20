@@ -5,7 +5,7 @@
 #include "../include/Utility.hpp"
 
 Transformable::Transformable() noexcept :
-m_model{Matrix4<float>::identity()},
+m_model{Matrix3::identity()},
 m_position{},
 should_update{false},
 dvec{},
@@ -32,11 +32,11 @@ void Transformable::rotate(const float degree) noexcept
     should_update = true;
 }
 
-Matrix4<float>& Transformable::getTransformMatrix() noexcept
+Matrix3& Transformable::getTransformMatrix() noexcept
 {
     if (should_update)
     {
-        m_model = Matrix4<float>::identity();
+        m_model = Matrix3::identity();
 
         Vector2<float> vec_to_center{Utility::getHalfWindowWidth() - m_position.x,
                                      Utility::getHalfWindowHeight() - m_position.y};
@@ -50,12 +50,12 @@ Matrix4<float>& Transformable::getTransformMatrix() noexcept
 
         m_model[0][0] = dscale.x * ccos;
         m_model[0][1] = -dscale.y * h * ssin / w;
-        m_model[0][3] = ((dscale.x * vec_to_center.x * w * ccos - dscale.y * vec_to_center.y * h * ssin) / w) -
+        m_model[0][2] = ((dscale.x * vec_to_center.x * w * ccos - dscale.y * vec_to_center.y * h * ssin) / w) -
                         vec_to_center.x + dvector.x;
 
         m_model[1][0] = dscale.x * w * ssin / h;
         m_model[1][1] = dscale.y * ccos;
-        m_model[1][3] = ((dscale.y * vec_to_center.y * h * ccos + dscale.x * vec_to_center.x * w * ssin) / h) -
+        m_model[1][2] = ((dscale.y * vec_to_center.y * h * ccos + dscale.x * vec_to_center.x * w * ssin) / h) -
                         vec_to_center.y + dvector.y;
 
         should_update = false;

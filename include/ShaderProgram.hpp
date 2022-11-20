@@ -19,7 +19,8 @@ public:
 
     void setI32(const std::string& name, int32_t value) noexcept;
     void setFloat(const std::string& name, float value) noexcept;
-    void setMat4(const std::string& name, const Matrix4<float>& matrix) noexcept;
+    void setMat3(const std::string& name, const Matrix3& matrix) noexcept;
+    // void setMat4(const std::string& name, const Matrix4<float>& matrix) noexcept;
     void setVec3(const std::string& name, float x, float y, float z) noexcept;
     void setVec3(const std::string& name, Vector3<float> vec) noexcept;
 
