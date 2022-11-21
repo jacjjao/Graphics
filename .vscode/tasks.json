@@ -1,24 +1,23 @@
 {
     "tasks": [
         {
-            "label": "Build",
-            "type": "shell",
-            "command": "cl.exe",
-            "args": [
-                "/EHsc",
-                "/Zi",
-                "/Fe:",
-                "Shoot them up.exe",
-                "${workspaceRoot}/Others/main.cpp"
+            "type": "cmake",
+            "label": "CMake: build",
+            "command": "build",
+            "targets": [
+                "all"
             ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "presentation": {
-                "reveal": "always"
-            },
-            "problemMatcher": "$msCompile"
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "CMake template build task",
+        },
+        {
+            "type": "cppbuild",
+            "label": "cppbuild",
+            "command": "build",
+            "args": [
+                "-G"
+            ]
         }
     ],
     "version": "2.0.0",
