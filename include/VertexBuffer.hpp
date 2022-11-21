@@ -56,7 +56,8 @@ public:
     static void unbind() noexcept;
 
 private:
+    static std::vector<Vertex2D> cache;
+
     std::vector<Vertex2D> m_vertices;
-    std::vector<Vertex2D> m_cache;
     uint32_t              m_id;
 };

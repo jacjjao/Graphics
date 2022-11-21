@@ -12,7 +12,6 @@ m_ebo{6},
 m_width{width},
 m_height{height}
 {
-    update();
 }
 
 void Rectangle2D::draw() noexcept
@@ -31,8 +30,9 @@ void Rectangle2D::draw() noexcept
 void Rectangle2D::update() noexcept
 {
     // update position
-    const auto     half_width       = static_cast<float>(m_width) / 2.0F;
-    const auto     half_height      = static_cast<float>(m_height) / 2.0F;
+    const auto half_width  = static_cast<float>(m_width) / 2.0F;
+    const auto half_height = static_cast<float>(m_height) / 2.0F;
+
     const Vector2f center           = {Utility::getHalfWindowWidth(), Utility::getHalfWindowHeight()};
     const Vector2f top_right_pos    = {center.x + half_width, center.y - half_height};
     const Vector2f bottom_right_pos = {center.x + half_width, center.y + half_height};

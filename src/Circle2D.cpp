@@ -13,7 +13,6 @@ Circle2D::Circle2D(const float radius, const size_t point_count) noexcept :
 m_radius{radius},
 m_vao{point_count + 1} // including center of the circle
 {
-    update();
 }
 
 void Circle2D::draw() noexcept
@@ -67,7 +66,8 @@ void Circle2D::create() noexcept
 {
     update();
 
-    std::vector<uint32_t> indices(3 * (m_vao.size() - 1));
+    const size_t          point_count = m_vao.size() - 1;
+    std::vector<uint32_t> indices(3 * point_count);
     for (int i = 0, a = 1, b = 2; i < indices.size(); i += 3, a++, b++)
     {
         indices[i]     = 0;

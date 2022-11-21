@@ -117,7 +117,7 @@ int main()
 
             if (timer.getElapsedTime().asSeconds() >= 1.0)
             {
-                std::printf("FPS: %d\n", fps_cnt);
+                std::cout << "FPS: " << fps_cnt << '\n';
                 fps_cnt = 0;
                 timer.restart();
             }

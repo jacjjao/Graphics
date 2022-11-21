@@ -5,7 +5,9 @@
 #include "../include/Utility.hpp"
 #include "../include/glCheck.hpp"
 
-VertexBuffer::VertexBuffer(const size_t size) noexcept : m_vertices(size), m_cache(size), m_id{0}
+std::vector<Vertex2D> VertexBuffer::cache{};
+
+VertexBuffer::VertexBuffer(const size_t size) noexcept : m_vertices(size), m_id{0}
 {
 }
 
@@ -25,16 +27,17 @@ void VertexBuffer::destroy() noexcept
 
 void VertexBuffer::update() noexcept
 {
+    cache.resize(m_vertices.size());
     for (size_t i = 0; i < m_vertices.size(); i++)
     {
-        m_cache[i].position = Utility::pointToOpenGL(m_vertices[i].position);
-        m_cache[i].color    = m_vertices[i].color;
+        cache[i].position = Utility::pointToOpenGL(m_vertices[i].position);
+        cache[i].color    = m_vertices[i].color;
     }
     if (isAvailable())
     {
-        const auto size_in_bytes = static_cast<GLsizei>(m_cache.size() * sizeof(Vertex2D));
+        const auto size_in_bytes = static_cast<GLsizei>(cache.size() * sizeof(Vertex2D));
         VertexBuffer::bind(*this);
-        glCheck(glBufferSubData(GL_ARRAY_BUFFER, 0, size_in_bytes, m_cache.data()));
+        glCheck(glBufferSubData(GL_ARRAY_BUFFER, 0, size_in_bytes, cache.data()));
         VertexBuffer::unbind();
     }
 }
@@ -48,39 +51,34 @@ void VertexBuffer::create() noexcept
     update();
     glCheck(glGenBuffers(1, &m_id));
     VertexBuffer::bind(*this);
-    const auto size_in_bytes = static_cast<GLsizei>(m_cache.size() * sizeof(Vertex2D));
-    glCheck(glBufferData(GL_ARRAY_BUFFER, size_in_bytes, m_cache.data(), GL_DYNAMIC_DRAW));
+    const auto size_in_bytes = static_cast<GLsizei>(cache.size() * sizeof(Vertex2D));
+    glCheck(glBufferData(GL_ARRAY_BUFFER, size_in_bytes, cache.data(), GL_DYNAMIC_DRAW));
     VertexBuffer::unbind();
 }
 
 void VertexBuffer::resize(const size_t size) noexcept
 {
     m_vertices.resize(size);
-    m_cache.resize(size);
 }
 
 void VertexBuffer::reserve(const size_t size) noexcept
 {
     m_vertices.reserve(size);
-    m_cache.reserve(size);
 }
 
 void VertexBuffer::push_back(const VertexBuffer::value_type& item) noexcept
 {
     m_vertices.push_back(item);
-    m_cache.emplace_back();
 }
 
 void VertexBuffer::pop_back() noexcept
 {
     m_vertices.pop_back();
-    m_cache.pop_back();
 }
 
 void VertexBuffer::clear() noexcept
 {
     m_vertices.clear();
-    m_cache.clear();
 }
 
 VertexBuffer::value_type& VertexBuffer::front() noexcept
