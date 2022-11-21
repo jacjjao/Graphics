@@ -8,19 +8,18 @@ Transformable::Transformable() noexcept :
 m_model{Matrix3::identity()},
 m_position{},
 should_update{false},
-dvec{},
 dtheta{},
 dscale{1.0F, 1.0F}
 {
 }
 
-void Transformable::translate(const Vector2<float> vector) noexcept
+void Transformable::translate(const Vector2f vector) noexcept
 {
-    dvec += vector;
+    m_position += vector;
     should_update = true;
 }
 
-void Transformable::scale(const Vector2<float> factor) noexcept
+void Transformable::scale(const Vector2f factor) noexcept
 {
     dscale        = factor;
     should_update = true;
@@ -38,25 +37,23 @@ Matrix3& Transformable::getTransformMatrix() noexcept
     {
         m_model = Matrix3::identity();
 
-        Vector2<float> vec_to_center{Utility::getHalfWindowWidth() - m_position.x,
-                                     Utility::getHalfWindowHeight() - m_position.y};
-        vec_to_center      = Utility::vectorToOpenGL(vec_to_center);
-        const auto h       = Utility::getHalfWindowHeight();
-        const auto w       = Utility::getHalfWindowWidth();
-        const auto theta   = Utility::radians(dtheta);
-        const auto ssin    = std::sin(theta);
-        const auto ccos    = std::cos(theta);
-        const auto dvector = Utility::vectorToOpenGL(dvec);
+        const auto half_win_width    = Utility::getHalfWindowWidth();
+        const auto half_win_height   = Utility::getHalfWindowHeight();
+        const auto center_to_pos_vec = Vector2f{m_position.x - half_win_width, m_position.y - half_win_height};
+        const auto [dx, dy]          = Utility::vectorToOpenGL(center_to_pos_vec);
+        const auto h                 = half_win_height;
+        const auto w                 = half_win_width;
+        const auto theta             = Utility::radians(dtheta);
+        const auto ssin              = std::sin(theta);
+        const auto ccos              = std::cos(theta);
 
         m_model[0][0] = dscale.x * ccos;
         m_model[0][1] = -dscale.y * h * ssin / w;
-        m_model[0][2] = ((dscale.x * vec_to_center.x * w * ccos - dscale.y * vec_to_center.y * h * ssin) / w) -
-                        vec_to_center.x + dvector.x;
+        m_model[0][2] = dx;
 
         m_model[1][0] = dscale.x * w * ssin / h;
         m_model[1][1] = dscale.y * ccos;
-        m_model[1][2] = ((dscale.y * vec_to_center.y * h * ccos + dscale.x * vec_to_center.x * w * ssin) / h) -
-                        vec_to_center.y + dvector.y;
+        m_model[1][2] = dy;
 
         should_update = false;
     }
@@ -64,12 +61,13 @@ Matrix3& Transformable::getTransformMatrix() noexcept
     return m_model;
 }
 
-void Transformable::setPosition(const Vector2<float> position) noexcept
+void Transformable::setPosition(const Vector2f position) noexcept
 {
-    m_position = position;
+    m_position    = position;
+    should_update = true;
 }
 
-Vector2<float> Transformable::getPosition() const noexcept
+Vector2f Transformable::getPosition() const noexcept
 {
     return m_position;
 }

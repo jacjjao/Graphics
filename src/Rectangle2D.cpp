@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 
 #include "../include/ShaderProgram.hpp"
+#include "../include/Utility.hpp"
 #include "../include/glCheck.hpp"
 
 Rectangle2D::Rectangle2D(const float width, const float height) noexcept :
@@ -30,16 +31,20 @@ void Rectangle2D::draw() noexcept
 void Rectangle2D::update() noexcept
 {
     // update position
-    const auto half_width  = static_cast<float>(m_width) / 2.0F;
-    const auto half_height = static_cast<float>(m_height) / 2.0F;
-    const auto pos         = getPosition();
+    const auto     half_width       = static_cast<float>(m_width) / 2.0F;
+    const auto     half_height      = static_cast<float>(m_height) / 2.0F;
+    const Vector2f center           = {Utility::getHalfWindowWidth(), Utility::getHalfWindowHeight()};
+    const Vector2f top_right_pos    = {center.x + half_width, center.y - half_height};
+    const Vector2f bottom_right_pos = {center.x + half_width, center.y + half_height};
+    const Vector2f bottom_left_pos  = {center.x - half_width, center.y + half_height};
+    const Vector2f top_left_pos     = {center.x - half_width, center.y - half_height};
 
-    m_vao[0].position = {pos.x + half_width, pos.y - half_height}; // top right
-    m_vao[1].position = {pos.x + half_width, pos.y + half_height}; // bottom right
-    m_vao[2].position = {pos.x - half_width, pos.y + half_height}; // bottom left
-    m_vao[3].position = {pos.x - half_width, pos.y - half_height}; // top left
+    m_vao[0].position = top_right_pos;
+    m_vao[1].position = bottom_right_pos;
+    m_vao[2].position = bottom_left_pos;
+    m_vao[3].position = top_left_pos;
     // update color
-    auto m_color = getColor();
+    const auto m_color = getColor();
     for (auto& [_, color] : m_vao)
     {
         color = m_color;

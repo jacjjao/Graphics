@@ -49,12 +49,12 @@ int main()
 
     auto& shaderProgram = ShaderProgram2D::instance();
 
-    Vector2<float> pos = {300, 1000};
-    rect               = std::make_unique<Rectangle2D>(100, 100);
-    rect->setPosition(pos);
-
     {
-        pos = {1800, 900};
+        Vector2<float> pos = {400, 900};
+        rect               = std::make_unique<Rectangle2D>(100, 100);
+        rect->setPosition(pos);
+
+        pos = {1700, 900};
         Circle2D circle{50.0F};
         circle.setPosition(pos);
 

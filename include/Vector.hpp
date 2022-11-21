@@ -11,8 +11,15 @@ struct Vector2
         return *this;
     }
 
+    Vector2<T> operator-() const noexcept
+    {
+        return {-x, -y};
+    }
+
     T x, y;
 };
+
+using Vector2f = Vector2<float>;
 
 template <typename T>
 struct Vector3

@@ -6,6 +6,7 @@
 #include <numbers>
 
 #include "../include/ShaderProgram.hpp"
+#include "../include/Utility.hpp"
 #include "../include/glCheck.hpp"
 
 Circle2D::Circle2D(const float radius, const size_t point_count) noexcept :
@@ -33,19 +34,19 @@ void Circle2D::update() noexcept
     const auto f_point_count = static_cast<float>(m_vao.size() - 1);
     const auto f_pi          = static_cast<float>(std::numbers::pi);
     const auto slice         = 2.0F * f_pi / f_point_count;
-    const auto pos           = getPosition();
+    const auto center        = Vector2f{Utility::getHalfWindowWidth(), Utility::getHalfWindowHeight()};
     const auto color         = getColor();
 
-    m_vao[0].position = pos;
+    m_vao[0].position = center;
     m_vao[0].color    = color;
     for (int i = 1; i < m_vao.size(); i++)
     {
         const auto  f_index = static_cast<float>(i);
         const float theta   = slice * f_index;
 
-        Vector2<float> position{};
-        position.x = pos.x + m_radius * std::cos(theta);
-        position.y = pos.y - m_radius * std::sin(theta);
+        Vector2f position{};
+        position.x = center.x + m_radius * std::cos(theta);
+        position.y = center.y - m_radius * std::sin(theta);
 
         m_vao[i].position = position;
         m_vao[i].color    = color;

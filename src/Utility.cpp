@@ -45,7 +45,7 @@ float Utility::getHalfWindowHeight() noexcept
 
 float Utility::radians(const float degrees) noexcept
 {
-    return degrees * static_cast<float>(0.01745329251994329576923690768489);
+    return degrees * static_cast<float>(0.01745329251994329576923690768489); // copy from glm::radians
 }
 
 Vector2<float> Utility::pointToGL(const Vector2<float> point, const float half_width, const float half_height) noexcept

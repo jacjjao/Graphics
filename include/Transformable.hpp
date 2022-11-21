@@ -9,23 +9,22 @@ public:
     Transformable() noexcept;
     virtual ~Transformable() = default;
 
-    void translate(Vector2<float> vector) noexcept;
-    void scale(Vector2<float> factor) noexcept;
+    void translate(Vector2f vector) noexcept;
+    void scale(Vector2f factor) noexcept;
     void rotate(float degree) noexcept;
 
     Matrix3& getTransformMatrix() noexcept;
 
-    void setPosition(Vector2<float> position) noexcept;
+    void setPosition(Vector2f position) noexcept;
 
-    [[nodiscard]] Vector2<float> getPosition() const noexcept;
+    [[nodiscard]] Vector2f getPosition() const noexcept;
 
 private:
-    bool           should_update;
-    float          dtheta;
-    Vector2<float> dvec;
-    Vector2<float> dscale;
+    bool     should_update;
+    float    dtheta;
+    Vector2f dscale;
 
-    Vector2<float> m_position;
+    Vector2f m_position;
 
     Matrix3 m_model;
 };
