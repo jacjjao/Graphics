@@ -2,6 +2,8 @@
 
 #include <glad/glad.h>
 
+#include <iostream>
+
 #include "../include/Utility.hpp"
 #include "../include/glCheck.hpp"
 
@@ -153,11 +155,23 @@ VertexBuffer::const_reverse_iterator VertexBuffer::crend() const noexcept
 
 VertexBuffer::value_type& VertexBuffer::operator[](const size_t index) noexcept
 {
+#if (DEBUG)
+    if (index >= m_vertices.size())
+    {
+        std::cerr << "Index out of bounds! Index: " << index << " Size: " << m_vertices.size() << '\n';
+    }
+#endif
     return m_vertices[index];
 }
 
 const VertexBuffer::value_type& VertexBuffer::operator[](const size_t index) const noexcept
 {
+#if (DEBUG)
+    if (index >= m_vertices.size())
+    {
+        std::cerr << "Index out of bounds! Index: " << index << " Size: " << m_vertices.size() << '\n';
+    }
+#endif
     return m_vertices[index];
 }
 

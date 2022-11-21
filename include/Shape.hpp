@@ -7,7 +7,7 @@
 class Shape : public Drawable, public Transformable
 {
 public:
-    Shape() = default;
+    Shape() noexcept = default;
 
     virtual void update() = 0;
 

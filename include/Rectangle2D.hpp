@@ -8,7 +8,7 @@ class Rectangle2D : public Shape
 {
 public:
     explicit Rectangle2D(float width, float height) noexcept;
-    ~Rectangle2D() override = default;
+    ~Rectangle2D() noexcept override = default;
 
     Rectangle2D(const Rectangle2D&)            = delete;
     Rectangle2D& operator=(const Rectangle2D&) = delete;

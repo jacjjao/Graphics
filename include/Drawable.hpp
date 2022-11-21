@@ -3,7 +3,7 @@
 class Drawable
 {
 public:
-    virtual ~Drawable() = default;
+    virtual ~Drawable() noexcept = default;
 
     virtual void draw() = 0;
 };

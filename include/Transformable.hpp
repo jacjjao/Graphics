@@ -7,7 +7,7 @@ class Transformable
 {
 public:
     Transformable() noexcept;
-    virtual ~Transformable() = default;
+    virtual ~Transformable() noexcept = default;
 
     void translate(Vector2f vector) noexcept;
     void scale(Vector2f factor) noexcept;
