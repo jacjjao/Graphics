@@ -94,19 +94,8 @@ MaxEmptyLinesToKeep: 2
 
 # Sorting
 IncludeBlocks: Regroup
-IncludeCategories:
-  - Priority: 1
-    Regex: '^<SFML\/Config.hpp>$'
-  - Priority: 2
-    Regex: '^<SFML\/(.+)\/Export.hpp>$'
-  - Priority: 3
-    Regex: '^<SFML\/'
-  - Priority: 4
-    Regex: '^<(glad|gl|X11|jni|android|stb_|GLES2|vorbis|doctest)'
-  - Priority: 5
-    Regex: '^<(.+)>$'
-SortIncludes: true
-SortUsingDeclarations: true
+SortIncludes: false
+SortUsingDeclarations: false
 
 # Penalties
 PenaltyBreakAssignment: 1000

@@ -2,8 +2,8 @@
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
 // standard
-#include <cmath>
 #include <iostream>
+#include <cmath>
 #include <memory>
 #include <numbers>
 
