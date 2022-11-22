@@ -50,11 +50,17 @@ set(ROOT_DIR "${CMAKE_SOURCE_DIR}")
 configure_file("${PROJECT_SOURCE_DIR}/configuration/root_directory.h.in" 
 			   "${PROJECT_SOURCE_DIR}/configuration/root_directory.h")
 
+add_library(glad "dependencies/glad/src/glad.c")
+
 find_package(glfw3 CONFIG REQUIRED)
-find_package(glad CONFIG REQUIRED)
 
 target_link_libraries(${PROJECT_NAME} 
 	PRIVATE
 		glfw
-		glad::glad
+		glad
+)
+
+target_include_directories(${PROJECT_NAME}
+	PRIVATE
+		"dependencies/glad/include"
 )
