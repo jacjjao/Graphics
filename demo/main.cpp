@@ -47,16 +47,14 @@ int main()
         return -1;
     }
 
-    auto& shaderProgram = ShaderProgram2D::instance();
-
     {
-        Vector2<float> pos = {400, 900};
-        rect               = std::make_unique<Rectangle2D>(100, 100);
-        rect->setPosition(pos);
+        auto& shaderProgram = ShaderProgram2D::instance();
 
-        pos = {1700, 900};
+        rect = std::make_unique<Rectangle2D>(100, 100);
+        rect->setPosition({400, 900});
+
         Circle2D circle{50.0F};
-        circle.setPosition(pos);
+        circle.setPosition({1700, 900});
 
         VertexArray vao{3};
         vao[0].position = {1000.0, 100.0};
@@ -100,8 +98,6 @@ int main()
             float factor = std::sin(tp * 2) / 2.0F + 1.5F;
             circle.scale({factor, factor});
             rect->rotate(-0.05F);
-            // rect->scale({1.0001F, 1.0001F});
-            // rect->translate({0.1F, 0.0F});
 
             rect->update();
             circle.update();
@@ -115,9 +111,9 @@ int main()
             glfwSwapBuffers(window);
             glfwPollEvents();
 
-            if (timer.getElapsedTime().asSeconds() >= 1.0)
+            if (auto tp = timer.getElapsedTime().asSeconds(); tp >= 1.0)
             {
-                std::cout << "FPS: " << fps_cnt << '\n';
+                std::cout << "FPS: " << static_cast<double>(fps_cnt) / tp << '\n';
                 fps_cnt = 0;
                 timer.restart();
             }
@@ -155,6 +151,14 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
         rect->translate({1.0F, 0.0F});
+    }
+    if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
+    {
+        rect->setWidth(50.0F);
+    }
+    if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
+    {
+        rect->setWidth(100.0F);
     }
 }
 

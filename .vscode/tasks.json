@@ -1,4 +1,5 @@
 {
+    "version": "2.0.0",
     "tasks": [
         {
             "type": "cmake",
@@ -9,16 +10,7 @@
             ],
             "group": "build",
             "problemMatcher": [],
-            "detail": "CMake template build task",
-        },
-        {
-            "type": "cppbuild",
-            "label": "cppbuild",
-            "command": "build",
-            "args": [
-                "-G"
-            ]
+            "detail": "CMake template build task"
         }
     ],
-    "version": "2.0.0",
 }

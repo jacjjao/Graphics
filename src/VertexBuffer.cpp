@@ -2,7 +2,9 @@
 
 #include <glad/glad.h>
 
+#if (DEBUG)
 #include <iostream>
+#endif
 
 #include "../include/Utility.hpp"
 #include "../include/glCheck.hpp"

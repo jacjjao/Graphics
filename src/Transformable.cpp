@@ -31,7 +31,7 @@ void Transformable::rotate(const float degree) noexcept
     should_update = true;
 }
 
-Matrix3& Transformable::getTransformMatrix() noexcept
+const Matrix3& Transformable::getTransformMatrix() noexcept
 {
     if (should_update)
     {

@@ -1,22 +1,20 @@
 #pragma once
 
-#include <array>
-#include <concepts>
 #include <cstdint>
-#include <iostream>
 #include <vector>
+
+#if (DEBUG)
+#include <iostream>
+#endif
 
 namespace detail
 {
 
-template <typename T>
-concept ValueType = std::is_integral_v<T> || std::is_floating_point_v<T>;
-
-template <ValueType T, size_t Width>
+template <typename T, size_t Width>
 class Row
 {
 public:
-    explicit Row(T* ptr) : ptr_(ptr)
+    explicit Row(T* ptr) noexcept : ptr_(ptr)
     {
     }
 
@@ -51,11 +49,11 @@ private:
     T* ptr_;
 };
 
-template <ValueType T, size_t Width>
+template <typename T, size_t Width>
 class ConstRow
 {
 public:
-    explicit ConstRow(const T* ptr) : ptr_(ptr)
+    explicit ConstRow(const T* ptr) noexcept : ptr_(ptr)
     {
     }
 
@@ -81,22 +79,18 @@ private:
 
 } // namespace detail
 
-template <detail::ValueType T, size_t Height, size_t Width>
+template <typename T, size_t Height, size_t Width>
 class Matrix
 {
 public:
     static_assert(Width > 0, "Invalid width value");
     static_assert(Height > 0, "Invalid Height value");
 
-    explicit Matrix() : items_(Width * Height)
+    explicit Matrix() noexcept : items_(Width * Height)
     {
     }
 
-    explicit Matrix(std::array<T, Width * Height> arr) : items_(arr.begin(), arr.end())
-    {
-    }
-
-    ~Matrix() = default;
+    ~Matrix() noexcept = default;
 
     Matrix(const Matrix<T, Height, Width>&)            = delete;
     Matrix& operator=(const Matrix<T, Height, Width>&) = delete;
@@ -126,7 +120,7 @@ public:
         return detail::ConstRow<T, Width>{&items_[index * Width]};
     }
 
-    friend Matrix<T, Height, Width> operator+(const Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs)
+    friend Matrix<T, Height, Width> operator+(const Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs) noexcept
     {
         Matrix<T, Height, Width> result{};
 
@@ -141,7 +135,7 @@ public:
         return result;
     }
 
-    friend Matrix<T, Height, Width> operator-(const Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs)
+    friend Matrix<T, Height, Width> operator-(const Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs) noexcept
     {
         Matrix<T, Height, Width> result{};
 
@@ -156,7 +150,7 @@ public:
         return result;
     }
 
-    friend Matrix<T, Height, Width>& operator+=(Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs)
+    friend Matrix<T, Height, Width>& operator+=(Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs) noexcept
     {
         for (size_t i = 0; i < Height; i++)
         {

@@ -13,7 +13,7 @@ public:
     void scale(Vector2f factor) noexcept;
     void rotate(float degree) noexcept;
 
-    Matrix3& getTransformMatrix() noexcept;
+    const Matrix3& getTransformMatrix() noexcept;
 
     void setPosition(Vector2f position) noexcept;
 
