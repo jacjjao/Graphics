@@ -23,6 +23,7 @@ const unsigned int SCR_WIDTH  = 2000;
 const unsigned int SCR_HEIGHT = 1200;
 
 std::unique_ptr<Rectangle2D> rect{};
+std::unique_ptr<Texture>     texture{};
 
 int main()
 {
@@ -52,17 +53,17 @@ int main()
     {
         auto& shaderProgram = ShaderProgram2D::instance();
 
-        Texture texture{FileSystem::getPath("/asset/container.jpg")};
+        texture = std::make_unique<Texture>(FileSystem::getPath("/asset/container.jpg"));
 
         rect = std::make_unique<Rectangle2D>(100, 100);
         rect->setPosition({400, 900});
 
-        rect->applyTexture(&texture);
+        rect->applyTexture(texture.get());
 
         Circle2D circle{50.0F};
         circle.setPosition({1700, 900});
 
-        circle.applyTexture(&texture);
+        circle.applyTexture(texture.get());
 
         VertexArray vao{3};
         vao[0].position = {1000.0, 100.0};
@@ -130,6 +131,7 @@ int main()
 
         shaderProgram.destroy();
         rect.reset();
+        texture.reset();
     }
 
     glfwTerminate();
@@ -162,11 +164,11 @@ void processInput(GLFWwindow* window)
     }
     if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
     {
-        rect->setWidth(50.0F);
+        rect->applyTexture(nullptr);
     }
     if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
     {
-        rect->setWidth(100.0F);
+        rect->applyTexture(texture.get());
     }
 }
 

@@ -16,6 +16,7 @@ public:
     void applyTexture(Texture* texture) noexcept;
 
     [[nodiscard]] Color getColor() const noexcept;
+    [[nodiscard]] bool  hasTexture() const noexcept;
 
 protected:
     Texture* m_texture = nullptr;

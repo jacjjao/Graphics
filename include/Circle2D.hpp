@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ElementBuffer.hpp"
 #include "Shape.hpp"
 #include "VertexArray.hpp"
 
@@ -17,9 +16,10 @@ public:
 
 private:
     void create() noexcept;
+    void setupDraw() noexcept;
+    void cleanUpDraw() noexcept;
 
     float m_radius;
 
-    VertexArray   m_vao;
-    ElementBuffer m_ebo;
+    VertexArray m_vao;
 };

@@ -14,3 +14,8 @@ Color Shape::getColor() const noexcept
 {
     return m_color;
 }
+
+bool Shape::hasTexture() const noexcept
+{
+    return m_texture != nullptr;
+}

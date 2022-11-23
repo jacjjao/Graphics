@@ -92,7 +92,7 @@ void Rectangle2D::setupDraw() noexcept
         Texture::bind(*m_texture);
     }
     auto& program = ShaderProgram2D::instance();
-    program.setBool("apply_texture", m_texture != nullptr);
+    program.setBool("apply_texture", hasTexture());
     program.setMat3("model", getTransformMatrix());
     VertexArray::bind(m_vao);
 }
@@ -100,4 +100,5 @@ void Rectangle2D::setupDraw() noexcept
 void Rectangle2D::cleanUpDraw() noexcept
 {
     VertexArray::unbind();
+    Texture::unbind();
 }
