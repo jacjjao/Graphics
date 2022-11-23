@@ -21,6 +21,8 @@ public:
 
 private:
     void create() noexcept;
+    void setupDraw() noexcept;
+    void cleanUpDraw() noexcept;
 
     float m_width, m_height;
 

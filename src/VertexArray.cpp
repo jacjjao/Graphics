@@ -1,8 +1,8 @@
 #include "../include/VertexArray.hpp"
+#include "../include/glCheck.hpp"
+#include "../include/ShaderProgram.hpp"
 
 #include <glad/glad.h>
-
-#include "../include/glCheck.hpp"
 
 VertexArray::VertexArray(const size_t size) noexcept : m_vbo{size}, m_id{0}
 {
@@ -40,6 +40,9 @@ void VertexArray::create() noexcept
     glCheck(glEnableVertexAttribArray(0));
     glCheck(glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, stride, (void*)(sizeof(Vertex2D::position))));
     glCheck(glEnableVertexAttribArray(1));
+    glCheck(
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)(sizeof(Vertex2D::position) + sizeof(Vertex2D::color))));
+    glCheck(glEnableVertexAttribArray(2));
 
     VertexArray::unbind();
     VertexBuffer::unbind();
@@ -56,6 +59,9 @@ void VertexArray::draw() noexcept
     {
         create();
     }
+    auto& program = ShaderProgram2D::instance();
+    program.setMat3("model", Matrix3::identity());
+    program.setBool("apply_texture", false);
     VertexArray::bind(*this);
     glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(m_vbo.size()));
     VertexArray::unbind();

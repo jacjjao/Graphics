@@ -34,8 +34,9 @@ void VertexBuffer::update() noexcept
     cache.resize(m_vertices.size());
     for (size_t i = 0; i < m_vertices.size(); i++)
     {
-        cache[i].position = Utility::pointToOpenGL(m_vertices[i].position);
-        cache[i].color    = m_vertices[i].color;
+        cache[i].position  = Utility::pointToOpenGL(m_vertices[i].position);
+        cache[i].color     = m_vertices[i].color;
+        cache[i].tex_coord = m_vertices[i].tex_coord;
     }
     if (isAvailable())
     {

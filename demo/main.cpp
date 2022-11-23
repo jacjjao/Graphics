@@ -13,6 +13,8 @@
 #include "../include/ShaderProgram.hpp"
 #include "../include/Utility.hpp"
 #include "../include/Vector.hpp"
+#include "../include/Texture.hpp"
+#include "../include/FileSystem.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -50,11 +52,17 @@ int main()
     {
         auto& shaderProgram = ShaderProgram2D::instance();
 
+        Texture texture{FileSystem::getPath("/asset/container.jpg")};
+
         rect = std::make_unique<Rectangle2D>(100, 100);
         rect->setPosition({400, 900});
 
+        rect->applyTexture(&texture);
+
         Circle2D circle{50.0F};
         circle.setPosition({1700, 900});
+
+        circle.applyTexture(&texture);
 
         VertexArray vao{3};
         vao[0].position = {1000.0, 100.0};

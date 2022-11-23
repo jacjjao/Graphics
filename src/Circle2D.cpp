@@ -21,11 +21,12 @@ void Circle2D::draw() noexcept
     {
         create();
     }
-    ShaderProgram2D::instance().setMat3("model", getTransformMatrix());
+    auto& program = ShaderProgram2D::instance();
+    program.setBool("apply_texture", m_texture != nullptr);
+    program.setMat3("model", getTransformMatrix());
     VertexArray::bind(m_vao);
     glCheck(glDrawElements(GL_TRIANGLES, m_ebo.size(), GL_UNSIGNED_INT, 0));
     VertexArray::unbind();
-    ShaderProgram2D::instance().setMat3("model", Matrix3::identity());
 }
 
 void Circle2D::update() noexcept
@@ -42,13 +43,20 @@ void Circle2D::update() noexcept
     {
         const auto  f_index = static_cast<float>(i);
         const float theta   = slice * f_index;
+        const auto  ssin    = std::sin(theta);
+        const auto  ccos    = std::cos(theta);
 
         Vector2f position{};
-        position.x = center.x + m_radius * std::cos(theta);
-        position.y = center.y - m_radius * std::sin(theta);
+        position.x = center.x + m_radius * ssin;
+        position.y = center.y - m_radius * ccos;
 
-        m_vao[i].position = position;
-        m_vao[i].color    = color;
+        Vector2f tex_coord{};
+        tex_coord.x = (ccos + 1.0F) / 2.0F;
+        tex_coord.y = (ssin + 1.0F) / 2.0F;
+
+        m_vao[i].position  = position;
+        m_vao[i].color     = color;
+        m_vao[i].tex_coord = tex_coord;
     }
 
     if (m_vao.isAvailable())
@@ -65,6 +73,25 @@ void Circle2D::setRadius(const float radius) noexcept
 void Circle2D::create() noexcept
 {
     update();
+
+    // assign texture coords
+    const auto f_point_count = static_cast<float>(m_vao.size() - 1);
+    const auto f_pi          = static_cast<float>(std::numbers::pi);
+    const auto slice         = 2.0F * f_pi / f_point_count;
+    m_vao[0].tex_coord       = {0.5F, 0.5F};
+    for (int i = 1; i < m_vao.size(); i++)
+    {
+        const auto  f_index = static_cast<float>(i);
+        const float theta   = slice * f_index;
+        const auto  ssin    = std::sin(theta);
+        const auto  ccos    = std::cos(theta);
+
+        Vector2f tex_coord{};
+        tex_coord.x = (ccos + 1.0F) / 2.0F;
+        tex_coord.y = (ssin + 1.0F) / 2.0F;
+
+        m_vao[i].tex_coord = tex_coord;
+    }
 
     const size_t          point_count = m_vao.size() - 1;
     std::vector<uint32_t> indices(3 * point_count);

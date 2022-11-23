@@ -114,6 +114,12 @@ void ShaderProgram::setFloat(const std::string& name, const float value) noexcep
     glCheck(glUniform1f(loc, value));
 }
 
+void ShaderProgram::setBool(const std::string& name, const bool value) noexcept
+{
+    auto loc = getLocation(name);
+    glCheck(glUniform1i(loc, value));
+}
+
 void ShaderProgram::setMat3(const std::string& name, const Matrix3& matrix) noexcept
 {
     auto loc = getLocation(name);

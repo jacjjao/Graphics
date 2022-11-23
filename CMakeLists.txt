@@ -22,6 +22,7 @@ add_executable(${PROJECT_NAME}
 	"include/Circle2D.hpp"
 	"include/Shape.hpp"
 	"include/Transformable.hpp"
+	"include/Texture.hpp"
 
 	#sources
 	"src/glCheck.cpp"
@@ -37,6 +38,7 @@ add_executable(${PROJECT_NAME}
 	"src/Circle2D.cpp"
 	"src/Shape.cpp"
 	"src/Transformable.cpp"
+	"src/Texture.cpp"
 	"demo/main.cpp"
 )
 
@@ -63,4 +65,5 @@ target_link_libraries(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}
 	PRIVATE
 		"dependencies/glad/include"
+		"dependencies/stb_image"
 )

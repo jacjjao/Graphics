@@ -20,11 +20,10 @@ void Rectangle2D::draw() noexcept
     {
         create();
     }
-    ShaderProgram2D::instance().setMat3("model", getTransformMatrix());
-    VertexArray::bind(m_vao);
+
+    setupDraw();
     glCheck(glDrawElements(GL_TRIANGLES, m_ebo.size(), GL_UNSIGNED_INT, 0));
-    VertexArray::unbind();
-    ShaderProgram2D::instance().setMat3("model", Matrix3::identity());
+    cleanUpDraw();
 }
 
 void Rectangle2D::update() noexcept
@@ -44,10 +43,9 @@ void Rectangle2D::update() noexcept
     m_vao[2].position = bottom_left_pos;
     m_vao[3].position = top_left_pos;
     // update color
-    const auto m_color = getColor();
-    for (auto& [_, color] : m_vao)
+    for (auto& vertex : m_vao)
     {
-        color = m_color;
+        vertex.color = m_color;
     }
 
     if (m_vao.isAvailable())
@@ -70,6 +68,11 @@ void Rectangle2D::create() noexcept
 {
     update();
 
+    m_vao[0].tex_coord = {1.0F, 1.0F};
+    m_vao[1].tex_coord = {1.0F, 0.0F};
+    m_vao[2].tex_coord = {0.0F, 0.0F};
+    m_vao[3].tex_coord = {0.0F, 1.0F};
+
     m_vao.create();
     VertexArray::bind(m_vao);
 
@@ -79,4 +82,22 @@ void Rectangle2D::create() noexcept
 
     VertexArray::unbind();
     ElementBuffer::unbind();
+}
+
+void Rectangle2D::setupDraw() noexcept
+{
+    if (m_texture != nullptr)
+    {
+        glCheck(glActiveTexture(GL_TEXTURE0));
+        Texture::bind(*m_texture);
+    }
+    auto& program = ShaderProgram2D::instance();
+    program.setBool("apply_texture", m_texture != nullptr);
+    program.setMat3("model", getTransformMatrix());
+    VertexArray::bind(m_vao);
+}
+
+void Rectangle2D::cleanUpDraw() noexcept
+{
+    VertexArray::unbind();
 }

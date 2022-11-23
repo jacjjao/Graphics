@@ -5,6 +5,17 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"type": "lldb",
+			"request": "launch",
+			"name": "lldb",
+			"program": "${workspaceFolder}/build/Graphics.exe",
+			"args": [],
+			"cwd": "${workspaceFolder}",
+			"console": "externalTerminal",
+			"preLaunchTask": "CMake: build",
+			"stopOnEntry": false
+		},
+		{
 			"name": "(gdb) Launch",
 			"type": "cppdbg",
 			"request": "launch",

@@ -5,6 +5,11 @@ void Shape::setColor(const Color color) noexcept
     m_color = color;
 }
 
+void Shape::applyTexture(Texture* texture) noexcept
+{
+    m_texture = texture;
+}
+
 Color Shape::getColor() const noexcept
 {
     return m_color;
