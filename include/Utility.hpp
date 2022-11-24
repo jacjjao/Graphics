@@ -5,14 +5,17 @@
 class Utility
 {
 public:
-    static void     initialize(float width, float height) noexcept;
+    static void initialize(float width, float height) noexcept;
+
     static Vector2f pointToOpenGL(Vector2f point) noexcept;
     static Vector2f vectorToOpenGL(Vector2f vector) noexcept;
-    static float    getWindowWidth() noexcept;
-    static float    getWindowHeight() noexcept;
-    static float    getHalfWindowWidth() noexcept;
-    static float    getHalfWindowHeight() noexcept;
-    static float    radians(float degrees) noexcept;
+    static Vector2f pointToTexCoord(Vector2f point, Vector2f tex_size) noexcept;
+
+    static float getWindowWidth() noexcept;
+    static float getWindowHeight() noexcept;
+    static float getHalfWindowWidth() noexcept;
+    static float getHalfWindowHeight() noexcept;
+    static float radians(float degrees) noexcept;
 
 private:
     static Vector2f pointToGL(Vector2f point, float half_width, float half_height) noexcept;

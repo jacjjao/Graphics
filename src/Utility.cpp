@@ -23,6 +23,16 @@ Vector2f Utility::vectorToOpenGL(const Vector2f vector) noexcept
     return vectorToGL(vector, half_window_width, half_window_height);
 }
 
+Vector2f Utility::pointToTexCoord(const Vector2f point, const Vector2f tex_size) noexcept
+{
+    Vector2f result{};
+
+    result.x = point.x / tex_size.x;
+    result.y = (point.y - tex_size.y) / tex_size.y;
+
+    return result;
+}
+
 float Utility::getWindowWidth() noexcept
 {
     return window_width;

@@ -3,22 +3,27 @@
 #include "Drawable.hpp"
 #include "Transformable.hpp"
 #include "Vertex.hpp"
-#include "Texture.hpp"
+#include "VertexArray.hpp"
 
 class Shape : public Drawable, public Transformable
 {
 public:
-    Shape() noexcept = default;
+    explicit Shape(size_t size) noexcept;
+
+    Shape(const Shape&)            = delete;
+    Shape& operator=(const Shape&) = delete;
 
     virtual void update() = 0;
 
-    void setColor(Color color) noexcept;
     void applyTexture(Texture* texture) noexcept;
 
+    [[nodiscard]] bool hasTexture() const noexcept;
+
+    void setColor(Color color) noexcept;
+
     [[nodiscard]] Color getColor() const noexcept;
-    [[nodiscard]] bool  hasTexture() const noexcept;
 
 protected:
-    Texture* m_texture = nullptr;
-    Color    m_color;
+    VertexArray m_vao;
+    Color       m_color;
 };

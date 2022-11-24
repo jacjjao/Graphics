@@ -2,12 +2,11 @@
 
 #include "ElementBuffer.hpp"
 #include "Shape.hpp"
-#include "VertexArray.hpp"
 
 class Rectangle2D : public Shape
 {
 public:
-    explicit Rectangle2D(float width, float height) noexcept;
+    explicit Rectangle2D(Vector2f size) noexcept;
     ~Rectangle2D() noexcept override = default;
 
     Rectangle2D(const Rectangle2D&)            = delete;
@@ -24,8 +23,7 @@ private:
     void setupDraw() noexcept;
     void cleanUpDraw() noexcept;
 
-    float m_width, m_height;
+    Vector2f m_size;
 
-    VertexArray   m_vao;
     ElementBuffer m_ebo;
 };

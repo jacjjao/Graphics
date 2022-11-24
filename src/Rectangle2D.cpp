@@ -6,11 +6,7 @@
 #include "../include/Utility.hpp"
 #include "../include/glCheck.hpp"
 
-Rectangle2D::Rectangle2D(const float width, const float height) noexcept :
-m_vao{4},
-m_ebo{6},
-m_width{width},
-m_height{height}
+Rectangle2D::Rectangle2D(const Vector2f size) noexcept : Shape{4}, m_ebo{6}, m_size{size}
 {
 }
 
@@ -29,8 +25,8 @@ void Rectangle2D::draw() noexcept
 void Rectangle2D::update() noexcept
 {
     // update position
-    const auto half_width  = static_cast<float>(m_width) / 2.0F;
-    const auto half_height = static_cast<float>(m_height) / 2.0F;
+    const auto half_width  = static_cast<float>(m_size.x) / 2.0F;
+    const auto half_height = static_cast<float>(m_size.y) / 2.0F;
 
     const Vector2f center           = {Utility::getHalfWindowWidth(), Utility::getHalfWindowHeight()};
     const Vector2f top_right_pos    = {center.x + half_width, center.y - half_height};
@@ -43,9 +39,22 @@ void Rectangle2D::update() noexcept
     m_vao[2].position = bottom_left_pos;
     m_vao[3].position = top_left_pos;
     // update color
+    const auto color = getColor();
     for (auto& vertex : m_vao)
     {
-        vertex.color = m_color;
+        vertex.color = color;
+    }
+    // update texture coordinate
+    if (hasTexture())
+    {
+        const auto* texture    = m_vao.getTexture();
+        const auto  tex_width  = static_cast<float>(texture->getWidth());
+        const auto  tex_height = static_cast<float>(texture->getHeight());
+
+        m_vao[0].tex_coord = {tex_width, 0.0F};
+        m_vao[1].tex_coord = {tex_width, tex_height};
+        m_vao[2].tex_coord = {0.0F, tex_height};
+        m_vao[3].tex_coord = {0.0F, 0.0F};
     }
 
     if (m_vao.isAvailable())
@@ -56,22 +65,17 @@ void Rectangle2D::update() noexcept
 
 void Rectangle2D::setWidth(const float width) noexcept
 {
-    m_width = width;
+    m_size.x = width;
 }
 
 void Rectangle2D::setHeight(const float height) noexcept
 {
-    m_height = height;
+    m_size.y = height;
 }
 
 void Rectangle2D::create() noexcept
 {
     update();
-
-    m_vao[0].tex_coord = {1.0F, 1.0F};
-    m_vao[1].tex_coord = {1.0F, 0.0F};
-    m_vao[2].tex_coord = {0.0F, 0.0F};
-    m_vao[3].tex_coord = {0.0F, 1.0F};
 
     m_vao.create();
     VertexArray::bind(m_vao);
@@ -86,10 +90,10 @@ void Rectangle2D::create() noexcept
 
 void Rectangle2D::setupDraw() noexcept
 {
-    if (m_texture != nullptr)
+    if (hasTexture())
     {
         glCheck(glActiveTexture(GL_TEXTURE0));
-        Texture::bind(*m_texture);
+        Texture::bind(*m_vao.getTexture());
     }
     auto& program = ShaderProgram2D::instance();
     program.setBool("apply_texture", hasTexture());

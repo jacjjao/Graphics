@@ -55,7 +55,7 @@ int main()
 
         texture = std::make_unique<Texture>(FileSystem::getPath("/asset/container.jpg"));
 
-        rect = std::make_unique<Rectangle2D>(100, 100);
+        rect = std::make_unique<Rectangle2D>(Vector2f{100, 100});
         rect->setPosition({400, 900});
 
         rect->applyTexture(texture.get());

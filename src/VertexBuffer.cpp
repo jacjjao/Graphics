@@ -1,4 +1,5 @@
 #include "../include/VertexBuffer.hpp"
+#include "../include/glCheck.hpp"
 
 #include <glad/glad.h>
 
@@ -6,12 +7,7 @@
 #include <iostream>
 #endif
 
-#include "../include/Utility.hpp"
-#include "../include/glCheck.hpp"
-
-std::vector<Vertex2D> VertexBuffer::cache{};
-
-VertexBuffer::VertexBuffer(const size_t size) noexcept : m_vertices(size), m_id{0}
+VertexBuffer::VertexBuffer() noexcept : m_id{}
 {
 }
 
@@ -29,153 +25,34 @@ void VertexBuffer::destroy() noexcept
     }
 }
 
-void VertexBuffer::update() noexcept
+void VertexBuffer::updateData(const std::vector<Vertex2D>& vertices) const noexcept
 {
-    cache.resize(m_vertices.size());
-    for (size_t i = 0; i < m_vertices.size(); i++)
-    {
-        cache[i].position  = Utility::pointToOpenGL(m_vertices[i].position);
-        cache[i].color     = m_vertices[i].color;
-        cache[i].tex_coord = m_vertices[i].tex_coord;
-    }
     if (isAvailable())
     {
-        const auto size_in_bytes = static_cast<GLsizei>(cache.size() * sizeof(Vertex2D));
+        const auto size_in_bytes = static_cast<GLsizei>(vertices.size() * sizeof(Vertex2D));
         VertexBuffer::bind(*this);
-        glCheck(glBufferSubData(GL_ARRAY_BUFFER, 0, size_in_bytes, cache.data()));
+        glCheck(glBufferSubData(GL_ARRAY_BUFFER, 0, size_in_bytes, vertices.data()));
         VertexBuffer::unbind();
     }
 }
 
-void VertexBuffer::create() noexcept
+void VertexBuffer::create(const std::vector<Vertex2D>& vertices) noexcept
 {
     if (isAvailable())
     {
         return;
     }
-    update();
+    updateData(vertices);
     glCheck(glGenBuffers(1, &m_id));
     VertexBuffer::bind(*this);
-    const auto size_in_bytes = static_cast<GLsizei>(cache.size() * sizeof(Vertex2D));
-    glCheck(glBufferData(GL_ARRAY_BUFFER, size_in_bytes, cache.data(), GL_DYNAMIC_DRAW));
+    const auto size_in_bytes = static_cast<GLsizei>(vertices.size() * sizeof(Vertex2D));
+    glCheck(glBufferData(GL_ARRAY_BUFFER, size_in_bytes, vertices.data(), GL_DYNAMIC_DRAW));
     VertexBuffer::unbind();
-}
-
-void VertexBuffer::resize(const size_t size) noexcept
-{
-    m_vertices.resize(size);
-}
-
-void VertexBuffer::reserve(const size_t size) noexcept
-{
-    m_vertices.reserve(size);
-}
-
-void VertexBuffer::push_back(const VertexBuffer::value_type& item) noexcept
-{
-    m_vertices.push_back(item);
-}
-
-void VertexBuffer::pop_back() noexcept
-{
-    m_vertices.pop_back();
-}
-
-void VertexBuffer::clear() noexcept
-{
-    m_vertices.clear();
-}
-
-VertexBuffer::value_type& VertexBuffer::front() noexcept
-{
-    return m_vertices.front();
-}
-
-const VertexBuffer::value_type& VertexBuffer::front() const noexcept
-{
-    return m_vertices.front();
-}
-
-VertexBuffer::value_type& VertexBuffer::back() noexcept
-{
-    return m_vertices.back();
-}
-
-const VertexBuffer::value_type& VertexBuffer::back() const noexcept
-{
-    return m_vertices.back();
-}
-
-size_t VertexBuffer::size() const noexcept
-{
-    return m_vertices.size();
 }
 
 bool VertexBuffer::isAvailable() const noexcept
 {
     return m_id != 0;
-}
-
-VertexBuffer::iterator VertexBuffer::begin() noexcept
-{
-    return m_vertices.begin();
-}
-
-VertexBuffer::iterator VertexBuffer::end() noexcept
-{
-    return m_vertices.end();
-}
-
-VertexBuffer::const_iterator VertexBuffer::cbegin() const noexcept
-{
-    return m_vertices.cbegin();
-}
-
-VertexBuffer::const_iterator VertexBuffer::cend() const noexcept
-{
-    return m_vertices.cend();
-}
-
-VertexBuffer::reverse_iterator VertexBuffer::rbegin() noexcept
-{
-    return m_vertices.rbegin();
-}
-
-VertexBuffer::reverse_iterator VertexBuffer::rend() noexcept
-{
-    return m_vertices.rend();
-}
-
-VertexBuffer::const_reverse_iterator VertexBuffer::crbegin() const noexcept
-{
-    return m_vertices.crbegin();
-}
-
-VertexBuffer::const_reverse_iterator VertexBuffer::crend() const noexcept
-{
-    return m_vertices.crend();
-}
-
-VertexBuffer::value_type& VertexBuffer::operator[](const size_t index) noexcept
-{
-#if (DEBUG)
-    if (index >= m_vertices.size())
-    {
-        std::cerr << "Index out of bounds! Index: " << index << " Size: " << m_vertices.size() << '\n';
-    }
-#endif
-    return m_vertices[index];
-}
-
-const VertexBuffer::value_type& VertexBuffer::operator[](const size_t index) const noexcept
-{
-#if (DEBUG)
-    if (index >= m_vertices.size())
-    {
-        std::cerr << "Index out of bounds! Index: " << index << " Size: " << m_vertices.size() << '\n';
-    }
-#endif
-    return m_vertices[index];
 }
 
 void VertexBuffer::bind(const VertexBuffer& vbo) noexcept

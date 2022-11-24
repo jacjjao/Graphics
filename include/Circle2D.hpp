@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Shape.hpp"
-#include "VertexArray.hpp"
 
 class Circle2D : public Shape
 {
@@ -20,6 +19,4 @@ private:
     void cleanUpDraw() noexcept;
 
     float m_radius;
-
-    VertexArray m_vao;
 };

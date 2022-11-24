@@ -1,3 +1,6 @@
+#include "../include/ShaderProgram.hpp"
+#include "../include/Utility.hpp"
+#include "../include/glCheck.hpp"
 #include "../include/Circle2D.hpp"
 
 #include <glad/glad.h>
@@ -5,13 +8,7 @@
 #include <cmath>
 #include <numbers>
 
-#include "../include/ShaderProgram.hpp"
-#include "../include/Utility.hpp"
-#include "../include/glCheck.hpp"
-
-Circle2D::Circle2D(const float radius, const size_t point_count) noexcept :
-m_radius{radius},
-m_vao{point_count + 2} // including center of the circle
+Circle2D::Circle2D(const float radius, const size_t point_count) noexcept : Shape(point_count), m_radius{radius}
 {
 }
 
@@ -29,13 +26,17 @@ void Circle2D::draw() noexcept
 
 void Circle2D::update() noexcept
 {
-    const auto f_point_count = static_cast<float>(m_vao.size() - 1);
-    const auto f_pi          = static_cast<float>(std::numbers::pi);
-    const auto slice         = 2.0F * f_pi / f_point_count;
-    const auto center        = Vector2f{Utility::getHalfWindowWidth(), Utility::getHalfWindowHeight()};
+    const auto f_point_count   = static_cast<float>(m_vao.size() - 1);
+    const auto f_pi            = static_cast<float>(std::numbers::pi);
+    const auto slice           = 2.0F * f_pi / f_point_count;
+    const auto center          = Vector2f{Utility::getHalfWindowWidth(), Utility::getHalfWindowHeight()};
+    const auto color           = getColor();
+    const auto half_tex_width  = (hasTexture()) ? static_cast<float>(m_vao.getTexture()->getWidth()) / 2.0F : 0.0F;
+    const auto half_tex_height = (hasTexture()) ? static_cast<float>(m_vao.getTexture()->getHeight()) / 2.0F : 0.0F;
 
-    m_vao[0].position = center;
-    m_vao[0].color    = m_color;
+    m_vao[0].position  = center;
+    m_vao[0].color     = color;
+    m_vao[0].tex_coord = {half_tex_width, half_tex_height};
     for (int i = 1; i < m_vao.size() - 1; i++)
     {
         const auto  f_index = static_cast<float>(i);
@@ -47,8 +48,13 @@ void Circle2D::update() noexcept
         position.x = center.x + m_radius * ssin;
         position.y = center.y - m_radius * ccos;
 
-        m_vao[i].position = position;
-        m_vao[i].color    = m_color;
+        Vector2f tex_coord{};
+        tex_coord.x = half_tex_width + half_tex_width * ccos;
+        tex_coord.y = half_tex_height + half_tex_height * ssin;
+
+        m_vao[i].position  = position;
+        m_vao[i].color     = color;
+        m_vao[i].tex_coord = tex_coord;
     }
     m_vao.back() = m_vao[1];
 
@@ -68,34 +74,15 @@ void Circle2D::create() noexcept
 {
     update();
 
-    // assign texture coords
-    const auto f_point_count = static_cast<float>(m_vao.size() - 1);
-    const auto f_pi          = static_cast<float>(std::numbers::pi);
-    const auto slice         = 2.0F * f_pi / f_point_count;
-    m_vao[0].tex_coord       = {0.5F, 0.5F};
-    for (int i = 1; i < m_vao.size(); i++)
-    {
-        const auto  f_index = static_cast<float>(i);
-        const float theta   = slice * f_index;
-        const auto  ssin    = std::sin(theta);
-        const auto  ccos    = std::cos(theta);
-
-        Vector2f tex_coord{};
-        tex_coord.x = (ccos + 1.0F) / 2.0F;
-        tex_coord.y = (ssin + 1.0F) / 2.0F;
-
-        m_vao[i].tex_coord = tex_coord;
-    }
-
     m_vao.create();
 }
 
 void Circle2D::setupDraw() noexcept
 {
-    if (m_texture != nullptr)
+    if (hasTexture())
     {
         glCheck(glActiveTexture(GL_TEXTURE0));
-        Texture::bind(*m_texture);
+        Texture::bind(*m_vao.getTexture());
     }
     auto& program = ShaderProgram2D::instance();
     program.setBool("apply_texture", hasTexture());

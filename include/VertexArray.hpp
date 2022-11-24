@@ -2,15 +2,16 @@
 
 #include "Drawable.hpp"
 #include "VertexBuffer.hpp"
+#include "Texture.hpp"
 
 class VertexArray : public Drawable
 {
 public:
-    using value_type             = VertexBuffer::value_type;
-    using iterator               = VertexBuffer::iterator;
-    using const_iterator         = VertexBuffer::const_iterator;
-    using reverse_iterator       = VertexBuffer::reverse_iterator;
-    using const_reverse_iterator = VertexBuffer::const_reverse_iterator;
+    using value_type             = std::vector<Vertex2D>::value_type;
+    using iterator               = std::vector<Vertex2D>::iterator;
+    using const_iterator         = std::vector<Vertex2D>::const_iterator;
+    using reverse_iterator       = std::vector<Vertex2D>::reverse_iterator;
+    using const_reverse_iterator = std::vector<Vertex2D>::const_reverse_iterator;
 
     explicit VertexArray(size_t size = 0) noexcept;
     ~VertexArray() noexcept override;
@@ -37,6 +38,11 @@ public:
 
     [[nodiscard]] bool isAvailable() const noexcept;
 
+    void                         applyTexture(Texture* texture) noexcept;
+    [[nodiscard]] Texture*       getTexture() noexcept;
+    [[nodiscard]] const Texture* getTexture() const noexcept;
+    [[nodiscard]] bool           hasTexture() const noexcept;
+
     [[nodiscard]] size_t size() const noexcept;
 
     [[nodiscard]] iterator               begin() noexcept;
@@ -55,6 +61,12 @@ public:
     static void unbind() noexcept;
 
 private:
-    uint32_t     m_id;
-    VertexBuffer m_vbo;
+    void transformData() noexcept;
+
+    static std::vector<Vertex2D> cache;
+
+    uint32_t              m_id;
+    VertexBuffer          m_vbo;
+    Texture*              m_texture;
+    std::vector<Vertex2D> m_vertices;
 };
