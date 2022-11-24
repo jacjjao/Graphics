@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Vector.hpp"
 
 #include <cstdint>
 #include <string>
@@ -12,13 +13,13 @@ public:
 
     void destroy() noexcept;
 
-    [[nodiscard]] int32_t getWidth() const noexcept;
-    [[nodiscard]] int32_t getHeight() const noexcept;
+    [[nodiscard]] float getWidth() const noexcept;
+    [[nodiscard]] float getHeight() const noexcept;
 
     static void bind(const Texture&) noexcept;
     static void unbind() noexcept;
 
 private:
     uint32_t m_id;
-    int32_t  m_width, m_height;
+    Vector2f m_size;
 };

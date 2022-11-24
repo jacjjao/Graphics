@@ -31,8 +31,8 @@ void Circle2D::update() noexcept
     const auto slice           = 2.0F * f_pi / f_point_count;
     const auto center          = Vector2f{Utility::getHalfWindowWidth(), Utility::getHalfWindowHeight()};
     const auto color           = getColor();
-    const auto half_tex_width  = (hasTexture()) ? static_cast<float>(m_vao.getTexture()->getWidth()) / 2.0F : 0.0F;
-    const auto half_tex_height = (hasTexture()) ? static_cast<float>(m_vao.getTexture()->getHeight()) / 2.0F : 0.0F;
+    const auto half_tex_width  = (hasTexture()) ? m_vao.getTexture()->getWidth() / 2.0F : 0.0F;
+    const auto half_tex_height = (hasTexture()) ? m_vao.getTexture()->getHeight() / 2.0F : 0.0F;
 
     m_vao[0].position  = center;
     m_vao[0].color     = color;

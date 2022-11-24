@@ -8,6 +8,13 @@
 class VertexBuffer
 {
 public:
+    enum class Usage : uint32_t
+    {
+        STREAM_DRAW  = 0x88E0,
+        STATIC_DRAW  = 0x88E4,
+        DYNAMIC_DRAW = 0x88E8
+    };
+
     explicit VertexBuffer() noexcept;
     ~VertexBuffer() noexcept;
 
@@ -20,9 +27,12 @@ public:
 
     [[nodiscard]] bool isAvailable() const noexcept;
 
+    void setUsage(Usage usage) noexcept;
+
     static void bind(const VertexBuffer& vbo) noexcept;
     static void unbind() noexcept;
 
 private:
+    Usage    m_usage;
     uint32_t m_id;
 };

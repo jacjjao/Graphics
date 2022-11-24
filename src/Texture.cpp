@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-Texture::Texture(const std::string& path) noexcept : m_id{}, m_width{}, m_height{}
+Texture::Texture(const std::string& path) noexcept : m_id{}, m_size{}
 {
     // create texture
     glCheck(glGenTextures(1, &m_id));
@@ -21,13 +21,17 @@ Texture::Texture(const std::string& path) noexcept : m_id{}, m_width{}, m_height
     glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 
     // load image
-    int nrChannels{};
+    int width      = 0;
+    int height     = 0;
+    int nrChannels = 0;
     stbi_set_flip_vertically_on_load(true);
 
-    uint8_t* data = stbi_load(path.c_str(), &m_width, &m_height, &nrChannels, 0);
+    uint8_t* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
     if (data != nullptr)
     {
-        glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, data));
+        m_size.x = static_cast<float>(width);
+        m_size.y = static_cast<float>(height);
+        glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data));
         glCheck(glGenerateMipmap(GL_TEXTURE_2D));
     }
     else
@@ -53,14 +57,14 @@ void Texture::destroy() noexcept
     }
 }
 
-int32_t Texture::getWidth() const noexcept
+float Texture::getWidth() const noexcept
 {
-    return m_width;
+    return m_size.x;
 }
 
-int32_t Texture::getHeight() const noexcept
+float Texture::getHeight() const noexcept
 {
-    return m_height;
+    return m_size.y;
 }
 
 void Texture::bind(const Texture& texture) noexcept

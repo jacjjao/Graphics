@@ -48,8 +48,8 @@ void Rectangle2D::update() noexcept
     if (hasTexture())
     {
         const auto* texture    = m_vao.getTexture();
-        const auto  tex_width  = static_cast<float>(texture->getWidth());
-        const auto  tex_height = static_cast<float>(texture->getHeight());
+        const auto  tex_width  = texture->getWidth();
+        const auto  tex_height = texture->getHeight();
 
         m_vao[0].tex_coord = {tex_width, 0.0F};
         m_vao[1].tex_coord = {tex_width, tex_height};
