@@ -12,7 +12,7 @@ out vec2 tex_coord;
 
 void main()
 {
-	gl_Position = vec4(model * vec3(in_pos, 1.0), 1.0);
+	gl_Position = vec4(view * model * vec3(in_pos, 1.0), 1.0);
 	frag_color = in_color;
 	tex_coord = in_tex_coord;
 }

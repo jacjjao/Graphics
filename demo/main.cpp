@@ -15,15 +15,18 @@
 #include "../include/Vector.hpp"
 #include "../include/Texture.hpp"
 #include "../include/FileSystem.hpp"
+#include "../include/Camera2D.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 const unsigned int SCR_WIDTH  = 2000;
 const unsigned int SCR_HEIGHT = 1200;
 
 std::unique_ptr<Rectangle2D> rect{};
 std::unique_ptr<Texture>     texture{};
+Camera2D                     camera{};
 
 int main()
 {
@@ -43,6 +46,7 @@ int main()
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetScrollCallback(window, scrollCallback);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
@@ -56,7 +60,7 @@ int main()
         texture = std::make_unique<Texture>(FileSystem::getPath("/asset/container.jpg"));
 
         rect = std::make_unique<Rectangle2D>(Vector2f{100, 100});
-        rect->setPosition({400, 900});
+        rect->setPosition({300, 1000});
 
         rect->applyTexture(texture.get());
 
@@ -113,6 +117,7 @@ int main()
             vao.update();
 
             shaderProgram.use();
+            camera.use();
             rect->draw();
             circle.draw();
             vao.draw();
@@ -148,19 +153,33 @@ void processInput(GLFWwindow* window)
     }
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        rect->translate({0.0F, -1.0F});
+        // rect->translate({0.0F, -1.0F});
+        camera.move({0.0F, 1.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        rect->translate({0.0F, 1.0F});
+        // rect->translate({0.0F, 1.0F});
+        camera.move({0.0F, -1.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        rect->translate({-1.0F, 0.0F});
+        // rect->translate({-1.0F, 0.0F});
+        camera.move({1.0F, 0.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        rect->translate({1.0F, 0.0F});
+        // rect->translate({1.0F, 0.0F});
+        camera.move({-1.0F, 0.0F});
+    }
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+    {
+        // rect->translate({1.0F, 0.0F});
+        camera.rotate(-0.1F);
+    }
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+    {
+        // rect->translate({1.0F, 0.0F});
+        camera.rotate(0.1F);
     }
     if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
     {
@@ -170,6 +189,30 @@ void processInput(GLFWwindow* window)
     {
         rect->applyTexture(texture.get());
     }
+}
+
+void scrollCallback(GLFWwindow* window, double /* xoffset */, double yoffset)
+{
+    static const auto half_width  = static_cast<float>(SCR_WIDTH) / 2.0F;
+    static const auto half_height = static_cast<float>(SCR_HEIGHT) / 2.0F;
+
+    double x = 0.0;
+    double y = 0.0;
+    glfwGetCursorPos(window, &x, &y);
+    static Vector2f scale{1.0F, 1.0F};
+    if (yoffset > 0)
+    {
+        scale.x += 0.1F;
+        scale.y += 0.1F;
+    }
+    else
+    {
+        scale.x -= 0.1F;
+        scale.y -= 0.1F;
+        if (scale.x <= 0.01F)
+            scale = {0.01F, 0.01F};
+    }
+    camera.scale(scale, {static_cast<float>(half_width - x), static_cast<float>(half_height - y)});
 }
 
 void framebuffer_size_callback(GLFWwindow* /*unused*/, int width, int height)
