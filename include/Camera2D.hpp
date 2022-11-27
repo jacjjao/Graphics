@@ -10,8 +10,11 @@ public:
     void use() noexcept;
 
     void move(Vector2f vector) noexcept;
+    void moveTo(Vector2f position) noexcept;
     void rotate(float degree) noexcept;
-    void scale(Vector2f scale, Vector2f vec_to_center) noexcept;
+    void scale(Vector2f scale) noexcept;
+
+    [[nodiscard]] Vector2f getPosition() const noexcept;
 
 private:
     void update() noexcept;
@@ -21,9 +24,6 @@ private:
     Matrix3 m_view;
 
     Vector2f m_position;
-
-    Vector2f dvector;
     Vector2f dscale;
-    Vector2f dvec_to_center;
     float    dtheta;
 };

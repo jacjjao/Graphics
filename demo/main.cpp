@@ -16,6 +16,7 @@
 #include "../include/Texture.hpp"
 #include "../include/FileSystem.hpp"
 #include "../include/Camera2D.hpp"
+#include "KHR/khrplatform.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -26,7 +27,7 @@ const unsigned int SCR_HEIGHT = 1200;
 
 std::unique_ptr<Rectangle2D> rect{};
 std::unique_ptr<Texture>     texture{};
-Camera2D                     camera{};
+std::unique_ptr<Camera2D>    camera{};
 
 int main()
 {
@@ -55,6 +56,8 @@ int main()
     }
 
     {
+        camera = std::make_unique<Camera2D>();
+
         auto& shaderProgram = ShaderProgram2D::instance();
 
         texture = std::make_unique<Texture>(FileSystem::getPath("/asset/container.jpg"));
@@ -84,6 +87,7 @@ int main()
         while (!glfwWindowShouldClose(window))
         {
             processInput(window);
+            glfwPollEvents();
 
             glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
             glClear(GL_COLOR_BUFFER_BIT);
@@ -117,17 +121,18 @@ int main()
             vao.update();
 
             shaderProgram.use();
-            camera.use();
+            camera->use();
             rect->draw();
             circle.draw();
             vao.draw();
 
             glfwSwapBuffers(window);
-            glfwPollEvents();
 
             if (auto tp = timer.getElapsedTime().asSeconds(); tp >= 1.0)
             {
-                std::cout << "FPS: " << static_cast<double>(fps_cnt) / tp << '\n';
+                auto pos = camera->getPosition();
+                std::printf("(%.2f, %.2f)\n", pos.x, pos.y);
+                // std::cout << "FPS: " << static_cast<double>(fps_cnt) / tp << '\n';
                 fps_cnt = 0;
                 timer.restart();
             }
@@ -154,32 +159,32 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
         // rect->translate({0.0F, -1.0F});
-        camera.move({0.0F, 1.0F});
+        camera->move({0.0F, -1.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
         // rect->translate({0.0F, 1.0F});
-        camera.move({0.0F, -1.0F});
+        camera->move({0.0F, 1.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
         // rect->translate({-1.0F, 0.0F});
-        camera.move({1.0F, 0.0F});
+        camera->move({-1.0F, 0.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
         // rect->translate({1.0F, 0.0F});
-        camera.move({-1.0F, 0.0F});
+        camera->move({1.0F, 0.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
     {
         // rect->translate({1.0F, 0.0F});
-        camera.rotate(-0.1F);
+        camera->rotate(-0.1F);
     }
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
     {
         // rect->translate({1.0F, 0.0F});
-        camera.rotate(0.1F);
+        camera->rotate(0.1F);
     }
     if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
     {
@@ -193,26 +198,29 @@ void processInput(GLFWwindow* window)
 
 void scrollCallback(GLFWwindow* window, double /* xoffset */, double yoffset)
 {
-    static const auto half_width  = static_cast<float>(SCR_WIDTH) / 2.0F;
+    /* static const auto half_width  = static_cast<float>(SCR_WIDTH) / 2.0F;
     static const auto half_height = static_cast<float>(SCR_HEIGHT) / 2.0F;
 
     double x = 0.0;
     double y = 0.0;
     glfwGetCursorPos(window, &x, &y);
+
+    // const Vector2f pos = {(static_cast<float>(x) - half_width), (half_height - static_cast<float>(y))};
+    const Vector2f pos = {static_cast<float>(x), static_cast<float>(y)};
+    camera->moveTo(pos);
+ */
     static Vector2f scale{1.0F, 1.0F};
     if (yoffset > 0)
     {
-        scale.x += 0.1F;
-        scale.y += 0.1F;
+        scale.x *= 1.1F;
+        scale.y *= 1.1F;
     }
     else
     {
-        scale.x -= 0.1F;
-        scale.y -= 0.1F;
-        if (scale.x <= 0.01F)
-            scale = {0.01F, 0.01F};
+        scale.x *= 0.9F;
+        scale.y *= 0.9F;
     }
-    camera.scale(scale, {static_cast<float>(half_width - x), static_cast<float>(half_height - y)});
+    camera->scale(scale);
 }
 
 void framebuffer_size_callback(GLFWwindow* /*unused*/, int width, int height)
