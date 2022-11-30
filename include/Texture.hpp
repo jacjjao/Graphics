@@ -16,10 +16,12 @@ public:
     [[nodiscard]] float getWidth() const noexcept;
     [[nodiscard]] float getHeight() const noexcept;
 
-    static void bind(const Texture&) noexcept;
+    static void bind(Texture*) noexcept;
     static void unbind() noexcept;
 
 private:
+    static Texture* texture_in_bind;
+
     uint32_t m_id;
     Vector2f m_size;
 };

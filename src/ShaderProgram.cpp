@@ -9,6 +9,8 @@
 #include "../include/FileSystem.hpp"
 #include "../include/glCheck.hpp"
 
+ShaderProgram* ShaderProgram::program_in_use = nullptr;
+
 ShaderProgram::ShaderProgram(const char* vertex_path, const char* fragment_path) noexcept : m_id(0)
 {
     std::string   vertex_code;
@@ -92,9 +94,13 @@ ShaderProgram::~ShaderProgram() noexcept
     destroy();
 }
 
-void ShaderProgram::use() const
+void ShaderProgram::use() noexcept
 {
-    glCheck(glUseProgram(m_id));
+    if (program_in_use != this)
+    {
+        glCheck(glUseProgram(m_id));
+        program_in_use = this;
+    }
 }
 
 uint32_t ShaderProgram::getID() const noexcept

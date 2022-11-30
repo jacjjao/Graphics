@@ -82,12 +82,12 @@ void Circle2D::setupDraw() noexcept
     if (hasTexture())
     {
         glCheck(glActiveTexture(GL_TEXTURE0));
-        Texture::bind(*m_vao.getTexture());
+        Texture::bind(m_vao.getTexture());
     }
     auto& program = ShaderProgram2D::instance();
     program.setBool("apply_texture", hasTexture());
     program.setMat3("model", getTransformMatrix());
-    VertexArray::bind(m_vao);
+    VertexArray::bind(&m_vao);
 }
 
 void Circle2D::cleanUpDraw() noexcept

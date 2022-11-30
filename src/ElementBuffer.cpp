@@ -6,6 +6,8 @@
 
 #include "../include/glCheck.hpp"
 
+ElementBuffer* ElementBuffer::ebo_in_bind = nullptr;
+
 ElementBuffer::ElementBuffer(const size_t size) noexcept : m_id(0), m_indices(size)
 {
 }
@@ -34,7 +36,7 @@ void ElementBuffer::create() noexcept
         return;
     }
     glCheck(glGenBuffers(1, &m_id));
-    ElementBuffer::bind(*this);
+    ElementBuffer::bind(this);
     const auto size_in_bytes = static_cast<GLsizei>(m_indices.size() * sizeof(uint32_t));
     glCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size_in_bytes, m_indices.data(), GL_STATIC_DRAW));
     ElementBuffer::unbind();
@@ -59,12 +61,20 @@ bool ElementBuffer::isAvailable() const noexcept
     return m_id != 0;
 }
 
-void ElementBuffer::bind(const ElementBuffer& buffer) noexcept
+void ElementBuffer::bind(ElementBuffer* ebo) noexcept
 {
-    glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.m_id));
+    if (ebo_in_bind != ebo)
+    {
+        glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo->m_id));
+        ebo_in_bind = ebo;
+    }
 }
 
 void ElementBuffer::unbind() noexcept
 {
-    glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+    if (ebo_in_bind != nullptr)
+    {
+        glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+        ebo_in_bind = nullptr;
+    }
 }

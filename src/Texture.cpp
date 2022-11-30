@@ -1,5 +1,4 @@
 #include "../include/Texture.hpp"
-#include "../include/ShaderProgram.hpp"
 #include "../include/glCheck.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -8,11 +7,13 @@
 
 #include <iostream>
 
+Texture* Texture::texture_in_bind = nullptr;
+
 Texture::Texture(const std::string& path) noexcept : m_id{}, m_size{}
 {
     // create texture
     glCheck(glGenTextures(1, &m_id));
-    bind(*this);
+    bind(this);
 
     glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
     glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
@@ -67,12 +68,20 @@ float Texture::getHeight() const noexcept
     return m_size.y;
 }
 
-void Texture::bind(const Texture& texture) noexcept
+void Texture::bind(Texture* texture) noexcept
 {
-    glCheck(glBindTexture(GL_TEXTURE_2D, texture.m_id));
+    if (texture_in_bind != texture)
+    {
+        glCheck(glBindTexture(GL_TEXTURE_2D, texture->m_id));
+        texture_in_bind = texture;
+    }
 }
 
 void Texture::unbind() noexcept
 {
-    glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+    if (texture_in_bind != nullptr)
+    {
+        glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+        texture_in_bind = nullptr;
+    }
 }

@@ -13,7 +13,7 @@ public:
     ShaderProgram(const char* vertex_path, const char* fragment_path) noexcept;
     ~ShaderProgram() noexcept;
 
-    void use() const;
+    void use() noexcept;
 
     [[nodiscard]] uint32_t getID() const noexcept;
 
@@ -30,6 +30,8 @@ public:
     ShaderProgram& operator=(const ShaderProgram&) = delete;
 
 private:
+    static ShaderProgram* program_in_use;
+
     int32_t getLocation(const std::string& name) noexcept;
 
     uint32_t                                 m_id;

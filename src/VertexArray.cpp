@@ -6,6 +6,7 @@
 #include <glad/glad.h>
 
 std::vector<Vertex2D> VertexArray::cache(40);
+VertexArray*          VertexArray::vao_in_bind = nullptr;
 
 VertexArray::VertexArray(const size_t size) noexcept : m_vertices(size), m_id{0}, m_texture{nullptr}
 {
@@ -36,8 +37,8 @@ void VertexArray::create() noexcept
     glCheck(glGenVertexArrays(1, &m_id));
     transformData();
     m_vbo.create(cache);
-    VertexArray::bind(*this);
-    VertexBuffer::bind(m_vbo);
+    VertexArray::bind(this);
+    VertexBuffer::bind(&m_vbo);
 
     const auto stride = static_cast<GLsizei>(sizeof(Vertex2D));
     glCheck(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, stride, (void*)0));
@@ -67,7 +68,7 @@ void VertexArray::draw() noexcept
     auto& program = ShaderProgram2D::instance();
     program.setMat3("model", Matrix3::identity());
     program.setBool("apply_texture", false);
-    VertexArray::bind(*this);
+    VertexArray::bind(this);
     glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(m_vertices.size()));
     VertexArray::unbind();
 }
@@ -197,14 +198,22 @@ const VertexArray::value_type& VertexArray::operator[](size_t index) const noexc
     return m_vertices[index];
 }
 
-void VertexArray::bind(const VertexArray& vao) noexcept
+void VertexArray::bind(VertexArray* vao) noexcept
 {
-    glCheck(glBindVertexArray(vao.m_id));
+    if (vao_in_bind != vao)
+    {
+        glCheck(glBindVertexArray(vao->m_id));
+        vao_in_bind = vao;
+    }
 }
 
 void VertexArray::unbind() noexcept
 {
-    glCheck(glBindVertexArray(0));
+    if (vao_in_bind != nullptr)
+    {
+        glCheck(glBindVertexArray(0));
+        vao_in_bind = nullptr;
+    }
 }
 
 void VertexArray::transformData() noexcept

@@ -130,9 +130,9 @@ int main()
 
             if (auto tp = timer.getElapsedTime().asSeconds(); tp >= 1.0)
             {
-                auto pos = camera->getPosition();
-                std::printf("(%.2f, %.2f)\n", pos.x, pos.y);
-                // std::cout << "FPS: " << static_cast<double>(fps_cnt) / tp << '\n';
+                /* auto pos = camera->getPosition();
+                std::printf("(%.2f, %.2f)\n", pos.x, pos.y); */
+                std::printf("FPS: %.2lf\n", static_cast<double>(fps_cnt) / tp);
                 fps_cnt = 0;
                 timer.restart();
             }

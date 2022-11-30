@@ -57,13 +57,14 @@ public:
     value_type&       operator[](size_t index) noexcept;
     const value_type& operator[](size_t index) const noexcept;
 
-    static void bind(const VertexArray& vao) noexcept;
+    static void bind(VertexArray* vao) noexcept;
     static void unbind() noexcept;
 
 private:
     void transformData() noexcept;
 
     static std::vector<Vertex2D> cache;
+    static VertexArray*          vao_in_bind;
 
     uint32_t              m_id;
     VertexBuffer          m_vbo;

@@ -3,9 +3,7 @@
 
 #include <glad/glad.h>
 
-#if (DEBUG)
-#include <iostream>
-#endif
+VertexBuffer* VertexBuffer::vbo_in_bind = nullptr;
 
 VertexBuffer::VertexBuffer() noexcept : m_id{}, m_usage{Usage::DYNAMIC_DRAW}
 {
@@ -25,12 +23,12 @@ void VertexBuffer::destroy() noexcept
     }
 }
 
-void VertexBuffer::updateData(const std::vector<Vertex2D>& vertices) const noexcept
+void VertexBuffer::updateData(const std::vector<Vertex2D>& vertices) noexcept
 {
     if (isAvailable())
     {
         const auto size_in_bytes = static_cast<GLsizei>(vertices.size() * sizeof(Vertex2D));
-        VertexBuffer::bind(*this);
+        VertexBuffer::bind(this);
         glCheck(glBufferSubData(GL_ARRAY_BUFFER, 0, size_in_bytes, vertices.data()));
         VertexBuffer::unbind();
     }
@@ -44,7 +42,7 @@ void VertexBuffer::create(const std::vector<Vertex2D>& vertices) noexcept
     }
     updateData(vertices);
     glCheck(glGenBuffers(1, &m_id));
-    VertexBuffer::bind(*this);
+    VertexBuffer::bind(this);
     const auto size_in_bytes = static_cast<GLsizei>(vertices.size() * sizeof(Vertex2D));
     glCheck(glBufferData(GL_ARRAY_BUFFER, size_in_bytes, vertices.data(), static_cast<uint32_t>(m_usage)));
     VertexBuffer::unbind();
@@ -60,12 +58,20 @@ void VertexBuffer::setUsage(const Usage usage) noexcept
     m_usage = usage;
 }
 
-void VertexBuffer::bind(const VertexBuffer& vbo) noexcept
+void VertexBuffer::bind(VertexBuffer* vbo) noexcept
 {
-    glCheck(glBindBuffer(GL_ARRAY_BUFFER, vbo.m_id));
+    if (vbo_in_bind != vbo)
+    {
+        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vbo->m_id));
+        vbo_in_bind = vbo;
+    }
 }
 
 void VertexBuffer::unbind() noexcept
 {
-    glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+    if (vbo_in_bind != nullptr)
+    {
+        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+        vbo_in_bind = nullptr;
+    }
 }

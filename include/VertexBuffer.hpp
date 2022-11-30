@@ -22,17 +22,19 @@ public:
     VertexBuffer& operator=(const VertexBuffer&) = delete;
 
     void destroy() noexcept;
-    void updateData(const std::vector<Vertex2D>& vertices) const noexcept;
+    void updateData(const std::vector<Vertex2D>& vertices) noexcept;
     void create(const std::vector<Vertex2D>& vertices) noexcept;
 
     [[nodiscard]] bool isAvailable() const noexcept;
 
     void setUsage(Usage usage) noexcept;
 
-    static void bind(const VertexBuffer& vbo) noexcept;
+    static void bind(VertexBuffer* vbo) noexcept;
     static void unbind() noexcept;
 
 private:
+    static VertexBuffer* vbo_in_bind;
+
     Usage    m_usage;
     uint32_t m_id;
 };

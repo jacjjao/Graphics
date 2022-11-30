@@ -23,10 +23,12 @@ public:
 
     [[nodiscard]] bool isAvailable() const noexcept;
 
-    static void bind(const ElementBuffer& buffer) noexcept;
+    static void bind(ElementBuffer* ebo) noexcept;
     static void unbind() noexcept;
 
 private:
+    static ElementBuffer* ebo_in_bind;
+
     std::vector<uint32_t> m_indices;
     uint32_t              m_id;
 };

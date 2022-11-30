@@ -78,11 +78,11 @@ void Rectangle2D::create() noexcept
     update();
 
     m_vao.create();
-    VertexArray::bind(m_vao);
+    VertexArray::bind(&m_vao);
 
     m_ebo = {0, 1, 3, 1, 2, 3};
     m_ebo.create();
-    ElementBuffer::bind(m_ebo);
+    ElementBuffer::bind(&m_ebo);
 
     VertexArray::unbind();
     ElementBuffer::unbind();
@@ -93,12 +93,12 @@ void Rectangle2D::setupDraw() noexcept
     if (hasTexture())
     {
         glCheck(glActiveTexture(GL_TEXTURE0));
-        Texture::bind(*m_vao.getTexture());
+        Texture::bind(m_vao.getTexture());
     }
     auto& program = ShaderProgram2D::instance();
     program.setBool("apply_texture", hasTexture());
     program.setMat3("model", getTransformMatrix());
-    VertexArray::bind(m_vao);
+    VertexArray::bind(&m_vao);
 }
 
 void Rectangle2D::cleanUpDraw() noexcept
