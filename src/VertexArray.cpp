@@ -61,6 +61,11 @@ void VertexArray::update() noexcept
 
 void VertexArray::draw() noexcept
 {
+    draw(PrimitiveType::Triangles);
+}
+
+void VertexArray::draw(const PrimitiveType primitive_type) noexcept
+{
     if (!isAvailable())
     {
         create();
@@ -72,7 +77,7 @@ void VertexArray::draw() noexcept
     program.setFloat("color_alpha", 1.0F);
 
     VertexArray::bind(this);
-    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(m_vertices.size()));
+    glDrawArrays(static_cast<GLenum>(primitive_type), 0, static_cast<GLsizei>(m_vertices.size()));
     VertexArray::unbind();
 }
 

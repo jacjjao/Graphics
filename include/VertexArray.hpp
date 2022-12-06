@@ -4,6 +4,17 @@
 #include "VertexBuffer.hpp"
 #include "Texture.hpp"
 
+enum class PrimitiveType : uint32_t
+{
+    Points        = 0x0000,
+    Lines         = 0x0001,
+    LineLoop      = 0x0002,
+    LineStrip     = 0x0003,
+    Triangles     = 0x0004,
+    TriangleStrip = 0x0005,
+    TriangleFan   = 0x0006
+};
+
 class VertexArray : public Drawable
 {
 public:
@@ -23,6 +34,7 @@ public:
     void create() noexcept;
     void update() noexcept;
     void draw() noexcept override;
+    void draw(PrimitiveType primitive_type) noexcept;
 
     void resize(size_t size) noexcept;
     void reserve(size_t size) noexcept;

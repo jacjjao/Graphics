@@ -1,5 +1,6 @@
 #include "../include/ShaderProgram.hpp"
 
+#include <exception>
 #include <glad/glad.h>
 
 #include <fstream>
@@ -181,8 +182,8 @@ int32_t ShaderProgram::getLocation(const std::string& name) noexcept
 }
 
 ShaderProgram2D::ShaderProgram2D() noexcept :
-ShaderProgram{FileSystem::getPath("/shader/2D/VertexShader.vert").c_str(),
-              FileSystem::getPath("/shader/2D/FragmentShader.frag").c_str()}
+ShaderProgram{FileSystem::getPath("/shader/2D/VertexShader.glsl").c_str(),
+              FileSystem::getPath("/shader/2D/FragmentShader.glsl").c_str()}
 {
 }
 
