@@ -155,15 +155,22 @@ void ShaderProgram::destroy() noexcept
 
 int32_t ShaderProgram::getLocation(const std::string& name) noexcept
 {
-    auto       it       = locations.find(name);
-    GLint      loc      = 0;
+    auto it = locations.find(name);
+
+    GLint loc = 0;
+
     const bool is_found = (it != locations.end());
+
     if (!is_found)
     {
         glCheck(loc = glGetUniformLocation(m_id, name.c_str()));
         if (loc != -1)
         {
             locations[name] = loc;
+        }
+        else
+        {
+            std::cerr << "Cannot fount uniform " << name << '\n';
         }
     }
     else

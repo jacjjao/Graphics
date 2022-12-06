@@ -5,13 +5,10 @@ in vec2 tex_coord;
 
 out vec4 color;
 
-uniform bool apply_texture;
-
+uniform float color_alpha;
 uniform sampler2D texture1;
 
 void main()
 {	
-	color = frag_color;
-	if (apply_texture)
-		color *= texture(texture1, tex_coord);
+	color = mix(texture(texture1, tex_coord), frag_color, color_alpha);
 }

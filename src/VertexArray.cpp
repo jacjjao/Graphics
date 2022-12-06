@@ -65,9 +65,12 @@ void VertexArray::draw() noexcept
     {
         create();
     }
+
     auto& program = ShaderProgram2D::instance();
+
     program.setMat3("model", Matrix3::identity());
-    program.setBool("apply_texture", false);
+    program.setFloat("color_alpha", 1.0F);
+
     VertexArray::bind(this);
     glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(m_vertices.size()));
     VertexArray::unbind();

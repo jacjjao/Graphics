@@ -84,9 +84,12 @@ void Circle2D::setupDraw() noexcept
         glCheck(glActiveTexture(GL_TEXTURE0));
         Texture::bind(m_vao.getTexture());
     }
+
     auto& program = ShaderProgram2D::instance();
-    program.setBool("apply_texture", hasTexture());
+
+    program.setFloat("color_alpha", hasTexture() ? 0.0F : 1.0F);
     program.setMat3("model", getTransformMatrix());
+
     VertexArray::bind(&m_vao);
 }
 
