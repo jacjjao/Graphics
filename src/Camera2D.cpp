@@ -15,11 +15,7 @@ m_position{Utility::getHalfWindowWidth(), Utility::getHalfWindowHeight()}
 
 void Camera2D::use() noexcept
 {
-    if (should_update)
-    {
-        update();
-    }
-    ShaderProgram2D::instance().setMat3("view", m_view);
+    ShaderProgram2D::instance().setMat3("view", getViewMatrix());
 }
 
 void Camera2D::move(const Vector2f vector) noexcept
@@ -79,4 +75,13 @@ void Camera2D::update() noexcept
 Vector2f Camera2D::getPosition() const noexcept
 {
     return m_position;
+}
+
+Matrix3& Camera2D::getViewMatrix() noexcept
+{
+    if (should_update)
+    {
+        update();
+    }
+    return m_view;
 }

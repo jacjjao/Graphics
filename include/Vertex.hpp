@@ -23,8 +23,11 @@ public:
     uint8_t r, g, b, a;
 };
 
-struct Vertex2D
+class Vertex2D
 {
+public:
+    Vertex2D();
+
     Vector2f position;
     Color    color;
     Vector2f tex_coord;

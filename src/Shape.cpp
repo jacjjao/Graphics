@@ -1,6 +1,6 @@
 #include "../include/Shape.hpp"
 
-Shape::Shape(const size_t size) noexcept : m_vao{size}, m_color{}
+Shape::Shape(const size_t size) noexcept : m_vao{size}, m_color{Color::White}
 {
 }
 

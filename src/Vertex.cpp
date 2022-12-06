@@ -32,3 +32,7 @@ constexpr Color& Color::operator=(const uint32_t value) noexcept
     a = static_cast<uint8_t>((value & 0x000000FF));
     return *this;
 }
+
+Vertex2D::Vertex2D() : position{}, color{Color::White}, tex_coord{}
+{
+}

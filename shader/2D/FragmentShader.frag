@@ -11,8 +11,7 @@ uniform sampler2D texture1;
 
 void main()
 {	
+	color = frag_color;
 	if (apply_texture)
-		color = texture(texture1, tex_coord);
-	else 
-		color = frag_color;
+		color *= texture(texture1, tex_coord);
 }

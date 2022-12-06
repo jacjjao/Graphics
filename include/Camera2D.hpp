@@ -15,6 +15,7 @@ public:
     void scale(Vector2f scale) noexcept;
 
     [[nodiscard]] Vector2f getPosition() const noexcept;
+    [[nodiscard]] Matrix3& getViewMatrix() noexcept;
 
 private:
     void update() noexcept;
