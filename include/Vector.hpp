@@ -13,7 +13,7 @@ struct Vector2
 
     Vector2<T> operator-() const noexcept
     {
-        return {-x, -y};
+        return Vector2<T>{-x, -y};
     }
 
     T x, y;

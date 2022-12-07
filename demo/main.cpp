@@ -82,7 +82,9 @@ int main()
         rect->scale({2.0F, 2.0F});
         rect->translate({100, 0});
 
-        Line line{Vector2f{0.0F, 0.0F}, Vector2f{400.0F, 400.0F}};
+        Line line{Vector2f{100.0F, 100.0F}, Vector2f{500.0F, 100.0F}};
+        line.setLineWidth(10.0F);
+        line.setColor(Color{255, 127, 127});
 
         Clock clock{};
         Clock timer{};
