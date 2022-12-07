@@ -28,11 +28,11 @@ void Rectangle2D::update() noexcept
     const auto half_width  = static_cast<float>(m_size.x) / 2.0F;
     const auto half_height = static_cast<float>(m_size.y) / 2.0F;
 
-    const Vector2f center           = {Utility::getHalfWindowWidth(), Utility::getHalfWindowHeight()};
-    const Vector2f top_right_pos    = {center.x + half_width, center.y - half_height};
-    const Vector2f bottom_right_pos = {center.x + half_width, center.y + half_height};
-    const Vector2f bottom_left_pos  = {center.x - half_width, center.y + half_height};
-    const Vector2f top_left_pos     = {center.x - half_width, center.y - half_height};
+    const Vector2f center{Utility::getHalfWindowWidth(), Utility::getHalfWindowHeight()};
+    const Vector2f top_right_pos{center.x + half_width, center.y - half_height};
+    const Vector2f bottom_right_pos{center.x + half_width, center.y + half_height};
+    const Vector2f bottom_left_pos{center.x - half_width, center.y + half_height};
+    const Vector2f top_left_pos{center.x - half_width, center.y - half_height};
 
     m_vao[0].position = top_right_pos;
     m_vao[1].position = bottom_right_pos;
@@ -51,10 +51,10 @@ void Rectangle2D::update() noexcept
         const auto  tex_width  = texture->getWidth();
         const auto  tex_height = texture->getHeight();
 
-        m_vao[0].tex_coord = {tex_width, 0.0F};
-        m_vao[1].tex_coord = {tex_width, tex_height};
-        m_vao[2].tex_coord = {0.0F, tex_height};
-        m_vao[3].tex_coord = {0.0F, 0.0F};
+        m_vao[0].tex_coord = Vector2f{tex_width, 0.0F};
+        m_vao[1].tex_coord = Vector2f{tex_width, tex_height};
+        m_vao[2].tex_coord = Vector2f{0.0F, tex_height};
+        m_vao[3].tex_coord = Vector2f{0.0F, 0.0F};
     }
 
     if (m_vao.isAvailable())

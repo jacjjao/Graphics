@@ -156,7 +156,7 @@ void ShaderProgram::destroy() noexcept
 
 int32_t ShaderProgram::getLocation(const std::string& name) noexcept
 {
-    auto it = locations.find(name);
+    const auto it = locations.find(name);
 
     GLint loc = 0;
 

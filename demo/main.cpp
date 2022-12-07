@@ -63,24 +63,24 @@ int main()
         texture = std::make_unique<Texture>(FileSystem::getPath("/asset/container.jpg"));
 
         rect = std::make_unique<Rectangle2D>(Vector2f{100, 100});
-        rect->setPosition({300, 1000});
+        rect->setPosition(Vector2f{300, 1000});
 
         rect->applyTexture(texture.get());
 
         Circle2D circle{50.0F};
-        circle.setPosition({1700, 900});
+        circle.setPosition(Vector2f{1700, 900});
 
         circle.applyTexture(texture.get());
 
         VertexArray vao{3};
-        vao[0].position = {1000.0, 100.0};
-        vao[1].position = {static_cast<float>(1000.0 + 500.0 * std::sqrt(3.0) / 2.0), 850.0};
-        vao[2].position = {static_cast<float>(1000.0 - 500.0 * std::sqrt(3.0) / 2.0), 850.0};
+        vao[0].position = Vector2f{1000.0, 100.0};
+        vao[1].position = Vector2f{static_cast<float>(1000.0 + 500.0 * std::sqrt(3.0) / 2.0), 850.0};
+        vao[2].position = Vector2f{static_cast<float>(1000.0 - 500.0 * std::sqrt(3.0) / 2.0), 850.0};
         vao.setUsage(VertexBuffer::Usage::StreamDraw);
 
-        circle.scale({2.0F, 2.0F});
-        rect->scale({2.0F, 2.0F});
-        rect->translate({100, 0});
+        circle.scale(Vector2f{2.0F, 2.0F});
+        rect->scale(Vector2f{2.0F, 2.0F});
+        rect->translate(Vector2f{100, 0});
 
         Line line{Vector2f{100.0F, 100.0F}, Vector2f{500.0F, 100.0F}};
         line.setLineWidth(10.0F);
@@ -119,7 +119,7 @@ int main()
             vao[2].color = color;
 
             float factor = std::sin(tp * 2) / 2.0F + 1.5F;
-            circle.scale({factor, factor});
+            circle.scale(Vector2f{factor, factor});
             rect->rotate(-0.05F);
 
             rect->update();
@@ -166,22 +166,22 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
         // rect->translate({0.0F, -1.0F});
-        camera->move({0.0F, -1.0F});
+        camera->move(Vector2f{0.0F, -1.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
         // rect->translate({0.0F, 1.0F});
-        camera->move({0.0F, 1.0F});
+        camera->move(Vector2f{0.0F, 1.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
         // rect->translate({-1.0F, 0.0F});
-        camera->move({-1.0F, 0.0F});
+        camera->move(Vector2f{-1.0F, 0.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
         // rect->translate({1.0F, 0.0F});
-        camera->move({1.0F, 0.0F});
+        camera->move(Vector2f{1.0F, 0.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
     {

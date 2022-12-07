@@ -34,7 +34,8 @@ private:
 
     int32_t getLocation(const std::string& name) noexcept;
 
-    uint32_t                                 m_id;
+    uint32_t m_id;
+
     std::unordered_map<std::string, int32_t> locations;
 };
 

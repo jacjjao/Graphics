@@ -247,8 +247,9 @@ void VertexArray::transformData() noexcept
     {
         for (int i = 0; i < m_vertices.size(); i++)
         {
-            const Vector2f size = {static_cast<float>(m_texture->getWidth()), static_cast<float>(m_texture->getHeight())};
-            cache[i].tex_coord = Utility::pointToTexCoord(m_vertices[i].tex_coord, size);
+            const Vector2f size = Vector2f{static_cast<float>(m_texture->getWidth()),
+                                           static_cast<float>(m_texture->getHeight())};
+            cache[i].tex_coord  = Utility::pointToTexCoord(m_vertices[i].tex_coord, size);
         }
     }
 }

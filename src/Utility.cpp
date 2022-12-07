@@ -63,10 +63,10 @@ Vector2f Utility::pointToGL(const Vector2f point, const float half_width, const 
     const auto f_point_x = static_cast<float>(point.x);
     const auto f_point_y = static_cast<float>(point.y);
 
-    return {(f_point_x - half_width) / half_width, (half_height - f_point_y) / half_height};
+    return Vector2f{(f_point_x - half_width) / half_width, (half_height - f_point_y) / half_height};
 }
 
 Vector2f Utility::vectorToGL(const Vector2f vector, const float half_width, const float half_height) noexcept
 {
-    return {static_cast<float>(vector.x) / half_width, static_cast<float>(-vector.y) / half_height};
+    return Vector2f{static_cast<float>(vector.x) / half_width, static_cast<float>(-vector.y) / half_height};
 }

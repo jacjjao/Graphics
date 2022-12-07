@@ -25,6 +25,7 @@ add_executable(${PROJECT_NAME}
 	"include/Texture.hpp"
 	"include/Camera2D.hpp"
 	"include/Line.hpp"
+	"include/Color.hpp"
 
 	#sources
 	"src/glCheck.cpp"
@@ -43,6 +44,7 @@ add_executable(${PROJECT_NAME}
 	"src/Texture.cpp"
 	"src/Camera2D.cpp"
 	"src/Line.cpp"
+	"src/Color.cpp"
 	"demo/main.cpp"
 )
 

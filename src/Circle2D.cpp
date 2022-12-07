@@ -36,7 +36,7 @@ void Circle2D::update() noexcept
 
     m_vao[0].position  = center;
     m_vao[0].color     = color;
-    m_vao[0].tex_coord = {half_tex_width, half_tex_height};
+    m_vao[0].tex_coord = Vector2f{half_tex_width, half_tex_height};
     for (int i = 1; i < m_vao.size() - 1; i++)
     {
         const auto  f_index = static_cast<float>(i);
