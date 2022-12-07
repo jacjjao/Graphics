@@ -3,17 +3,7 @@
 #include "Drawable.hpp"
 #include "VertexBuffer.hpp"
 #include "Texture.hpp"
-
-enum class PrimitiveType : uint32_t
-{
-    Points        = 0x0000,
-    Lines         = 0x0001,
-    LineLoop      = 0x0002,
-    LineStrip     = 0x0003,
-    Triangles     = 0x0004,
-    TriangleStrip = 0x0005,
-    TriangleFan   = 0x0006
-};
+#include "PrimitiveType.hpp"
 
 class VertexArray : public Drawable
 {
@@ -57,6 +47,8 @@ public:
 
     [[nodiscard]] size_t size() const noexcept;
 
+    void setUsage(VertexBuffer::Usage usage) noexcept;
+
     [[nodiscard]] iterator               begin() noexcept;
     [[nodiscard]] iterator               end() noexcept;
     [[nodiscard]] const_iterator         cbegin() const noexcept;
@@ -78,8 +70,12 @@ private:
     static std::vector<Vertex2D> cache;
     static VertexArray*          vao_in_bind;
 
-    uint32_t              m_id;
-    VertexBuffer          m_vbo;
-    Texture*              m_texture;
+    uint32_t m_id;
+
+    VertexBuffer        m_vbo;
+    VertexBuffer::Usage m_usage;
+
+    Texture* m_texture;
+
     std::vector<Vertex2D> m_vertices;
 };

@@ -24,6 +24,7 @@ add_executable(${PROJECT_NAME}
 	"include/Transformable.hpp"
 	"include/Texture.hpp"
 	"include/Camera2D.hpp"
+	"include/Line.hpp"
 
 	#sources
 	"src/glCheck.cpp"
@@ -41,6 +42,7 @@ add_executable(${PROJECT_NAME}
 	"src/Transformable.cpp"
 	"src/Texture.cpp"
 	"src/Camera2D.cpp"
+	"src/Line.cpp"
 	"demo/main.cpp"
 )
 

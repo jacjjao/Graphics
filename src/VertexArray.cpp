@@ -8,8 +8,13 @@
 std::vector<Vertex2D> VertexArray::cache(40);
 VertexArray*          VertexArray::vao_in_bind = nullptr;
 
-VertexArray::VertexArray(const size_t size) noexcept : m_vertices(size), m_id{0}, m_texture{nullptr}
+VertexArray::VertexArray(const size_t size) noexcept :
+m_vertices(size),
+m_id{0},
+m_texture{nullptr},
+m_usage{VertexBuffer::Usage::DynamicDraw}
 {
+    m_vbo.setUsage(m_usage);
 }
 
 VertexArray::~VertexArray() noexcept
@@ -154,6 +159,12 @@ bool VertexArray::hasTexture() const noexcept
 size_t VertexArray::size() const noexcept
 {
     return m_vertices.size();
+}
+
+void VertexArray::setUsage(const VertexBuffer::Usage usage) noexcept
+{
+    m_vbo.setUsage(usage);
+    m_usage = usage;
 }
 
 VertexArray::iterator VertexArray::begin() noexcept

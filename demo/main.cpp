@@ -16,6 +16,7 @@
 #include "../include/Texture.hpp"
 #include "../include/FileSystem.hpp"
 #include "../include/Camera2D.hpp"
+#include "../include/Line.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -75,10 +76,13 @@ int main()
         vao[0].position = {1000.0, 100.0};
         vao[1].position = {static_cast<float>(1000.0 + 500.0 * std::sqrt(3.0) / 2.0), 850.0};
         vao[2].position = {static_cast<float>(1000.0 - 500.0 * std::sqrt(3.0) / 2.0), 850.0};
+        vao.setUsage(VertexBuffer::Usage::StreamDraw);
 
         circle.scale({2.0F, 2.0F});
         rect->scale({2.0F, 2.0F});
         rect->translate({100, 0});
+
+        Line line{Vector2f{0.0F, 0.0F}, Vector2f{400.0F, 400.0F}};
 
         Clock clock{};
         Clock timer{};
@@ -89,6 +93,7 @@ int main()
             glfwPollEvents();
 
             glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
+            // glClearColor(1.0F, 1.0F, 1.0F, 1.0F);
             glClear(GL_COLOR_BUFFER_BIT);
 
             auto  tp = clock.getElapsedTime().asSeconds();
@@ -124,6 +129,7 @@ int main()
             rect->draw();
             circle.draw();
             vao.draw();
+            line.draw();
 
             glfwSwapBuffers(window);
 

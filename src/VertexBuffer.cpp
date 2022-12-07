@@ -5,7 +5,7 @@
 
 VertexBuffer* VertexBuffer::vbo_in_bind = nullptr;
 
-VertexBuffer::VertexBuffer() noexcept : m_id{}, m_usage{Usage::DYNAMIC_DRAW}
+VertexBuffer::VertexBuffer() noexcept : m_id{}, m_usage{Usage::DynamicDraw}
 {
 }
 
@@ -28,8 +28,11 @@ void VertexBuffer::updateData(const std::vector<Vertex2D>& vertices) noexcept
     if (isAvailable())
     {
         const auto size_in_bytes = static_cast<GLsizei>(vertices.size() * sizeof(Vertex2D));
+
         VertexBuffer::bind(this);
+
         glCheck(glBufferSubData(GL_ARRAY_BUFFER, 0, size_in_bytes, vertices.data()));
+
         VertexBuffer::unbind();
     }
 }
@@ -40,11 +43,16 @@ void VertexBuffer::create(const std::vector<Vertex2D>& vertices) noexcept
     {
         return;
     }
+
     updateData(vertices);
+
     glCheck(glGenBuffers(1, &m_id));
+
     VertexBuffer::bind(this);
+
     const auto size_in_bytes = static_cast<GLsizei>(vertices.size() * sizeof(Vertex2D));
-    glCheck(glBufferData(GL_ARRAY_BUFFER, size_in_bytes, vertices.data(), static_cast<uint32_t>(m_usage)));
+    glCheck(glBufferData(GL_ARRAY_BUFFER, size_in_bytes, vertices.data(), static_cast<GLenum>(m_usage)));
+
     VertexBuffer::unbind();
 }
 
