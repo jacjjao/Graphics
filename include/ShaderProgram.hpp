@@ -45,4 +45,7 @@ public:
     ShaderProgram2D() noexcept;
 
     [[nodiscard]] static ShaderProgram2D& instance() noexcept;
+
+    ShaderProgram2D(const ShaderProgram2D&)            = delete;
+    ShaderProgram2D& operator=(const ShaderProgram2D&) = delete;
 };

@@ -17,6 +17,9 @@ public:
     [[nodiscard]] Vector2f getPosition() const noexcept;
     [[nodiscard]] Matrix3& getViewMatrix() noexcept;
 
+    Camera2D(const Camera2D&)            = delete;
+    Camera2D& operator=(const Camera2D&) = delete;
+
 private:
     void update() noexcept;
 

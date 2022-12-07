@@ -11,6 +11,9 @@ public:
     explicit Texture(const std::string& path) noexcept;
     ~Texture() noexcept;
 
+    Texture(const Texture&)            = delete;
+    Texture& operator=(const Texture&) = delete;
+
     void destroy() noexcept;
 
     [[nodiscard]] float getWidth() const noexcept;

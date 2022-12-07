@@ -12,6 +12,9 @@ public:
 
     void draw() noexcept override;
 
+    Line(const Line&)            = delete;
+    Line& operator=(const Line&) = delete;
+
 private:
     Vector2f m_start_pos, m_end_pos;
 

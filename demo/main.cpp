@@ -95,7 +95,6 @@ int main()
             glfwPollEvents();
 
             glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
-            // glClearColor(1.0F, 1.0F, 1.0F, 1.0F);
             glClear(GL_COLOR_BUFFER_BIT);
 
             auto  tp = clock.getElapsedTime().asSeconds();

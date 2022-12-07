@@ -13,6 +13,9 @@ public:
 
     void setRadius(float radius) noexcept;
 
+    Circle2D(const Circle2D&)            = delete;
+    Circle2D& operator=(const Circle2D&) = delete;
+
 private:
     void create() noexcept;
     void setupDraw() noexcept;

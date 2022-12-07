@@ -14,22 +14,11 @@ template <typename T, size_t Width>
 class Row
 {
 public:
-    explicit Row(T* ptr) noexcept : ptr_(ptr)
+    explicit constexpr Row(T* ptr) noexcept : ptr_(ptr)
     {
     }
 
-    T& operator[](const size_t index) noexcept
-    {
-#if (DEBUG)
-        if (index >= Width)
-        {
-            std::cerr << "Index out of bounds! Index: " << index << " Size: " << Width << '\n';
-        }
-#endif
-        return ptr_[index];
-    }
-
-    const T& operator[](const size_t index) const noexcept
+    constexpr T& operator[](const size_t index) noexcept
     {
 #if (DEBUG)
         if (index >= Width)
@@ -40,7 +29,18 @@ public:
         return ptr_[index];
     }
 
-    [[nodiscard]] size_t size() const noexcept
+    constexpr T& operator[](const size_t index) const noexcept
+    {
+#if (DEBUG)
+        if (index >= Width)
+        {
+            std::cerr << "Index out of bounds! Index: " << index << " Size: " << Width << '\n';
+        }
+#endif
+        return ptr_[index];
+    }
+
+    [[nodiscard]] constexpr size_t size() const noexcept
     {
         return Width;
     }
@@ -53,11 +53,11 @@ template <typename T, size_t Width>
 class ConstRow
 {
 public:
-    explicit ConstRow(const T* ptr) noexcept : ptr_(ptr)
+    explicit constexpr ConstRow(const T* ptr) noexcept : ptr_(ptr)
     {
     }
 
-    const T& operator[](const size_t index) const noexcept
+    constexpr const T& operator[](const size_t index) const noexcept
     {
 #if (DEBUG)
         if (index >= Width)
@@ -68,7 +68,7 @@ public:
         return ptr_[index];
     }
 
-    [[nodiscard]] size_t size() const noexcept
+    [[nodiscard]] constexpr size_t size() const noexcept
     {
         return Width;
     }
@@ -86,7 +86,7 @@ public:
     static_assert(Width > 0, "Invalid width value");
     static_assert(Height > 0, "Invalid Height value");
 
-    explicit Matrix() noexcept : items_(Width * Height)
+    explicit constexpr Matrix() noexcept : items_(Width * Height)
     {
     }
 
@@ -98,7 +98,7 @@ public:
     Matrix(Matrix<T, Height, Width>&&) noexcept            = default;
     Matrix& operator=(Matrix<T, Height, Width>&&) noexcept = default;
 
-    detail::Row<T, Width> operator[](const size_t index) noexcept
+    constexpr detail::Row<T, Width> operator[](const size_t index) noexcept
     {
 #if (DEBUG)
         if (index >= Height)
@@ -109,7 +109,7 @@ public:
         return detail::Row<T, Width>{&items_[index * Width]};
     }
 
-    detail::ConstRow<T, Width> operator[](const size_t index) const noexcept
+    constexpr detail::ConstRow<T, Width> operator[](const size_t index) const noexcept
     {
 #if (DEBUG)
         if (index >= Height)
@@ -120,7 +120,8 @@ public:
         return detail::ConstRow<T, Width>{&items_[index * Width]};
     }
 
-    friend Matrix<T, Height, Width> operator+(const Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs) noexcept
+    friend constexpr Matrix<T, Height, Width> operator+(const Matrix<T, Height, Width>& lhs,
+                                                        const Matrix<T, Height, Width>& rhs) noexcept
     {
         Matrix<T, Height, Width> result{};
 
@@ -135,7 +136,8 @@ public:
         return result;
     }
 
-    friend Matrix<T, Height, Width> operator-(const Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs) noexcept
+    friend constexpr Matrix<T, Height, Width> operator-(const Matrix<T, Height, Width>& lhs,
+                                                        const Matrix<T, Height, Width>& rhs) noexcept
     {
         Matrix<T, Height, Width> result{};
 
@@ -150,7 +152,8 @@ public:
         return result;
     }
 
-    friend Matrix<T, Height, Width>& operator+=(Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs) noexcept
+    friend constexpr Matrix<T, Height, Width>& operator+=(Matrix<T, Height, Width>&       lhs,
+                                                          const Matrix<T, Height, Width>& rhs) noexcept
     {
         for (size_t i = 0; i < Height; i++)
         {
@@ -163,7 +166,8 @@ public:
         return lhs;
     }
 
-    friend Matrix<T, Height, Width>& operator-=(Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs) noexcept
+    friend constexpr Matrix<T, Height, Width>& operator-=(Matrix<T, Height, Width>&       lhs,
+                                                          const Matrix<T, Height, Width>& rhs) noexcept
     {
         for (size_t i = 0; i < Height; i++)
         {
@@ -177,7 +181,7 @@ public:
     }
 
     template <size_t W>
-    friend Matrix<T, Height, W> operator*(const Matrix<T, Height, Width>& lhs, const Matrix<T, Width, W>& rhs) noexcept
+    friend constexpr Matrix<T, Height, W> operator*(const Matrix<T, Height, Width>& lhs, const Matrix<T, Width, W>& rhs) noexcept
     {
         Matrix<T, Height, W> result{};
 
@@ -195,27 +199,27 @@ public:
         return result;
     }
 
-    [[nodiscard]] size_t width() const noexcept
+    [[nodiscard]] constexpr size_t width() const noexcept
     {
         return Width;
     }
 
-    [[nodiscard]] size_t height() const noexcept
+    [[nodiscard]] constexpr size_t height() const noexcept
     {
         return Height;
     }
 
-    [[nodiscard]] T* data() noexcept
+    [[nodiscard]] constexpr T* data() noexcept
     {
         return items_.data();
     }
 
-    [[nodiscard]] const T* data() const noexcept
+    [[nodiscard]] constexpr const T* data() const noexcept
     {
         return items_.data();
     }
 
-    static Matrix<T, Height, Width> identity() noexcept
+    static constexpr Matrix<T, Height, Width> identity() noexcept
     {
         static_assert(Width == Height, "Invalid identity matrix size");
 
