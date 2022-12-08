@@ -5,7 +5,7 @@
 #include "../include/Utility.hpp"
 
 Transformable::Transformable() noexcept :
-m_model{Matrix3::identity()},
+m_model{Matrix4::makeIdentity()},
 m_position{},
 should_update{false},
 dtheta{},
@@ -13,7 +13,7 @@ dscale{1.0F, 1.0F}
 {
 }
 
-void Transformable::translate(const Vector2f vector) noexcept
+void Transformable::translate(const Vector3f vector) noexcept
 {
     m_position += vector;
     should_update = true;
@@ -31,16 +31,16 @@ void Transformable::rotate(const float degree) noexcept
     should_update = true;
 }
 
-const Matrix3& Transformable::getTransformMatrix() noexcept
+const Matrix4& Transformable::getTransformMatrix() noexcept
 {
     if (should_update)
     {
-        m_model = Matrix3::identity();
+        Matrix4::toIdentity(m_model);
 
         const auto half_win_width    = Utility::getHalfWindowWidth();
         const auto half_win_height   = Utility::getHalfWindowHeight();
-        const auto center_to_pos_vec = Vector2f{m_position.x - half_win_width, m_position.y - half_win_height};
-        const auto [dx, dy]          = Utility::vectorToOpenGL(center_to_pos_vec);
+        const auto center_to_pos_vec = Vector3f{m_position.x - half_win_width, m_position.y - half_win_height, 0.0F};
+        const auto [dx, dy, _]       = Utility::vectorToOpenGL(center_to_pos_vec);
         const auto h                 = half_win_height;
         const auto w                 = half_win_width;
         const auto theta             = Utility::radians(dtheta);
@@ -49,11 +49,11 @@ const Matrix3& Transformable::getTransformMatrix() noexcept
 
         m_model[0][0] = dscale.x * ccos;
         m_model[0][1] = -dscale.y * h * ssin / w;
-        m_model[0][2] = dx;
+        m_model[0][3] = dx;
 
         m_model[1][0] = dscale.x * w * ssin / h;
         m_model[1][1] = dscale.y * ccos;
-        m_model[1][2] = dy;
+        m_model[1][3] = dy;
 
         should_update = false;
     }
@@ -61,13 +61,13 @@ const Matrix3& Transformable::getTransformMatrix() noexcept
     return m_model;
 }
 
-void Transformable::setPosition(const Vector2f position) noexcept
+void Transformable::setPosition(const Vector3f position) noexcept
 {
     m_position    = position;
     should_update = true;
 }
 
-Vector2f Transformable::getPosition() const noexcept
+Vector3f Transformable::getPosition() const noexcept
 {
     return m_position;
 }

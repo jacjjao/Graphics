@@ -23,7 +23,7 @@ add_executable(${PROJECT_NAME}
 	"include/Shape.hpp"
 	"include/Transformable.hpp"
 	"include/Texture.hpp"
-	"include/Camera2D.hpp"
+	"include/Camera.hpp"
 	"include/Line.hpp"
 	"include/Color.hpp"
 
@@ -42,7 +42,7 @@ add_executable(${PROJECT_NAME}
 	"src/Shape.cpp"
 	"src/Transformable.cpp"
 	"src/Texture.cpp"
-	"src/Camera2D.cpp"
+	"src/Camera.cpp"
 	"src/Line.cpp"
 	"src/Color.cpp"
 	"demo/main.cpp"

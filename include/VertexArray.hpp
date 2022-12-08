@@ -8,11 +8,11 @@
 class VertexArray : public Drawable
 {
 public:
-    using value_type             = std::vector<Vertex2D>::value_type;
-    using iterator               = std::vector<Vertex2D>::iterator;
-    using const_iterator         = std::vector<Vertex2D>::const_iterator;
-    using reverse_iterator       = std::vector<Vertex2D>::reverse_iterator;
-    using const_reverse_iterator = std::vector<Vertex2D>::const_reverse_iterator;
+    using value_type             = std::vector<Vertex>::value_type;
+    using iterator               = std::vector<Vertex>::iterator;
+    using const_iterator         = std::vector<Vertex>::const_iterator;
+    using reverse_iterator       = std::vector<Vertex>::reverse_iterator;
+    using const_reverse_iterator = std::vector<Vertex>::const_reverse_iterator;
 
     explicit VertexArray(size_t size = 0) noexcept;
     ~VertexArray() noexcept override;
@@ -67,8 +67,8 @@ public:
 private:
     void transformData() noexcept;
 
-    static std::vector<Vertex2D> cache;
-    static VertexArray*          vao_in_bind;
+    static std::vector<Vertex> cache;
+    static VertexArray*        vao_in_bind;
 
     uint32_t m_id;
 
@@ -77,5 +77,5 @@ private:
 
     Texture* m_texture;
 
-    std::vector<Vertex2D> m_vertices;
+    std::vector<Vertex> m_vertices;
 };

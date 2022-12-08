@@ -219,7 +219,24 @@ public:
         return items_.data();
     }
 
-    static constexpr Matrix<T, Height, Width> identity() noexcept
+    static constexpr void toIdentity(Matrix<T, Height, Width>& matrix) noexcept
+    {
+        static_assert(Width == Height, "Cannot turn to identity matrix");
+
+        const auto zero = static_cast<T>(0);
+        for (auto& item : matrix.items_)
+        {
+            item = zero;
+        }
+
+        const auto one = static_cast<T>(1);
+        for (size_t i = 0; i < Height; i++)
+        {
+            matrix[i][i] = one;
+        }
+    }
+
+    static constexpr Matrix<T, Height, Width> makeIdentity() noexcept
     {
         static_assert(Width == Height, "Invalid identity matrix size");
 
@@ -234,9 +251,13 @@ public:
         return mat;
     }
 
+
 private:
     std::vector<T> items_;
 };
 
-using Matrix3 = Matrix<float, 3, 3>;
+
+// using Matrix3 = Matrix<float, 3, 3>;
 using Matrix4 = Matrix<float, 4, 4>;
+
+static inline const Matrix4 identity_mat4 = Matrix4::makeIdentity();

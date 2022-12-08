@@ -15,7 +15,7 @@
 #include "../include/Vector.hpp"
 #include "../include/Texture.hpp"
 #include "../include/FileSystem.hpp"
-#include "../include/Camera2D.hpp"
+#include "../include/Camera.hpp"
 #include "../include/Line.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -27,7 +27,7 @@ const unsigned int SCR_HEIGHT = 1200;
 
 std::unique_ptr<Rectangle2D> rect{};
 std::unique_ptr<Texture>     texture{};
-std::unique_ptr<Camera2D>    camera{};
+std::unique_ptr<Camera>      camera{};
 
 int main()
 {
@@ -56,19 +56,19 @@ int main()
     }
 
     {
-        camera = std::make_unique<Camera2D>();
+        camera = std::make_unique<Camera>();
 
         auto& shaderProgram = ShaderProgram2D::instance();
 
         texture = std::make_unique<Texture>(FileSystem::getPath("/asset/container.jpg"));
 
         rect = std::make_unique<Rectangle2D>(Vector2f{100, 100});
-        rect->setPosition(Vector2f{300, 1000});
+        rect->setPosition(Vector3f{300, 1000, 0});
 
         rect->applyTexture(texture.get());
 
         Circle2D circle{50.0F};
-        circle.setPosition(Vector2f{1700, 900});
+        circle.setPosition(Vector3f{1700, 900, 0});
 
         circle.applyTexture(texture.get());
 
@@ -80,7 +80,7 @@ int main()
 
         circle.scale(Vector2f{2.0F, 2.0F});
         rect->scale(Vector2f{2.0F, 2.0F});
-        rect->translate(Vector2f{100, 0});
+        rect->translate(Vector3f{100, 0, 0});
 
         Line line{Vector2f{100.0F, 100.0F}, Vector2f{500.0F, 100.0F}};
         line.setLineWidth(10.0F);
@@ -165,22 +165,22 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
         // rect->translate({0.0F, -1.0F});
-        camera->move(Vector2f{0.0F, -1.0F});
+        camera->move(Vector3f{0.0F, -1.0F, 0.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
         // rect->translate({0.0F, 1.0F});
-        camera->move(Vector2f{0.0F, 1.0F});
+        camera->move(Vector3f{0.0F, 1.0F, 0.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
         // rect->translate({-1.0F, 0.0F});
-        camera->move(Vector2f{-1.0F, 0.0F});
+        camera->move(Vector3f{-1.0F, 0.0F, 0.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
         // rect->translate({1.0F, 0.0F});
-        camera->move(Vector2f{1.0F, 0.0F});
+        camera->move(Vector3f{1.0F, 0.0F, 0.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
     {
@@ -204,17 +204,6 @@ void processInput(GLFWwindow* window)
 
 void scrollCallback(GLFWwindow* window, double /* xoffset */, double yoffset)
 {
-    /* static const auto half_width  = static_cast<float>(SCR_WIDTH) / 2.0F;
-    static const auto half_height = static_cast<float>(SCR_HEIGHT) / 2.0F;
-
-    double x = 0.0;
-    double y = 0.0;
-    glfwGetCursorPos(window, &x, &y);
-
-    // const Vector2f pos = {(static_cast<float>(x) - half_width), (half_height - static_cast<float>(y))};
-    const Vector2f pos = {static_cast<float>(x), static_cast<float>(y)};
-    camera->moveTo(pos);
- */
     static Vector2f scale{1.0F, 1.0F};
     if (yoffset > 0)
     {

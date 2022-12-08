@@ -5,8 +5,8 @@
 
 #include <glad/glad.h>
 
-std::vector<Vertex2D> VertexArray::cache(40);
-VertexArray*          VertexArray::vao_in_bind = nullptr;
+std::vector<Vertex> VertexArray::cache(40);
+VertexArray*        VertexArray::vao_in_bind = nullptr;
 
 VertexArray::VertexArray(const size_t size) noexcept :
 m_vertices(size),
@@ -45,13 +45,13 @@ void VertexArray::create() noexcept
     VertexArray::bind(this);
     VertexBuffer::bind(&m_vbo);
 
-    const auto stride = static_cast<GLsizei>(sizeof(Vertex2D));
+    const auto stride = static_cast<GLsizei>(sizeof(Vertex));
     glCheck(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, stride, (void*)0));
     glCheck(glEnableVertexAttribArray(0));
-    glCheck(glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, stride, (void*)(sizeof(Vertex2D::position))));
+    glCheck(glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, stride, (void*)(sizeof(Vertex::position))));
     glCheck(glEnableVertexAttribArray(1));
     glCheck(
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)(sizeof(Vertex2D::position) + sizeof(Vertex2D::color))));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)(sizeof(Vertex::position) + sizeof(Vertex::color))));
     glCheck(glEnableVertexAttribArray(2));
 
     VertexArray::unbind();
@@ -78,7 +78,7 @@ void VertexArray::draw(const PrimitiveType primitive_type) noexcept
 
     auto& program = ShaderProgram2D::instance();
 
-    program.setMat3("model", Matrix3::identity());
+    program.setMat4("model", identity_mat4);
     program.setFloat("color_alpha", 1.0F);
 
     VertexArray::bind(this);

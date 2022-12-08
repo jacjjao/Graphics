@@ -23,11 +23,11 @@ void VertexBuffer::destroy() noexcept
     }
 }
 
-void VertexBuffer::updateData(const std::vector<Vertex2D>& vertices) noexcept
+void VertexBuffer::updateData(const std::vector<Vertex>& vertices) noexcept
 {
     if (isAvailable())
     {
-        const auto size_in_bytes = static_cast<GLsizei>(vertices.size() * sizeof(Vertex2D));
+        const auto size_in_bytes = static_cast<GLsizei>(vertices.size() * sizeof(Vertex));
 
         VertexBuffer::bind(this);
 
@@ -37,7 +37,7 @@ void VertexBuffer::updateData(const std::vector<Vertex2D>& vertices) noexcept
     }
 }
 
-void VertexBuffer::create(const std::vector<Vertex2D>& vertices) noexcept
+void VertexBuffer::create(const std::vector<Vertex>& vertices) noexcept
 {
     if (isAvailable())
     {
@@ -50,7 +50,7 @@ void VertexBuffer::create(const std::vector<Vertex2D>& vertices) noexcept
 
     VertexBuffer::bind(this);
 
-    const auto size_in_bytes = static_cast<GLsizei>(vertices.size() * sizeof(Vertex2D));
+    const auto size_in_bytes = static_cast<GLsizei>(vertices.size() * sizeof(Vertex));
     glCheck(glBufferData(GL_ARRAY_BUFFER, size_in_bytes, vertices.data(), static_cast<GLenum>(m_usage)));
 
     VertexBuffer::unbind();

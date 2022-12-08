@@ -88,7 +88,7 @@ void Circle2D::setupDraw() noexcept
     auto& program = ShaderProgram2D::instance();
 
     program.setFloat("color_alpha", hasTexture() ? 0.0F : 1.0F);
-    program.setMat3("model", getTransformMatrix());
+    program.setMat4("model", getTransformMatrix());
 
     VertexArray::bind(&m_vao);
 }

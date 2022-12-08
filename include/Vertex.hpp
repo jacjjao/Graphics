@@ -5,14 +5,14 @@
 #include "Vector.hpp"
 #include "Color.hpp"
 
-class Vertex2D
+class Vertex
 {
 public:
-    explicit constexpr Vertex2D() noexcept : position{}, color{}, tex_coord{}
+    explicit constexpr Vertex() noexcept : position{}, color{}, tex_coord{}
     {
     }
 
-    Vector2f position;
+    Vector3f position;
     Color    color;
     Vector2f tex_coord;
 };

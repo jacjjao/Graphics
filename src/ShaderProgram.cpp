@@ -127,11 +127,11 @@ void ShaderProgram::setBool(const std::string& name, const bool value) noexcept
     glCheck(glUniform1i(loc, value));
 }
 
-void ShaderProgram::setMat3(const std::string& name, const Matrix3& matrix) noexcept
+/* void ShaderProgram::setMat3(const std::string& name, const Matrix3& matrix) noexcept
 {
     auto loc = getLocation(name);
     glCheck(glUniformMatrix3fv(loc, 1, GL_TRUE, matrix.data()));
-}
+} */
 
 void ShaderProgram::setMat4(const std::string& name, const Matrix4& matrix) noexcept
 {

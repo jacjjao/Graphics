@@ -22,8 +22,8 @@ public:
     VertexBuffer& operator=(const VertexBuffer&) = delete;
 
     void destroy() noexcept;
-    void updateData(const std::vector<Vertex2D>& vertices) noexcept;
-    void create(const std::vector<Vertex2D>& vertices) noexcept;
+    void updateData(const std::vector<Vertex>& vertices) noexcept;
+    void create(const std::vector<Vertex>& vertices) noexcept;
 
     [[nodiscard]] bool isAvailable() const noexcept;
 
