@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cmath>
 
 template <typename T>
 class Vector2
@@ -21,6 +22,23 @@ public:
     constexpr Vector2<T> operator-() const noexcept
     {
         return Vector2<T>{-x, -y};
+    }
+
+    constexpr Vector2<T> operator*(const Vector2<T>& other) const noexcept
+    {
+        return Vector2<T>{x * other.x, y * other.y};
+    }
+
+    constexpr T length() const noexcept
+    {
+        return std::sqrt(x * x + y * y);
+    }
+
+    constexpr Vector2<T> normalize() const noexcept
+    {
+        const auto len = length();
+
+        return Vector2<T>{x / len, y / len};
     }
 
     T x, y;
@@ -50,7 +68,7 @@ public:
         return *this;
     }
 
-    constexpr Vector3<T>& operator+=(const Vector3<T>& other) noexcept
+    Vector3<T>& operator+=(const Vector3<T>& other) noexcept
     {
         x += other.x;
         y += other.y;
@@ -64,7 +82,36 @@ public:
         return Vector3<T>{-x, -y, -z};
     }
 
+    constexpr Vector3<T> operator*(const Vector3<T>& other) const noexcept
+    {
+        return Vector3<T>{x * other.x, y * other.y, z * other.z};
+    }
+
+    T length() const noexcept
+    {
+        return std::sqrt(x * x + y * y + z * z);
+    }
+
+    Vector3<T> normalize() const noexcept
+    {
+        const auto len = length();
+
+        return Vector3<T>{x / len, y / len, z / len};
+    }
+
     T x, y, z;
 };
 
 using Vector3f = Vector3<float>;
+
+template <typename T>
+constexpr Vector3<T> crossProduct(const Vector3<T>& a, const Vector3<T>& b) noexcept
+{
+    Vector3<T> result{};
+
+    result.x = a.y * b.z - a.z * b.y;
+    result.y = a.z * b.x - a.x * b.z;
+    result.z = a.x * b.y - a.y * b.x;
+
+    return result;
+}
