@@ -82,7 +82,7 @@ void VertexArray::draw(const PrimitiveType primitive_type) noexcept
     program.setFloat("color_alpha", 1.0F);
 
     VertexArray::bind(this);
-    glDrawArrays(static_cast<GLenum>(primitive_type), 0, static_cast<GLsizei>(m_vertices.size()));
+    glCheck(glDrawArrays(static_cast<GLenum>(primitive_type), 0, static_cast<GLsizei>(m_vertices.size())));
     VertexArray::unbind();
 }
 

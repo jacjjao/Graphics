@@ -20,7 +20,7 @@ void Circle2D::draw() noexcept
     }
 
     setupDraw();
-    glCheck(glDrawArrays(GL_TRIANGLE_FAN, 0, m_vao.size()));
+    m_vao.draw(PrimitiveType::TriangleFan);
     cleanUpDraw();
 }
 

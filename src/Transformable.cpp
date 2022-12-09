@@ -35,7 +35,7 @@ const Matrix4& Transformable::getTransformMatrix() noexcept
 {
     if (should_update)
     {
-        Matrix4::toIdentity(m_model);
+        m_model.toIdentity();
 
         const auto half_win_width    = Window::getHalfWindowWidth();
         const auto half_win_height   = Window::getHalfWindowHeight();
