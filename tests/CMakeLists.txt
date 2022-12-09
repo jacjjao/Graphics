@@ -3,7 +3,7 @@ project(Test VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(Test main.cpp VectorTests.cpp)
+add_executable(Test main.cpp VectorTests.cpp MatrixTests.cpp)
 
 find_package(GTest CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME} 

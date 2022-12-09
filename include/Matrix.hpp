@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <initializer_list>
 #include <vector>
 
 #if (DEBUG)
@@ -86,8 +87,13 @@ public:
     static_assert(Width > 0, "Invalid width value");
     static_assert(Height > 0, "Invalid Height value");
 
-    explicit constexpr Matrix() noexcept : items_(Width * Height)
+    explicit Matrix() noexcept : items_(Width * Height)
     {
+    }
+
+    Matrix(std::initializer_list<T> list) noexcept : items_(list)
+    {
+        items_.resize(Width * Height);
     }
 
     ~Matrix() noexcept = default;
@@ -98,7 +104,7 @@ public:
     Matrix(Matrix<T, Height, Width>&&) noexcept            = default;
     Matrix& operator=(Matrix<T, Height, Width>&&) noexcept = default;
 
-    constexpr detail::Row<T, Width> operator[](const size_t index) noexcept
+    detail::Row<T, Width> operator[](const size_t index) noexcept
     {
 #if (DEBUG)
         if (index >= Height)
@@ -109,7 +115,7 @@ public:
         return detail::Row<T, Width>{&items_[index * Width]};
     }
 
-    constexpr detail::ConstRow<T, Width> operator[](const size_t index) const noexcept
+    detail::ConstRow<T, Width> operator[](const size_t index) const noexcept
     {
 #if (DEBUG)
         if (index >= Height)
@@ -120,8 +126,7 @@ public:
         return detail::ConstRow<T, Width>{&items_[index * Width]};
     }
 
-    friend constexpr Matrix<T, Height, Width> operator+(const Matrix<T, Height, Width>& lhs,
-                                                        const Matrix<T, Height, Width>& rhs) noexcept
+    friend Matrix<T, Height, Width> operator+(const Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs) noexcept
     {
         Matrix<T, Height, Width> result{};
 
@@ -136,8 +141,7 @@ public:
         return result;
     }
 
-    friend constexpr Matrix<T, Height, Width> operator-(const Matrix<T, Height, Width>& lhs,
-                                                        const Matrix<T, Height, Width>& rhs) noexcept
+    friend Matrix<T, Height, Width> operator-(const Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs) noexcept
     {
         Matrix<T, Height, Width> result{};
 
@@ -152,8 +156,7 @@ public:
         return result;
     }
 
-    friend constexpr Matrix<T, Height, Width>& operator+=(Matrix<T, Height, Width>&       lhs,
-                                                          const Matrix<T, Height, Width>& rhs) noexcept
+    friend Matrix<T, Height, Width>& operator+=(Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs) noexcept
     {
         for (size_t i = 0; i < Height; i++)
         {
@@ -166,8 +169,7 @@ public:
         return lhs;
     }
 
-    friend constexpr Matrix<T, Height, Width>& operator-=(Matrix<T, Height, Width>&       lhs,
-                                                          const Matrix<T, Height, Width>& rhs) noexcept
+    friend Matrix<T, Height, Width>& operator-=(Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs) noexcept
     {
         for (size_t i = 0; i < Height; i++)
         {
@@ -181,7 +183,7 @@ public:
     }
 
     template <size_t W>
-    friend constexpr Matrix<T, Height, W> operator*(const Matrix<T, Height, Width>& lhs, const Matrix<T, Width, W>& rhs) noexcept
+    friend Matrix<T, Height, W> operator*(const Matrix<T, Height, Width>& lhs, const Matrix<T, Width, W>& rhs) noexcept
     {
         Matrix<T, Height, W> result{};
 
@@ -199,44 +201,43 @@ public:
         return result;
     }
 
-    [[nodiscard]] constexpr size_t width() const noexcept
+    [[nodiscard]] size_t width() const noexcept
     {
         return Width;
     }
 
-    [[nodiscard]] constexpr size_t height() const noexcept
+    [[nodiscard]] size_t height() const noexcept
     {
         return Height;
     }
 
-    [[nodiscard]] constexpr T* data() noexcept
+    [[nodiscard]] T* data() noexcept
     {
         return items_.data();
     }
 
-    [[nodiscard]] constexpr const T* data() const noexcept
+    [[nodiscard]] const T* data() const noexcept
     {
         return items_.data();
     }
 
-    static constexpr void toIdentity(Matrix<T, Height, Width>& matrix) noexcept
+    void toIdentity() noexcept
     {
         static_assert(Width == Height, "Cannot turn to identity matrix");
 
         const auto zero = static_cast<T>(0);
-        for (auto& item : matrix.items_)
-        {
-            item = zero;
-        }
+        const auto one  = static_cast<T>(1);
 
-        const auto one = static_cast<T>(1);
         for (size_t i = 0; i < Height; i++)
         {
-            matrix[i][i] = one;
+            for (size_t j = 0; j < Width; j++)
+            {
+                items_[i * Width + j] = (i == j) ? one : zero;
+            }
         }
     }
 
-    static constexpr Matrix<T, Height, Width> makeIdentity() noexcept
+    static Matrix<T, Height, Width> makeIdentity() noexcept
     {
         static_assert(Width == Height, "Invalid identity matrix size");
 
