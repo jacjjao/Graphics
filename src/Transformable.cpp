@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-#include "../include/Utility.hpp"
+#include "../include/Window.hpp"
 
 Transformable::Transformable() noexcept :
 m_model{Matrix4::makeIdentity()},
@@ -37,13 +37,13 @@ const Matrix4& Transformable::getTransformMatrix() noexcept
     {
         Matrix4::toIdentity(m_model);
 
-        const auto half_win_width    = Utility::getHalfWindowWidth();
-        const auto half_win_height   = Utility::getHalfWindowHeight();
+        const auto half_win_width    = Window::getHalfWindowWidth();
+        const auto half_win_height   = Window::getHalfWindowHeight();
         const auto center_to_pos_vec = Vector3f{m_position.x - half_win_width, m_position.y - half_win_height, 0.0F};
-        const auto [dx, dy, _]       = Utility::vectorToOpenGL(center_to_pos_vec);
+        const auto [dx, dy, _]       = Window::vectorToOpenGL(center_to_pos_vec);
         const auto h                 = half_win_height;
         const auto w                 = half_win_width;
-        const auto theta             = Utility::radians(dtheta);
+        const auto theta             = Window::radians(dtheta);
         const auto ssin              = std::sin(theta);
         const auto ccos              = std::cos(theta);
 

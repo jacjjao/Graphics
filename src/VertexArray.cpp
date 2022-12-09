@@ -1,7 +1,7 @@
 #include "../include/VertexArray.hpp"
 #include "../include/glCheck.hpp"
 #include "../include/ShaderProgram.hpp"
-#include "../include/Utility.hpp"
+#include "../include/Window.hpp"
 
 #include <glad/glad.h>
 
@@ -240,7 +240,7 @@ void VertexArray::transformData() noexcept
     cache.resize(m_vertices.size());
     for (int i = 0; i < m_vertices.size(); i++)
     {
-        cache[i].position = Utility::pointToOpenGL(m_vertices[i].position);
+        cache[i].position = Window::pointToOpenGL(m_vertices[i].position);
         cache[i].color    = m_vertices[i].color;
     }
     if (hasTexture())
@@ -249,7 +249,7 @@ void VertexArray::transformData() noexcept
         {
             const Vector2f size = Vector2f{static_cast<float>(m_texture->getWidth()),
                                            static_cast<float>(m_texture->getHeight())};
-            cache[i].tex_coord  = Utility::pointToTexCoord(m_vertices[i].tex_coord, size);
+            cache[i].tex_coord  = Window::pointToTexCoord(m_vertices[i].tex_coord, size);
         }
     }
 }

@@ -1,11 +1,11 @@
-#include "../include/Utility.hpp"
+#include "../include/Window.hpp"
 
-float Utility::window_width       = 0.0F;
-float Utility::window_height      = 0.0F;
-float Utility::half_window_width  = 0.0F;
-float Utility::half_window_height = 0.0F;
+float Window::window_width       = 0.0F;
+float Window::window_height      = 0.0F;
+float Window::half_window_width  = 0.0F;
+float Window::half_window_height = 0.0F;
 
-void Utility::initialize(const float width, const float height) noexcept
+void Window::initialize(const float width, const float height) noexcept
 {
     window_width       = width;
     window_height      = height;
@@ -13,7 +13,7 @@ void Utility::initialize(const float width, const float height) noexcept
     half_window_height = height / 2.0F;
 }
 
-Vector3f Utility::pointToOpenGL(const Vector3f point) noexcept
+Vector3f Window::pointToOpenGL(const Vector3f point) noexcept
 {
     // return pointToGL(point, half_window_width, half_window_height);
     return Vector3f{(point.x - half_window_width) / half_window_width,
@@ -21,7 +21,7 @@ Vector3f Utility::pointToOpenGL(const Vector3f point) noexcept
                     point.z};
 }
 
-Vector3f Utility::vectorToOpenGL(const Vector3f vector) noexcept
+Vector3f Window::vectorToOpenGL(const Vector3f vector) noexcept
 {
     // return vectorToGL(vector, half_window_width, half_window_height);
     return Vector3f{static_cast<float>(vector.x) / half_window_width,
@@ -29,7 +29,7 @@ Vector3f Utility::vectorToOpenGL(const Vector3f vector) noexcept
                     vector.z};
 }
 
-Vector2f Utility::pointToTexCoord(const Vector2f point, const Vector2f tex_size) noexcept
+Vector2f Window::pointToTexCoord(const Vector2f point, const Vector2f tex_size) noexcept
 {
     Vector2f result{};
 
@@ -39,27 +39,27 @@ Vector2f Utility::pointToTexCoord(const Vector2f point, const Vector2f tex_size)
     return result;
 }
 
-float Utility::getWindowWidth() noexcept
+float Window::getWindowWidth() noexcept
 {
     return window_width;
 }
 
-float Utility::getWindowHeight() noexcept
+float Window::getWindowHeight() noexcept
 {
     return window_height;
 }
 
-float Utility::getHalfWindowWidth() noexcept
+float Window::getHalfWindowWidth() noexcept
 {
     return half_window_width;
 }
 
-float Utility::getHalfWindowHeight() noexcept
+float Window::getHalfWindowHeight() noexcept
 {
     return half_window_height;
 }
 
-float Utility::radians(const float degrees) noexcept
+float Window::radians(const float degrees) noexcept
 {
     return degrees * static_cast<float>(0.01745329251994329576923690768489); // copy from glm::radians
 }

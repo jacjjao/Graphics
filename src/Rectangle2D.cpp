@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 
 #include "../include/ShaderProgram.hpp"
-#include "../include/Utility.hpp"
+#include "../include/Window.hpp"
 #include "../include/glCheck.hpp"
 
 Rectangle2D::Rectangle2D(const Vector2f size) noexcept : Shape{4}, m_ebo{6}, m_size{size}
@@ -28,7 +28,7 @@ void Rectangle2D::update() noexcept
     const auto half_width  = static_cast<float>(m_size.x) / 2.0F;
     const auto half_height = static_cast<float>(m_size.y) / 2.0F;
 
-    const Vector2f center{Utility::getHalfWindowWidth(), Utility::getHalfWindowHeight()};
+    const Vector2f center{Window::getHalfWindowWidth(), Window::getHalfWindowHeight()};
     const Vector2f top_right_pos{center.x + half_width, center.y - half_height};
     const Vector2f bottom_right_pos{center.x + half_width, center.y + half_height};
     const Vector2f bottom_left_pos{center.x - half_width, center.y + half_height};

@@ -1,6 +1,6 @@
 #include "../include/Camera.hpp"
 #include "../include/ShaderProgram.hpp"
-#include "../include/Utility.hpp"
+#include "../include/Window.hpp"
 
 #include <cmath>
 
@@ -9,7 +9,7 @@ m_view{Matrix4::makeIdentity()},
 should_update{true},
 dtheta{0.0F},
 dscale{1.0F, 1.0F},
-m_position{Utility::getHalfWindowWidth(), Utility::getHalfWindowHeight(), 0.0F}
+m_position{Window::getHalfWindowWidth(), Window::getHalfWindowHeight(), 0.0F}
 {
 }
 
@@ -20,7 +20,7 @@ void Camera::use() noexcept
 
 void Camera::move(const Vector3f vector) noexcept
 {
-    const auto theta = Utility::radians(dtheta);
+    const auto theta = Window::radians(dtheta);
     const auto ccos  = std::cos(theta);
     const auto ssin  = std::sin(theta);
 
@@ -53,12 +53,12 @@ void Camera::scale(const Vector2f scale) noexcept
 
 void Camera::update() noexcept
 {
-    const auto [x, y, _] = -(Utility::pointToOpenGL(m_position));
-    const auto theta     = Utility::radians(dtheta);
+    const auto [x, y, _] = -(Window::pointToOpenGL(m_position));
+    const auto theta     = Window::radians(dtheta);
     const auto ccos      = std::cos(theta);
     const auto ssin      = std::sin(theta);
-    const auto h         = Utility::getWindowHeight();
-    const auto w         = Utility::getWindowWidth();
+    const auto h         = Window::getWindowHeight();
+    const auto w         = Window::getWindowWidth();
     const auto [a, b]    = dscale;
 
     m_view[0][0] = a * ccos;

@@ -3,7 +3,7 @@
 #include "Vector.hpp"
 #include "Matrix.hpp"
 
-class Utility
+class Window
 {
 public:
     static void initialize(float width, float height) noexcept;
@@ -19,9 +19,6 @@ public:
     static float radians(float degrees) noexcept;
 
 private:
-    // static Vector3f pointToGL(Vector3f point, float half_width, float half_height) noexcept;
-    // static Vector3f vectorToGL(Vector3f vector, float half_width, float half_height) noexcept;
-
     static float window_width, window_height;
     static float half_window_width, half_window_height;
 };

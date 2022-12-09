@@ -1,5 +1,5 @@
 #include "../include/ShaderProgram.hpp"
-#include "../include/Utility.hpp"
+#include "../include/Window.hpp"
 #include "../include/glCheck.hpp"
 #include "../include/Circle2D.hpp"
 
@@ -29,7 +29,7 @@ void Circle2D::update() noexcept
     const auto f_point_count   = static_cast<float>(m_vao.size() - 1);
     const auto f_pi            = static_cast<float>(std::numbers::pi);
     const auto slice           = 2.0F * f_pi / f_point_count;
-    const auto center          = Vector2f{Utility::getHalfWindowWidth(), Utility::getHalfWindowHeight()};
+    const auto center          = Vector2f{Window::getHalfWindowWidth(), Window::getHalfWindowHeight()};
     const auto color           = getColor();
     const auto half_tex_width  = (hasTexture()) ? m_vao.getTexture()->getWidth() / 2.0F : 0.0F;
     const auto half_tex_height = (hasTexture()) ? m_vao.getTexture()->getHeight() / 2.0F : 0.0F;

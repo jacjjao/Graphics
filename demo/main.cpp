@@ -11,7 +11,7 @@
 #include "../include/Clock.hpp"
 #include "../include/Rectangle2D.hpp"
 #include "../include/ShaderProgram.hpp"
-#include "../include/Utility.hpp"
+#include "../include/Window.hpp"
 #include "../include/Vector.hpp"
 #include "../include/Texture.hpp"
 #include "../include/FileSystem.hpp"
@@ -31,7 +31,7 @@ std::unique_ptr<Camera>      camera{};
 
 int main()
 {
-    Utility::initialize(SCR_WIDTH, SCR_HEIGHT);
+    Window::initialize(SCR_WIDTH, SCR_HEIGHT);
 
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
