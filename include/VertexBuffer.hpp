@@ -35,6 +35,11 @@ public:
 private:
     static VertexBuffer* vbo_in_bind;
 
-    Usage    m_usage;
+    Usage m_usage;
+
     uint32_t m_id;
+
+    size_t m_size;
+
+    int32_t m_size_in_bytes;
 };

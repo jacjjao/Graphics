@@ -5,7 +5,7 @@
 
 VertexBuffer* VertexBuffer::vbo_in_bind = nullptr;
 
-VertexBuffer::VertexBuffer() noexcept : m_id{}, m_usage{Usage::DynamicDraw}
+VertexBuffer::VertexBuffer() noexcept : m_id{}, m_usage{Usage::DynamicDraw}, m_size{0}, m_size_in_bytes{0}
 {
 }
 
@@ -19,39 +19,58 @@ void VertexBuffer::destroy() noexcept
     if (isAvailable())
     {
         glCheck(glDeleteBuffers(1, &m_id));
-        m_id = 0;
+        m_id   = 0;
+        m_size = m_size_in_bytes = 0;
     }
 }
 
 void VertexBuffer::updateData(const std::vector<Vertex>& vertices) noexcept
 {
-    if (isAvailable())
+    if (!isAvailable())
     {
-        const auto size_in_bytes = static_cast<GLsizei>(vertices.size() * sizeof(Vertex));
-
-        VertexBuffer::bind(this);
-
-        glCheck(glBufferSubData(GL_ARRAY_BUFFER, 0, size_in_bytes, vertices.data()));
-
-        VertexBuffer::unbind();
+        create(vertices);
+        return;
     }
+
+    if (vertices.empty())
+    {
+        destroy();
+        return;
+    }
+
+    if (vertices.size() != m_size)
+    {
+        create(vertices);
+        return;
+    }
+
+    VertexBuffer::bind(this);
+
+    glCheck(glBufferSubData(GL_ARRAY_BUFFER, 0, m_size_in_bytes, vertices.data()));
+
+    VertexBuffer::unbind();
 }
 
 void VertexBuffer::create(const std::vector<Vertex>& vertices) noexcept
 {
-    if (isAvailable())
+    if (vertices.empty())
     {
         return;
     }
 
-    updateData(vertices);
+    if (isAvailable())
+    {
+        destroy();
+    }
+
+    m_size          = vertices.size();
+    m_size_in_bytes = static_cast<GLsizei>(m_size * sizeof(Vertex));
 
     glCheck(glGenBuffers(1, &m_id));
 
     VertexBuffer::bind(this);
 
-    const auto size_in_bytes = static_cast<GLsizei>(vertices.size() * sizeof(Vertex));
-    glCheck(glBufferData(GL_ARRAY_BUFFER, size_in_bytes, vertices.data(), static_cast<GLenum>(m_usage)));
+    glCheck(glBufferData(GL_ARRAY_BUFFER, m_size_in_bytes, vertices.data(), static_cast<GLenum>(m_usage)));
 
     VertexBuffer::unbind();
 }

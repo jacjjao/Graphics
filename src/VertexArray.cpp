@@ -40,16 +40,21 @@ void VertexArray::create() noexcept
     }
 
     glCheck(glGenVertexArrays(1, &m_id));
+
     transformData();
+
     m_vbo.create(cache);
+
     VertexArray::bind(this);
     VertexBuffer::bind(&m_vbo);
 
     const auto stride = static_cast<GLsizei>(sizeof(Vertex));
     glCheck(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, stride, (void*)0));
     glCheck(glEnableVertexAttribArray(0));
+
     glCheck(glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, stride, (void*)(sizeof(Vertex::position))));
     glCheck(glEnableVertexAttribArray(1));
+
     glCheck(
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)(sizeof(Vertex::position) + sizeof(Vertex::color))));
     glCheck(glEnableVertexAttribArray(2));
