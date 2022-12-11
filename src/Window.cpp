@@ -15,7 +15,6 @@ void Window::initialize(const float width, const float height) noexcept
 
 Vector3f Window::pointToOpenGL(const Vector3f point) noexcept
 {
-    // return pointToGL(point, half_window_width, half_window_height);
     return Vector3f{(point.x - half_window_width) / half_window_width,
                     (half_window_height - point.y) / half_window_height,
                     point.z};
@@ -23,20 +22,9 @@ Vector3f Window::pointToOpenGL(const Vector3f point) noexcept
 
 Vector3f Window::vectorToOpenGL(const Vector3f vector) noexcept
 {
-    // return vectorToGL(vector, half_window_width, half_window_height);
     return Vector3f{static_cast<float>(vector.x) / half_window_width,
                     static_cast<float>(-vector.y) / half_window_height,
                     vector.z};
-}
-
-Vector2f Window::pointToTexCoord(const Vector2f point, const Vector2f tex_size) noexcept
-{
-    Vector2f result{};
-
-    result.x = point.x / tex_size.x;
-    result.y = (point.y - tex_size.y) / tex_size.y;
-
-    return result;
 }
 
 float Window::getWindowWidth() noexcept

@@ -40,8 +40,6 @@ Texture::Texture(const std::string& path) noexcept : m_id{}, m_size{}
         std::cerr << "Failed to load texture: " << path << '\n';
     }
     stbi_image_free(data);
-
-    unbind();
 }
 
 Texture::~Texture() noexcept
@@ -56,6 +54,11 @@ void Texture::destroy() noexcept
         glCheck(glDeleteTextures(1, &m_id));
         m_id = 0;
     }
+}
+
+Vector2f Texture::getSize() const noexcept
+{
+    return m_size;
 }
 
 float Texture::getWidth() const noexcept
@@ -84,4 +87,43 @@ void Texture::unbind() noexcept
         glCheck(glBindTexture(GL_TEXTURE_2D, 0));
         texture_in_bind = nullptr;
     }
+}
+
+Vector2f Texture::pointToTexCoord(const Vector2f point, const Vector2f tex_size) noexcept
+{
+    Vector2f result{};
+
+    result.x = point.x / tex_size.x;
+    result.y = -(point.y - tex_size.y) / tex_size.y;
+
+    return result;
+}
+
+Image::Image(const Texture& texture) : texture{texture}, m_position{}, m_size{}
+{
+}
+
+const Texture& Image::getTexture() const noexcept
+{
+    return texture;
+}
+
+void Image::setPosition(const Vector2f position) noexcept
+{
+    m_position = position;
+}
+
+Vector2f Image::getPosition() const noexcept
+{
+    return m_position;
+}
+
+void Image::setSize(const Vector2f size) noexcept
+{
+    m_size = size;
+}
+
+Vector2f Image::getSize() const noexcept
+{
+    return m_size;
 }

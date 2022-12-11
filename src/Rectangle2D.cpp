@@ -19,7 +19,7 @@ void Rectangle2D::draw() noexcept
 
     setupDraw();
     glCheck(glDrawElements(GL_TRIANGLES, m_ebo.size(), GL_UNSIGNED_INT, 0));
-    cleanUpDraw();
+    // cleanUpDraw();
 }
 
 void Rectangle2D::update() noexcept
@@ -39,22 +39,19 @@ void Rectangle2D::update() noexcept
     m_vao[2].position = bottom_left_pos;
     m_vao[3].position = top_left_pos;
     // update color
-    const auto color = getColor();
     for (auto& vertex : m_vao)
     {
-        vertex.color = color;
+        vertex.color = m_color;
     }
     // update texture coordinate
     if (hasTexture())
     {
-        const auto* texture    = m_vao.getTexture();
-        const auto  tex_width  = texture->getWidth();
-        const auto  tex_height = texture->getHeight();
+        const auto [tex_width, tex_height] = m_texture->getSize();
 
-        m_vao[0].tex_coord = Vector2f{tex_width, 0.0F};
-        m_vao[1].tex_coord = Vector2f{tex_width, tex_height};
-        m_vao[2].tex_coord = Vector2f{0.0F, tex_height};
-        m_vao[3].tex_coord = Vector2f{0.0F, 0.0F};
+        m_vao[0].tex_coord = Texture::pointToTexCoord(Vector2f{tex_width, 0.0F}, m_texture->getSize());
+        m_vao[1].tex_coord = Texture::pointToTexCoord(Vector2f{tex_width, tex_height}, m_texture->getSize());
+        m_vao[2].tex_coord = Texture::pointToTexCoord(Vector2f{0.0F, tex_height}, m_texture->getSize());
+        m_vao[3].tex_coord = Texture::pointToTexCoord(Vector2f{0.0F, 0.0F}, m_texture->getSize());
     }
 
     if (m_vao.isAvailable())
@@ -90,22 +87,10 @@ void Rectangle2D::create() noexcept
 
 void Rectangle2D::setupDraw() noexcept
 {
-    if (hasTexture())
-    {
-        glCheck(glActiveTexture(GL_TEXTURE0));
-        Texture::bind(m_vao.getTexture());
-    }
-
     auto& program = ShaderProgram2D::instance();
 
     program.setFloat("color_alpha", hasTexture() ? 0.0F : 1.0F);
     program.setMat4("model", getTransformMatrix());
 
     VertexArray::bind(&m_vao);
-}
-
-void Rectangle2D::cleanUpDraw() noexcept
-{
-    VertexArray::unbind();
-    Texture::unbind();
 }

@@ -2,7 +2,9 @@
 
 #include "Drawable.hpp"
 #include "Transformable.hpp"
+#include "Texture.hpp"
 #include "VertexArray.hpp"
+#include "Rect.hpp"
 
 class Shape : public Drawable, public Transformable
 {
@@ -24,5 +26,10 @@ public:
 
 protected:
     VertexArray m_vao;
-    Color       m_color;
+
+    Color m_color;
+
+    Texture* m_texture;
+
+    Rect m_tex_rect;
 };

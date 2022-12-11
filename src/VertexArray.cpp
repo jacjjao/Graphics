@@ -11,7 +11,6 @@ VertexArray*        VertexArray::vao_in_bind = nullptr;
 VertexArray::VertexArray(const size_t size) noexcept :
 m_vertices(size),
 m_id{0},
-m_texture{nullptr},
 m_usage{VertexBuffer::Usage::DynamicDraw}
 {
     m_vbo.setUsage(m_usage);
@@ -88,7 +87,6 @@ void VertexArray::draw(const PrimitiveType primitive_type) noexcept
 
     VertexArray::bind(this);
     glCheck(glDrawArrays(static_cast<GLenum>(primitive_type), 0, static_cast<GLsizei>(m_vertices.size())));
-    VertexArray::unbind();
 }
 
 void VertexArray::resize(const size_t size) noexcept
@@ -139,26 +137,6 @@ const VertexArray::value_type& VertexArray::back() const noexcept
 bool VertexArray::isAvailable() const noexcept
 {
     return m_id != 0;
-}
-
-void VertexArray::applyTexture(Texture* texture) noexcept
-{
-    m_texture = texture;
-}
-
-Texture* VertexArray::getTexture() noexcept
-{
-    return m_texture;
-}
-
-const Texture* VertexArray::getTexture() const noexcept
-{
-    return m_texture;
-}
-
-bool VertexArray::hasTexture() const noexcept
-{
-    return m_texture != nullptr;
 }
 
 size_t VertexArray::size() const noexcept
@@ -245,16 +223,8 @@ void VertexArray::transformData() noexcept
     cache.resize(m_vertices.size());
     for (int i = 0; i < m_vertices.size(); i++)
     {
-        cache[i].position = Window::pointToOpenGL(m_vertices[i].position);
-        cache[i].color    = m_vertices[i].color;
-    }
-    if (hasTexture())
-    {
-        for (int i = 0; i < m_vertices.size(); i++)
-        {
-            const Vector2f size = Vector2f{static_cast<float>(m_texture->getWidth()),
-                                           static_cast<float>(m_texture->getHeight())};
-            cache[i].tex_coord  = Window::pointToTexCoord(m_vertices[i].tex_coord, size);
-        }
+        cache[i].position  = Window::pointToOpenGL(m_vertices[i].position);
+        cache[i].color     = m_vertices[i].color;
+        cache[i].tex_coord = m_vertices[i].tex_coord;
     }
 }

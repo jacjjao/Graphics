@@ -2,7 +2,6 @@
 
 #include "Drawable.hpp"
 #include "VertexBuffer.hpp"
-#include "Texture.hpp"
 #include "PrimitiveType.hpp"
 
 class VertexArray : public Drawable
@@ -40,11 +39,6 @@ public:
 
     [[nodiscard]] bool isAvailable() const noexcept;
 
-    void                         applyTexture(Texture* texture) noexcept;
-    [[nodiscard]] Texture*       getTexture() noexcept;
-    [[nodiscard]] const Texture* getTexture() const noexcept;
-    [[nodiscard]] bool           hasTexture() const noexcept;
-
     [[nodiscard]] size_t size() const noexcept;
 
     void setUsage(VertexBuffer::Usage usage) noexcept;
@@ -74,8 +68,6 @@ private:
 
     VertexBuffer        m_vbo;
     VertexBuffer::Usage m_usage;
-
-    Texture* m_texture;
 
     std::vector<Vertex> m_vertices;
 };

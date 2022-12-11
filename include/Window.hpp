@@ -9,7 +9,6 @@ public:
 
     static Vector3f pointToOpenGL(Vector3f point) noexcept;
     static Vector3f vectorToOpenGL(Vector3f vector) noexcept;
-    static Vector2f pointToTexCoord(Vector2f point, Vector2f tex_size) noexcept;
 
     static float getWindowWidth() noexcept;
     static float getWindowHeight() noexcept;

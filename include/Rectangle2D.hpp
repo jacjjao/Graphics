@@ -21,7 +21,6 @@ public:
 private:
     void create() noexcept;
     void setupDraw() noexcept;
-    void cleanUpDraw() noexcept;
 
     Vector2f m_size;
 
