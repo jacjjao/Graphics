@@ -2,7 +2,9 @@
 
 #include "../configuration/root_directory.h"
 
-std::string FileSystem::getPath(const std::string& path) noexcept
+std::filesystem::path FileSystem::getPath(const std::filesystem::path& path) noexcept
 {
-    return std::string(ROOT_DIR) + path;
+    std::filesystem::path target_path{ROOT_DIR};
+    target_path += path;
+    return target_path;
 }

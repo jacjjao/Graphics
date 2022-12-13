@@ -2,12 +2,13 @@
 
 #include "Vector.hpp"
 
+#include <filesystem>
 #include <cstdint>
 #include <string>
 class Texture
 {
 public:
-    explicit Texture(const std::string& path) noexcept;
+    explicit Texture(const std::filesystem::path& path) noexcept;
     ~Texture() noexcept;
 
     Texture(const Texture&)            = delete;

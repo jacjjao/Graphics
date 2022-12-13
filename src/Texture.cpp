@@ -9,7 +9,7 @@
 
 Texture* Texture::texture_in_bind = nullptr;
 
-Texture::Texture(const std::string& path) noexcept : m_id{}, m_size{}
+Texture::Texture(const std::filesystem::path& path) noexcept : m_id{}, m_size{}
 {
     // create texture
     glCheck(glGenTextures(1, &m_id));
@@ -27,7 +27,7 @@ Texture::Texture(const std::string& path) noexcept : m_id{}, m_size{}
     int nrChannels = 0;
     stbi_set_flip_vertically_on_load(true);
 
-    uint8_t* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+    uint8_t* data = stbi_load(path.string().c_str(), &width, &height, &nrChannels, 0);
     if (data != nullptr)
     {
         m_size.x = static_cast<float>(width);

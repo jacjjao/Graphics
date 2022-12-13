@@ -1,9 +1,9 @@
 #pragma once
 
-#include <string>
+#include <filesystem>
 
 class FileSystem
 {
 public:
-    static std::string getPath(const std::string& path) noexcept;
+    static std::filesystem::path getPath(const std::filesystem::path& path) noexcept;
 };

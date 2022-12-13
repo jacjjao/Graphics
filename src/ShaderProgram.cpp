@@ -1,30 +1,41 @@
 #include "../include/ShaderProgram.hpp"
 
-#include <exception>
 #include <glad/glad.h>
 
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 
 #include "../include/FileSystem.hpp"
 #include "../include/glCheck.hpp"
 
 ShaderProgram* ShaderProgram::program_in_use = nullptr;
 
-ShaderProgram::ShaderProgram(const char* vertex_path, const char* fragment_path) noexcept : m_id(0)
+ShaderProgram::ShaderProgram(const std::filesystem::path& vertex_path, const std::filesystem::path& fragment_path) noexcept
+:
+m_id(0)
 {
-    std::string   vertex_code;
-    std::string   fragment_code;
-    std::ifstream v_shader_file;
-    std::ifstream f_shader_file;
+    std::string   vertex_code{};
+    std::string   fragment_code{};
+    std::ifstream v_shader_file{};
+    std::ifstream f_shader_file{};
 
     v_shader_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     f_shader_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     try
     {
         v_shader_file.open(vertex_path);
+        if (!v_shader_file.is_open())
+        {
+            throw std::runtime_error{std::string{"Cannot open the file: "} + vertex_path.string()};
+        }
         f_shader_file.open(fragment_path);
+        if (!f_shader_file.is_open())
+        {
+            throw std::runtime_error{std::string{"Cannot open the file: "} + fragment_path.string()};
+        }
+
         std::stringstream v_shader_stream{};
         std::stringstream f_shader_stream{};
 
@@ -34,9 +45,9 @@ ShaderProgram::ShaderProgram(const char* vertex_path, const char* fragment_path)
         v_shader_file.close();
         f_shader_file.close();
 
-        vertex_code   = v_shader_stream.str();
-        fragment_code = f_shader_stream.str();
-    } catch (const std::ifstream::failure& e)
+        vertex_code   = std::move(v_shader_stream).str();
+        fragment_code = std::move(f_shader_stream).str();
+    } catch (const std::exception& e)
     {
         std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ\n" << e.what() << '\n';
     }
@@ -68,13 +79,13 @@ ShaderProgram::ShaderProgram(const char* vertex_path, const char* fragment_path)
         }
     };
 
-    GLuint vertex{};
+    GLuint vertex = 0;
     glCheck(vertex = glCreateShader(GL_VERTEX_SHADER));
     glCheck(glShaderSource(vertex, 1, &v_shader_code, nullptr));
     glCheck(glCompileShader(vertex));
     checkShaderProgramCompileStatus(vertex, "VECTEX");
 
-    GLuint fragment{};
+    GLuint fragment = 0;
     glCheck(fragment = glCreateShader(GL_FRAGMENT_SHADER));
     glCheck(glShaderSource(fragment, 1, &f_shader_code, nullptr));
     glCheck(glCompileShader(fragment));
@@ -127,11 +138,11 @@ void ShaderProgram::setBool(const std::string& name, const bool value) noexcept
     glCheck(glUniform1i(loc, value));
 }
 
-/* void ShaderProgram::setMat3(const std::string& name, const Matrix3& matrix) noexcept
+void ShaderProgram::setMat3(const std::string& name, const Matrix3& matrix) noexcept
 {
     auto loc = getLocation(name);
     glCheck(glUniformMatrix3fv(loc, 1, GL_TRUE, matrix.data()));
-} */
+}
 
 void ShaderProgram::setMat4(const std::string& name, const Matrix4& matrix) noexcept
 {
@@ -171,7 +182,7 @@ int32_t ShaderProgram::getLocation(const std::string& name) noexcept
         }
         else
         {
-            std::cerr << "Cannot fount uniform " << name << '\n';
+            std::cerr << "Cannot found uniform " << name << '\n';
         }
     }
     else
@@ -182,8 +193,7 @@ int32_t ShaderProgram::getLocation(const std::string& name) noexcept
 }
 
 ShaderProgram2D::ShaderProgram2D() noexcept :
-ShaderProgram{FileSystem::getPath("/shader/2D/VertexShader.glsl").c_str(),
-              FileSystem::getPath("/shader/2D/FragmentShader.glsl").c_str()}
+ShaderProgram{FileSystem::getPath("/shader/2D/VertexShader.glsl"), FileSystem::getPath("/shader/2D/FragmentShader.glsl")}
 {
 }
 

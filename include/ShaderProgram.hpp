@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <string>
+#include <filesystem>
 #include <unordered_map>
 
 #include "Matrix.hpp"
@@ -10,7 +11,7 @@
 class ShaderProgram
 {
 public:
-    ShaderProgram(const char* vertex_path, const char* fragment_path) noexcept;
+    ShaderProgram(const std::filesystem::path& vertex_path, const std::filesystem::path& fragment_path) noexcept;
     ~ShaderProgram() noexcept;
 
     void use() noexcept;
@@ -20,7 +21,7 @@ public:
     void setI32(const std::string& name, int32_t value) noexcept;
     void setFloat(const std::string& name, float value) noexcept;
     void setBool(const std::string& name, bool value) noexcept;
-    // void setMat3(const std::string& name, const Matrix3& matrix) noexcept;
+    void setMat3(const std::string& name, const Matrix3& matrix) noexcept;
     void setMat4(const std::string& name, const Matrix4& matrix) noexcept;
     void setVec3(const std::string& name, Vector3<float> vec) noexcept;
 
