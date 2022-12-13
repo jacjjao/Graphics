@@ -125,8 +125,6 @@ int main()
             circle.update();
             vao.update();
 
-            Texture::bind(texture.get());
-
             shaderProgram.use();
             camera->use();
             rect->draw();

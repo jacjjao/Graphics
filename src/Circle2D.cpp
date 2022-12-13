@@ -81,6 +81,8 @@ void Circle2D::create() noexcept
 
 void Circle2D::setupDraw() noexcept
 {
+    Texture::bind(m_texture);
+
     auto& program = ShaderProgram2D::instance();
 
     program.setFloat("color_alpha", hasTexture() ? 0.0F : 1.0F);

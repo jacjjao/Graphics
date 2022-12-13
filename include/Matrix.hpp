@@ -258,7 +258,7 @@ private:
 };
 
 
-// using Matrix3 = Matrix<float, 3, 3>;
+using Matrix3 = Matrix<float, 3, 3>;
 using Matrix4 = Matrix<float, 4, 4>;
 
 static inline const Matrix4 identity_mat4 = Matrix4::makeIdentity();
