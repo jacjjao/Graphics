@@ -26,6 +26,7 @@ add_executable(${PROJECT_NAME}
 	"include/Camera.hpp"
 	"include/Line.hpp"
 	"include/Color.hpp"
+	"include/TextRenderer.hpp"
 
 	#sources
 	"src/glCheck.cpp"
@@ -45,6 +46,7 @@ add_executable(${PROJECT_NAME}
 	"src/Camera.cpp"
 	"src/Line.cpp"
 	"src/Color.cpp"
+	"src/TextRenderer.cpp"
 	"demo/main.cpp"
 )
 
@@ -66,10 +68,12 @@ target_link_libraries(${PROJECT_NAME}
 	PRIVATE
 		glfw
 		glad
+		${CMAKE_SOURCE_DIR}/dependencies/freetype/libfreetype.a
 )
 
 target_include_directories(${PROJECT_NAME}
 	PRIVATE
 		"dependencies/glad/include"
 		"dependencies/stb_image"
+		"dependencies/freetype/include"
 )

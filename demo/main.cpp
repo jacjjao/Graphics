@@ -1,6 +1,9 @@
 // third party
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 // standard
 #include <iostream>
 #include <cmath>
@@ -17,6 +20,7 @@
 #include "../include/FileSystem.hpp"
 #include "../include/Camera.hpp"
 #include "../include/Line.hpp"
+#include "../include/TextRenderer.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -31,8 +35,6 @@ std::unique_ptr<Camera>      camera{};
 
 int main()
 {
-    Window::initialize(SCR_WIDTH, SCR_HEIGHT);
-
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -55,22 +57,34 @@ int main()
         return -1;
     }
 
+    Window::initialize(SCR_WIDTH, SCR_HEIGHT);
+    TextRenderer::initialize();
+
     {
         camera = std::make_unique<Camera>();
 
         auto& shaderProgram = ShaderProgram2D::instance();
 
-        texture = std::make_unique<Texture>(FileSystem::getPath("/asset/container.jpg"));
+        texture = std::make_unique<Texture>(FileSystem::getPath("/asset/images/container.jpg"));
 
         rect = std::make_unique<Rectangle2D>(Vector2f{100, 100});
         rect->setPosition(Vector3f{300, 1000, 0});
 
         rect->applyTexture(texture.get());
 
+        auto tex_rect = rect->getTextureRect();
+        tex_rect.size.x /= 2.0F;
+        tex_rect.size.y /= 2.0F;
+        tex_rect.position.x /= 2.0F;
+        tex_rect.position.y /= 2.0F;
+        // rect->setTextureRect(tex_rect);
+
         Circle2D circle{50.0F};
-        circle.setPosition(Vector3f{1700, 900, 0});
+        circle.setPosition(Vector3f{1800.0F, 1000.0F, 0});
 
         circle.applyTexture(texture.get());
+
+        circle.setTextureRect(tex_rect);
 
         VertexArray vao{3};
         vao[0].position = Vector2f{1000.0, 100.0};
@@ -97,6 +111,8 @@ int main()
             glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
             glClear(GL_COLOR_BUFFER_BIT);
 
+            shaderProgram.use();
+
             auto  tp = clock.getElapsedTime().asSeconds();
             Color color{};
 
@@ -117,7 +133,7 @@ int main()
             rect->setColor(color);
             vao[2].color = color;
 
-            float factor = std::sin(tp * 2) / 2.0F + 1.5F;
+            const float factor = std::sin(tp * 2) / 2.0F + 1.5F;
             circle.scale(Vector2f{factor, factor});
             rect->rotate(-0.05F);
 
@@ -125,19 +141,22 @@ int main()
             circle.update();
             vao.update();
 
-            shaderProgram.use();
+            Texture::bind(texture.get());
+
             camera->use();
             rect->draw();
             circle.draw();
             vao.draw();
             line.draw();
 
+            Texture::unbind();
+
+            TextRenderer::RenderText("Hello World", 0.0F, 0.0F, Color::White, 48);
+
             glfwSwapBuffers(window);
 
             if (auto tp = timer.getElapsedTime().asSeconds(); tp >= 1.0)
             {
-                /* auto pos = camera->getPosition();
-                std::printf("(%.2f, %.2f)\n", pos.x, pos.y); */
                 std::printf("FPS: %.2lf\n", static_cast<double>(fps_cnt) / tp);
                 fps_cnt = 0;
                 timer.restart();
@@ -145,7 +164,8 @@ int main()
             fps_cnt++;
         }
 
-        shaderProgram.destroy();
+        ShaderProgram2D::instance().destroy();
+        TextShaderProgram::instance().destroy();
         rect.reset();
         texture.reset();
     }

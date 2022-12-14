@@ -12,10 +12,6 @@ void Shape::applyTexture(Texture* texture) noexcept
         m_tex_rect.size     = texture->getSize();
         m_tex_rect.position = Vector2f{m_tex_rect.size.x / 2.0F, m_tex_rect.size.y / 2.0F};
     }
-    else
-    {
-        m_tex_rect.size = m_tex_rect.position = Vector2f{0.0F, 0.0F};
-    }
 }
 
 bool Shape::hasTexture() const noexcept
@@ -31,4 +27,14 @@ void Shape::setColor(const Color color) noexcept
 Color Shape::getColor() const noexcept
 {
     return m_color;
+}
+
+void Shape::setTextureRect(const Rect rect) noexcept
+{
+    m_tex_rect = rect;
+}
+
+Rect Shape::getTextureRect() const noexcept
+{
+    return m_tex_rect;
 }

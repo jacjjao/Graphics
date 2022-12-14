@@ -48,7 +48,7 @@ void VertexArray::create() noexcept
     VertexBuffer::bind(&m_vbo);
 
     const auto stride = static_cast<GLsizei>(sizeof(Vertex));
-    glCheck(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, stride, (void*)0));
+    glCheck(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0));
     glCheck(glEnableVertexAttribArray(0));
 
     glCheck(glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, stride, (void*)(sizeof(Vertex::position))));
@@ -87,6 +87,7 @@ void VertexArray::draw(const PrimitiveType primitive_type) noexcept
 
     VertexArray::bind(this);
     glCheck(glDrawArrays(static_cast<GLenum>(primitive_type), 0, static_cast<GLsizei>(m_vertices.size())));
+    VertexArray::unbind();
 }
 
 void VertexArray::resize(const size_t size) noexcept

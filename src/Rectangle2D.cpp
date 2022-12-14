@@ -19,7 +19,7 @@ void Rectangle2D::draw() noexcept
 
     setupDraw();
     glCheck(glDrawElements(GL_TRIANGLES, m_ebo.size(), GL_UNSIGNED_INT, 0));
-    // cleanUpDraw();
+    VertexArray::unbind();
 }
 
 void Rectangle2D::update() noexcept
@@ -46,12 +46,21 @@ void Rectangle2D::update() noexcept
     // update texture coordinate
     if (hasTexture())
     {
-        const auto [tex_width, tex_height] = m_texture->getSize();
+        const auto half_tex_width  = m_tex_rect.size.x / 2.0F;
+        const auto half_tex_height = m_tex_rect.size.y / 2.0F;
 
-        m_vao[0].tex_coord = Texture::pointToTexCoord(Vector2f{tex_width, 0.0F}, m_texture->getSize());
-        m_vao[1].tex_coord = Texture::pointToTexCoord(Vector2f{tex_width, tex_height}, m_texture->getSize());
-        m_vao[2].tex_coord = Texture::pointToTexCoord(Vector2f{0.0F, tex_height}, m_texture->getSize());
-        m_vao[3].tex_coord = Texture::pointToTexCoord(Vector2f{0.0F, 0.0F}, m_texture->getSize());
+        m_vao[0].tex_coord = Texture::pointToTexCoord(Vector2f{m_tex_rect.position.x + half_tex_width,
+                                                               m_tex_rect.position.y - half_tex_height},
+                                                      m_texture->getSize());
+        m_vao[1].tex_coord = Texture::pointToTexCoord(Vector2f{m_tex_rect.position.x + half_tex_width,
+                                                               m_tex_rect.position.y + half_tex_height},
+                                                      m_texture->getSize());
+        m_vao[2].tex_coord = Texture::pointToTexCoord(Vector2f{m_tex_rect.position.x - half_tex_width,
+                                                               m_tex_rect.position.y + half_tex_height},
+                                                      m_texture->getSize());
+        m_vao[3].tex_coord = Texture::pointToTexCoord(Vector2f{m_tex_rect.position.x - half_tex_width,
+                                                               m_tex_rect.position.y - half_tex_height},
+                                                      m_texture->getSize());
     }
 
     if (m_vao.isAvailable())
@@ -87,8 +96,6 @@ void Rectangle2D::create() noexcept
 
 void Rectangle2D::setupDraw() noexcept
 {
-    Texture::bind(m_texture);
-
     auto& program = ShaderProgram2D::instance();
 
     program.setFloat("color_alpha", hasTexture() ? 0.0F : 1.0F);

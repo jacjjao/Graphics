@@ -8,7 +8,7 @@
 #include <cmath>
 #include <numbers>
 
-Circle2D::Circle2D(const float radius, const size_t point_count) noexcept : Shape(point_count), m_radius{radius}
+Circle2D::Circle2D(const float radius, const size_t point_count) noexcept : Shape{point_count}, m_radius{radius}
 {
 }
 
@@ -21,6 +21,7 @@ void Circle2D::draw() noexcept
 
     setupDraw();
     glCheck(glDrawArrays(GL_TRIANGLE_FAN, 0, m_vao.size()));
+    VertexArray::unbind();
 }
 
 void Circle2D::update() noexcept
@@ -81,8 +82,6 @@ void Circle2D::create() noexcept
 
 void Circle2D::setupDraw() noexcept
 {
-    Texture::bind(m_texture);
-
     auto& program = ShaderProgram2D::instance();
 
     program.setFloat("color_alpha", hasTexture() ? 0.0F : 1.0F);

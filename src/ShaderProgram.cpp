@@ -156,6 +156,18 @@ void ShaderProgram::setVec3(const std::string& name, const Vector3<float> vec) n
     glCheck(glUniform3f(loc, vec.x, vec.y, vec.z));
 }
 
+void ShaderProgram::setVec4(const std::string& name, const Color color) noexcept
+{
+    auto loc = getLocation(name);
+
+    const auto r = static_cast<float>(color.r) / 255.0F;
+    const auto g = static_cast<float>(color.g) / 255.0F;
+    const auto b = static_cast<float>(color.b) / 255.0F;
+    const auto a = static_cast<float>(color.a) / 255.0F;
+
+    glCheck(glUniform4f(loc, r, g, b, a));
+}
+
 void ShaderProgram::destroy() noexcept
 {
     if (m_id > 0)
@@ -200,5 +212,16 @@ ShaderProgram{FileSystem::getPath("/shader/2D/VertexShader.glsl"), FileSystem::g
 ShaderProgram2D& ShaderProgram2D::instance() noexcept
 {
     static ShaderProgram2D program{};
+    return program;
+}
+
+TextShaderProgram::TextShaderProgram() noexcept :
+ShaderProgram{FileSystem::getPath("/shader/TextVertexShader.glsl"), FileSystem::getPath("/shader/TextFragmentShader.glsl")}
+{
+}
+
+TextShaderProgram& TextShaderProgram::instance() noexcept
+{
+    static TextShaderProgram program{};
     return program;
 }
