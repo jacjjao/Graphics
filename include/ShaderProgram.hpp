@@ -7,6 +7,7 @@
 
 #include "Matrix.hpp"
 #include "Vector.hpp"
+#include "Color.hpp"
 
 class ShaderProgram
 {
@@ -24,6 +25,7 @@ public:
     void setMat3(const std::string& name, const Matrix3& matrix) noexcept;
     void setMat4(const std::string& name, const Matrix4& matrix) noexcept;
     void setVec3(const std::string& name, Vector3<float> vec) noexcept;
+    void setVec4(const std::string& name, Color color) noexcept;
 
     void destroy() noexcept;
 
@@ -49,4 +51,15 @@ public:
 
     ShaderProgram2D(const ShaderProgram2D&)            = delete;
     ShaderProgram2D& operator=(const ShaderProgram2D&) = delete;
+};
+
+class TextShaderProgram : public ShaderProgram
+{
+public:
+    TextShaderProgram() noexcept;
+
+    [[nodiscard]] static TextShaderProgram& instance() noexcept;
+
+    TextShaderProgram(const TextShaderProgram&)            = delete;
+    TextShaderProgram& operator=(const TextShaderProgram&) = delete;
 };

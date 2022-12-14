@@ -24,6 +24,10 @@ public:
 
     [[nodiscard]] Color getColor() const noexcept;
 
+    void setTextureRect(Rect rect) noexcept;
+
+    [[nodiscard]] Rect getTextureRect() const noexcept;
+
 protected:
     VertexArray m_vao;
 
