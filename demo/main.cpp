@@ -1,8 +1,6 @@
 // third party
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
-#include <ft2build.h>
-#include FT_FREETYPE_H
 
 // standard
 #include <iostream>

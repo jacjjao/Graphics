@@ -68,7 +68,7 @@ target_link_libraries(${PROJECT_NAME}
 	PRIVATE
 		glfw
 		glad
-		${CMAKE_SOURCE_DIR}/dependencies/freetype/libfreetype.a
+		${CMAKE_SOURCE_DIR}/dependencies/freetype/freetype.lib
 )
 
 target_include_directories(${PROJECT_NAME}

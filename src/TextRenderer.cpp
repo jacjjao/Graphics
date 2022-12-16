@@ -124,9 +124,6 @@ void TextRenderer::RenderText(const std::string& text, float x, float y, const C
         const float xpos = x + ch.Bearing.x * scale;
         const float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
 
-        /* const float xpos = x - ch.Bearing.x * scale;
-        const float ypos = y + ch.Bearing.y * scale; */
-
         const float w = ch.Size.x * scale;
         const float h = ch.Size.y * scale;
         // update VBO for each character
