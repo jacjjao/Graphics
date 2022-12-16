@@ -20,14 +20,15 @@ void Circle2D::draw() noexcept
     }
 
     setupDraw();
-    glCheck(glDrawArrays(GL_TRIANGLE_FAN, 0, m_vao.size()));
+    glCheck(glDrawArrays(GL_TRIANGLE_FAN, 0, static_cast<GLsizei>(m_vao.size())));
     VertexArray::unbind();
 }
 
 void Circle2D::update() noexcept
 {
+    constexpr auto f_pi = static_cast<float>(std::numbers::pi);
+
     const auto f_point_count = static_cast<float>(m_vao.size() - 1);
-    const auto f_pi          = static_cast<float>(std::numbers::pi);
     const auto slice         = 2.0F * f_pi / f_point_count;
     const auto center        = Vector2f{Window::getHalfWindowWidth(), Window::getHalfWindowHeight()};
 
@@ -36,7 +37,7 @@ void Circle2D::update() noexcept
 
     m_vao[0].position  = center;
     m_vao[0].color     = m_color;
-    m_vao[0].tex_coord = Texture::pointToTexCoord(m_tex_rect.position, m_texture->getSize());
+    m_vao[0].tex_coord = (hasTexture()) ? m_texture->pointToTexCoord(m_tex_rect.position) : Vector2f{};
     for (int i = 1; i < m_vao.size() - 1; i++)
     {
         const auto  f_index = static_cast<float>(i);
@@ -57,7 +58,7 @@ void Circle2D::update() noexcept
             tex_coord.x = m_tex_rect.position.x + half_tex_width * ccos;
             tex_coord.y = m_tex_rect.position.y + half_tex_height * ssin;
 
-            m_vao[i].tex_coord = Texture::pointToTexCoord(tex_coord, m_texture->getSize());
+            m_vao[i].tex_coord = m_texture->pointToTexCoord(tex_coord);
         }
     }
     m_vao.back() = m_vao[1];

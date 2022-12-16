@@ -122,43 +122,43 @@ uint32_t ShaderProgram::getID() const noexcept
 
 void ShaderProgram::setI32(const std::string& name, const int32_t value) noexcept
 {
-    auto loc = getLocation(name);
+    const auto loc = getLocation(name);
     glCheck(glUniform1i(loc, value));
 }
 
 void ShaderProgram::setFloat(const std::string& name, const float value) noexcept
 {
-    auto loc = getLocation(name);
+    const auto loc = getLocation(name);
     glCheck(glUniform1f(loc, value));
 }
 
 void ShaderProgram::setBool(const std::string& name, const bool value) noexcept
 {
-    auto loc = getLocation(name);
+    const auto loc = getLocation(name);
     glCheck(glUniform1i(loc, value));
 }
 
 void ShaderProgram::setMat3(const std::string& name, const Matrix3& matrix) noexcept
 {
-    auto loc = getLocation(name);
+    const auto loc = getLocation(name);
     glCheck(glUniformMatrix3fv(loc, 1, GL_TRUE, matrix.data()));
 }
 
 void ShaderProgram::setMat4(const std::string& name, const Matrix4& matrix) noexcept
 {
-    auto loc = getLocation(name);
+    const auto loc = getLocation(name);
     glCheck(glUniformMatrix4fv(loc, 1, GL_TRUE, matrix.data()));
 }
 
 void ShaderProgram::setVec3(const std::string& name, const Vector3<float> vec) noexcept
 {
-    auto loc = getLocation(name);
+    const auto loc = getLocation(name);
     glCheck(glUniform3f(loc, vec.x, vec.y, vec.z));
 }
 
 void ShaderProgram::setVec4(const std::string& name, const Color color) noexcept
 {
-    auto loc = getLocation(name);
+    const auto loc = getLocation(name);
 
     const auto r = static_cast<float>(color.r) / 255.0F;
     const auto g = static_cast<float>(color.g) / 255.0F;
@@ -184,7 +184,6 @@ int32_t ShaderProgram::getLocation(const std::string& name) noexcept
     GLint loc = 0;
 
     const bool is_found = (it != locations.end());
-
     if (!is_found)
     {
         glCheck(loc = glGetUniformLocation(m_id, name.c_str()));

@@ -5,7 +5,11 @@
 
 VertexBuffer* VertexBuffer::vbo_in_bind = nullptr;
 
-VertexBuffer::VertexBuffer() noexcept : m_id{}, m_usage{Usage::DynamicDraw}, m_size{0}, m_size_in_bytes{0}
+VertexBuffer::VertexBuffer() noexcept :
+m_usage{Usage::StaticDraw},
+m_id{},
+m_size{0},
+m_size_in_bytes{0}
 {
 }
 
@@ -24,11 +28,10 @@ void VertexBuffer::destroy() noexcept
     }
 }
 
-void VertexBuffer::updateData(const std::vector<Vertex>& vertices) noexcept
+void VertexBuffer::updateData(const std::span<Vertex> vertices) noexcept
 {
     if (!isAvailable())
     {
-        create(vertices);
         return;
     }
 
@@ -51,7 +54,7 @@ void VertexBuffer::updateData(const std::vector<Vertex>& vertices) noexcept
     VertexBuffer::unbind();
 }
 
-void VertexBuffer::create(const std::vector<Vertex>& vertices) noexcept
+void VertexBuffer::create(const std::span<Vertex> vertices) noexcept
 {
     if (vertices.empty())
     {

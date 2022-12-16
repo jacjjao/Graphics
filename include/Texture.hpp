@@ -23,7 +23,7 @@ enum class Filtering : uint32_t
     Linear  = 0x2601
 };
 
-enum class TexFormat : uint32_t
+enum class Format : uint32_t
 {
     DepthComponent = 0x1902,
     DepthStencil   = 0x84F9,
@@ -39,23 +39,25 @@ class TexConstructParameter
 public:
     TexConstructParameter() noexcept;
 
-    Parameter::Wrapping  warp_s, warp_t;
+    Parameter::Wrapping  wrap_s, wrap_t;
     Parameter::Filtering min_filter, mag_filter;
-    Parameter::TexFormat format;
-    bool                 useMipmap;
+    Parameter::Format format;
+    bool use_mipmap;
 };
 
 class Texture
 {
 public:
+    Texture() = default;
     explicit Texture(const std::filesystem::path& path, TexConstructParameter parameters = {}) noexcept;
+    explicit Texture(const void* data, int32_t width, int32_t height, TexConstructParameter parameters) noexcept;
     ~Texture() noexcept;
 
     Texture(const Texture&)            = delete;
     Texture& operator=(const Texture&) = delete;
 
-    Texture(Texture&&) noexcept            = default;
-    Texture& operator=(Texture&&) noexcept = default;
+    Texture(Texture&& other) noexcept;
+    Texture& operator=(Texture&& other) noexcept;
 
     void destroy() noexcept;
 
@@ -64,12 +66,15 @@ public:
     [[nodiscard]] float getWidth() const noexcept;
     [[nodiscard]] float getHeight() const noexcept;
 
+    [[nodiscard]] Vector2f pointToTexCoord(Vector2f point) const noexcept;
+
     static void bind(Texture*) noexcept;
     static void unbind() noexcept;
 
-    static Vector2f pointToTexCoord(Vector2f point, Vector2f tex_size) noexcept;
-
 private:
+    void createFromImage(const std::filesystem::path& path, TexConstructParameter parameters = {}) noexcept;
+    void createFromData(const void* data, int32_t width, int32_t height, TexConstructParameter parameters) noexcept;
+
     static Texture* texture_in_bind;
 
     uint32_t m_id;

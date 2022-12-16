@@ -4,6 +4,8 @@
 #include "VertexBuffer.hpp"
 #include "PrimitiveType.hpp"
 
+#include <vector>
+
 class VertexArray : public Drawable
 {
 public:
@@ -67,7 +69,6 @@ private:
     uint32_t m_id;
 
     VertexBuffer        m_vbo;
-    VertexBuffer::Usage m_usage;
 
     std::vector<Vertex> m_vertices;
 };

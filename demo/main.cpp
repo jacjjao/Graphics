@@ -28,6 +28,7 @@ const unsigned int SCR_WIDTH  = 2000;
 const unsigned int SCR_HEIGHT = 1200;
 
 std::unique_ptr<Rectangle2D> rect{};
+std::unique_ptr<Circle2D>    circle{};
 std::unique_ptr<Texture>     texture{};
 std::unique_ptr<Camera>      camera{};
 
@@ -77,12 +78,12 @@ int main()
         tex_rect.position.y /= 2.0F;
         // rect->setTextureRect(tex_rect);
 
-        Circle2D circle{50.0F};
-        circle.setPosition(Vector3f{1800.0F, 1000.0F, 0});
+        circle = std::make_unique<Circle2D>(50.0F);
+        circle->setPosition(Vector3f{1800.0F, 1000.0F, 0});
 
-        circle.applyTexture(texture.get());
+        circle->applyTexture(texture.get());
 
-        circle.setTextureRect(tex_rect);
+        circle->setTextureRect(tex_rect);
 
         VertexArray vao{3};
         vao[0].position = Vector2f{1000.0, 100.0};
@@ -90,7 +91,7 @@ int main()
         vao[2].position = Vector2f{static_cast<float>(1000.0 - 500.0 * std::sqrt(3.0) / 2.0), 850.0};
         vao.setUsage(VertexBuffer::Usage::StreamDraw);
 
-        circle.scale(Vector2f{2.0F, 2.0F});
+        circle->scale(Vector2f{2.0F, 2.0F});
         rect->scale(Vector2f{2.0F, 2.0F});
         rect->translate(Vector3f{100, 0, 0});
 
@@ -122,7 +123,7 @@ int main()
             color.r = color.g;
             color.g = color.b;
             color.b = 255.0 * std::abs(std::sin(tp + std::numbers::pi));
-            circle.setColor(color);
+            circle->setColor(color);
             vao[1].color = color;
 
             color.r = color.g;
@@ -132,24 +133,24 @@ int main()
             vao[2].color = color;
 
             const float factor = std::sin(tp * 2) / 2.0F + 1.5F;
-            circle.scale(Vector2f{factor, factor});
+            circle->scale(Vector2f{factor, factor});
             rect->rotate(-0.05F);
 
             rect->update();
-            circle.update();
+            circle->update();
             vao.update();
 
             Texture::bind(texture.get());
 
             camera->use();
             rect->draw();
-            circle.draw();
+            circle->draw();
             vao.draw();
             line.draw();
 
             Texture::unbind();
 
-            TextRenderer::RenderText("Hello World", 0.0F, 0.0F, Color::White, 48);
+            TextRenderer::renderText("Hello World", 0.0F, 0.0F, Color::White, 48);
 
             glfwSwapBuffers(window);
 
@@ -161,14 +162,10 @@ int main()
             }
             fps_cnt++;
         }
-
-        ShaderProgram2D::instance().destroy();
-        TextShaderProgram::instance().destroy();
-        rect.reset();
-        texture.reset();
     }
 
     glfwTerminate();
+    std::cout << "\nThe context is free ignore the error down below\n\n";
 
     return 0;
 }
@@ -212,11 +209,11 @@ void processInput(GLFWwindow* window)
     }
     if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
     {
-        rect->applyTexture(nullptr);
+        circle->applyTexture(nullptr);
     }
     if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
     {
-        rect->applyTexture(texture.get());
+        circle->applyTexture(texture.get());
     }
 }
 

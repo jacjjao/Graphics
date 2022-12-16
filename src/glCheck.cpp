@@ -6,7 +6,7 @@
 
 void glCheckError(const char* file, const unsigned line, const char* function) noexcept
 {
-    GLenum error_code = glGetError();
+    const GLenum error_code = glGetError();
 
     if (error_code == GL_NO_ERROR)
     {
@@ -41,7 +41,7 @@ void glCheckError(const char* file, const unsigned line, const char* function) n
             break;
 
         case GL_INVALID_FRAMEBUFFER_OPERATION:
-            std::cerr << "Invalid framebuffer operation";
+            std::cerr << "Invalid frame buffer operation";
             break;
 
         case GL_CONTEXT_LOST:

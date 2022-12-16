@@ -8,27 +8,6 @@ set(
 )
 
 add_executable(${PROJECT_NAME}  
-	#headers
-	"include/glCheck.hpp"
-	"include/ShaderProgram.hpp"
-	"include/Vertex.hpp"
-	"include/VertexArray.hpp"
-	"include/Rectangle2D.hpp"
-	"include/VertexBuffer.hpp"
-	"include/Window.hpp"
-	"include/Clock.hpp"
-	"include/ElementBuffer.hpp"
-	"include/FileSystem.hpp"
-	"include/Circle2D.hpp"
-	"include/Shape.hpp"
-	"include/Transformable.hpp"
-	"include/Texture.hpp"
-	"include/Camera.hpp"
-	"include/Line.hpp"
-	"include/Color.hpp"
-	"include/TextRenderer.hpp"
-
-	#sources
 	"src/glCheck.cpp"
 	"src/ShaderProgram.cpp"
 	"src/VertexArray.cpp"

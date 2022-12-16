@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <vector>
+#include <span>
 
 #include "Vertex.hpp"
 
@@ -21,9 +21,12 @@ public:
     VertexBuffer(const VertexBuffer&)            = delete;
     VertexBuffer& operator=(const VertexBuffer&) = delete;
 
+    VertexBuffer(VertexBuffer&&) = delete;
+    VertexBuffer& operator=(VertexBuffer&&) = delete;
+
     void destroy() noexcept;
-    void updateData(const std::vector<Vertex>& vertices) noexcept;
-    void create(const std::vector<Vertex>& vertices) noexcept;
+    void updateData(std::span<Vertex> vertices) noexcept;
+    void create(std::span<Vertex> vertices) noexcept;
 
     [[nodiscard]] bool isAvailable() const noexcept;
 

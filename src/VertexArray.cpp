@@ -10,10 +10,8 @@ VertexArray*        VertexArray::vao_in_bind = nullptr;
 
 VertexArray::VertexArray(const size_t size) noexcept :
 m_vertices(size),
-m_id{0},
-m_usage{VertexBuffer::Usage::DynamicDraw}
+m_id{0}
 {
-    m_vbo.setUsage(m_usage);
 }
 
 VertexArray::~VertexArray() noexcept
@@ -47,7 +45,7 @@ void VertexArray::create() noexcept
     VertexArray::bind(this);
     VertexBuffer::bind(&m_vbo);
 
-    const auto stride = static_cast<GLsizei>(sizeof(Vertex));
+    constexpr auto stride = static_cast<GLsizei>(sizeof(Vertex));
     glCheck(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0));
     glCheck(glEnableVertexAttribArray(0));
 
@@ -148,7 +146,6 @@ size_t VertexArray::size() const noexcept
 void VertexArray::setUsage(const VertexBuffer::Usage usage) noexcept
 {
     m_vbo.setUsage(usage);
-    m_usage = usage;
 }
 
 VertexArray::iterator VertexArray::begin() noexcept

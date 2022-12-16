@@ -18,7 +18,7 @@ void Rectangle2D::draw() noexcept
     }
 
     setupDraw();
-    glCheck(glDrawElements(GL_TRIANGLES, m_ebo.size(), GL_UNSIGNED_INT, 0));
+    glCheck(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_ebo.size()), GL_UNSIGNED_INT, 0));
     VertexArray::unbind();
 }
 
@@ -49,18 +49,17 @@ void Rectangle2D::update() noexcept
         const auto half_tex_width  = m_tex_rect.size.x / 2.0F;
         const auto half_tex_height = m_tex_rect.size.y / 2.0F;
 
-        m_vao[0].tex_coord = Texture::pointToTexCoord(Vector2f{m_tex_rect.position.x + half_tex_width,
-                                                               m_tex_rect.position.y - half_tex_height},
-                                                      m_texture->getSize());
-        m_vao[1].tex_coord = Texture::pointToTexCoord(Vector2f{m_tex_rect.position.x + half_tex_width,
-                                                               m_tex_rect.position.y + half_tex_height},
-                                                      m_texture->getSize());
-        m_vao[2].tex_coord = Texture::pointToTexCoord(Vector2f{m_tex_rect.position.x - half_tex_width,
-                                                               m_tex_rect.position.y + half_tex_height},
-                                                      m_texture->getSize());
-        m_vao[3].tex_coord = Texture::pointToTexCoord(Vector2f{m_tex_rect.position.x - half_tex_width,
-                                                               m_tex_rect.position.y - half_tex_height},
-                                                      m_texture->getSize());
+        m_vao[0].tex_coord = m_texture->pointToTexCoord(
+            Vector2f{m_tex_rect.position.x + half_tex_width, m_tex_rect.position.y - half_tex_height});
+
+        m_vao[1].tex_coord = m_texture->pointToTexCoord(
+            Vector2f{m_tex_rect.position.x + half_tex_width, m_tex_rect.position.y + half_tex_height});
+
+        m_vao[2].tex_coord = m_texture->pointToTexCoord(
+            Vector2f{m_tex_rect.position.x - half_tex_width, m_tex_rect.position.y + half_tex_height});
+
+        m_vao[3].tex_coord = m_texture->pointToTexCoord(
+            Vector2f{m_tex_rect.position.x - half_tex_width, m_tex_rect.position.y - half_tex_height});
     }
 
     if (m_vao.isAvailable())

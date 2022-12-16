@@ -8,55 +8,46 @@
 #include <iostream>
 
 TexConstructParameter::TexConstructParameter() noexcept :
-warp_s{Parameter::Wrapping::Repeat},
-warp_t{Parameter::Wrapping::Repeat},
+wrap_s{Parameter::Wrapping::Repeat},
+wrap_t{Parameter::Wrapping::Repeat},
 min_filter{Parameter::Filtering::Linear},
 mag_filter{Parameter::Filtering::Linear},
-format{Parameter::TexFormat::RGB},
-useMipmap{true}
+format{Parameter::Format::RGB},
+use_mipmap{false}
 {
 }
 
 Texture* Texture::texture_in_bind = nullptr;
 
-Texture::Texture(const std::filesystem::path& path, const TexConstructParameter parameters) noexcept : m_id{}, m_size{}
+Texture::Texture(const std::filesystem::path& path, TexConstructParameter parameters) noexcept : m_id{0}, m_size{}
 {
-    // create texture
-    glCheck(glGenTextures(1, &m_id));
-    bind(this);
+    createFromImage(path);
+}
 
-    glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, static_cast<GLenum>(parameters.warp_s)));
-    glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, static_cast<GLenum>(parameters.warp_t)));
+Texture::Texture(const void* data, int32_t width, int32_t height, TexConstructParameter parameters) noexcept :
+m_id{0},
+m_size{}
+{
+    createFromData(data, width, height, parameters);
+}
 
-    glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, static_cast<GLenum>(parameters.min_filter)));
-    glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<GLenum>(parameters.mag_filter)));
+Texture::~Texture() noexcept
+{
+    destroy();
+}
 
+void Texture::createFromImage(const std::filesystem::path& path, const TexConstructParameter parameters) noexcept
+{
     // load image
     int width      = 0;
     int height     = 0;
-    int nrChannels = 0;
+    int nr_channels = 0;
     stbi_set_flip_vertically_on_load(true);
 
-    uint8_t* data = stbi_load(path.string().c_str(), &width, &height, &nrChannels, 0);
-
-    bool load_success = (data != nullptr);
-    if (load_success)
+    uint8_t* data = stbi_load(path.string().c_str(), &width, &height, &nr_channels, 0);
+    if (data != nullptr)
     {
-        m_size.x = static_cast<float>(width);
-        m_size.y = static_cast<float>(height);
-        glCheck(glTexImage2D(GL_TEXTURE_2D,
-                             0,
-                             static_cast<GLenum>(parameters.format),
-                             width,
-                             height,
-                             0,
-                             static_cast<GLenum>(parameters.format),
-                             GL_UNSIGNED_BYTE,
-                             data));
-        if (parameters.useMipmap)
-        {
-            glCheck(glGenerateMipmap(GL_TEXTURE_2D));
-        }
+        createFromData(data, width, height, parameters);
     }
     else
     {
@@ -67,9 +58,51 @@ Texture::Texture(const std::filesystem::path& path, const TexConstructParameter 
     unbind();
 }
 
-Texture::~Texture() noexcept
+void Texture::createFromData(const void* data, const int32_t width, const int32_t height, const TexConstructParameter parameters) noexcept
 {
-    destroy();
+    // create texture
+    glCheck(glGenTextures(1, &m_id));
+    bind(this);
+
+    glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, static_cast<GLenum>(parameters.wrap_s)));
+    glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, static_cast<GLenum>(parameters.wrap_t)));
+
+    glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, static_cast<GLenum>(parameters.min_filter)));
+    glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<GLenum>(parameters.mag_filter)));
+
+    m_size.x = static_cast<float>(width);
+    m_size.y = static_cast<float>(height);
+    glCheck(glTexImage2D(GL_TEXTURE_2D,
+                         0,
+                         static_cast<GLenum>(parameters.format),
+                         width,
+                         height,
+                         0,
+                         static_cast<GLenum>(parameters.format),
+                         GL_UNSIGNED_BYTE,
+                         data));
+
+    if (parameters.use_mipmap)
+    {
+        glCheck(glGenerateMipmap(GL_TEXTURE_2D));
+    }
+
+    unbind();
+}
+
+Texture::Texture(Texture&& other) noexcept : m_id{other.m_id}, m_size{other.m_size}
+{
+    other.m_id = 0;
+}
+
+Texture& Texture::operator=(Texture&& other) noexcept
+{
+    m_id = other.m_id;
+    m_size = other.m_size;
+
+    other.m_id = 0;
+
+    return *this;
 }
 
 void Texture::destroy() noexcept
@@ -96,6 +129,16 @@ float Texture::getHeight() const noexcept
     return m_size.y;
 }
 
+Vector2f Texture::pointToTexCoord(const Vector2f point) const noexcept
+{
+    Vector2f result{};
+
+    result.x = point.x / m_size.x;
+    result.y = -(point.y - m_size.y) / m_size.y;
+
+    return result;
+}
+
 void Texture::bind(Texture* texture) noexcept
 {
     if (texture_in_bind != texture)
@@ -112,14 +155,4 @@ void Texture::unbind() noexcept
         glCheck(glBindTexture(GL_TEXTURE_2D, 0));
         texture_in_bind = nullptr;
     }
-}
-
-Vector2f Texture::pointToTexCoord(const Vector2f point, const Vector2f tex_size) noexcept
-{
-    Vector2f result{};
-
-    result.x = point.x / tex_size.x;
-    result.y = -(point.y - tex_size.y) / tex_size.y;
-
-    return result;
 }
