@@ -12,8 +12,7 @@
 
 ShaderProgram* ShaderProgram::program_in_use = nullptr;
 
-ShaderProgram::ShaderProgram(const std::filesystem::path& vertex_path, const std::filesystem::path& fragment_path) noexcept
-:
+ShaderProgram::ShaderProgram(const std::filesystem::path& vertex_path, const std::filesystem::path& fragment_path) noexcept :
 m_id(0)
 {
     std::string   vertex_code{};
@@ -49,11 +48,8 @@ m_id(0)
         fragment_code = std::move(f_shader_stream).str();
     } catch (const std::exception& e)
     {
-        std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ\n" << e.what() << '\n';
+        std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ\n" << e.what() << '\n';
     }
-
-    const auto* v_shader_code = vertex_code.c_str();
-    const auto* f_shader_code = fragment_code.c_str();
 
     const auto checkShaderProgramCompileStatus = [](const GLuint& shader, const char* name)
     {
@@ -78,6 +74,9 @@ m_id(0)
             std::cerr << "ERROR::PROGRAM::LINK\n" << info_log << '\n';
         }
     };
+
+    const auto* v_shader_code = vertex_code.c_str();
+    const auto* f_shader_code = fragment_code.c_str();
 
     GLuint vertex = 0;
     glCheck(vertex = glCreateShader(GL_VERTEX_SHADER));

@@ -165,7 +165,10 @@ int main()
     }
 
     glfwTerminate();
+
+#if(DEBUG)
     std::cout << "\nThe context is free ignore the error down below\n\n";
+#endif
 
     return 0;
 }
