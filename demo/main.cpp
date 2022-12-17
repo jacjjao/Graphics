@@ -150,7 +150,7 @@ int main()
 
             Texture::unbind();
 
-            TextRenderer::renderText("Hello World", 0.0F, 0.0F, Color::White, 48);
+            TextRenderer::renderText("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ", 0.0F, 48.0F, Color::White, 48);
 
             glfwSwapBuffers(window);
 

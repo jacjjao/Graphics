@@ -1,7 +1,7 @@
 #pragma once
 
 #include <array>
-#include <string>
+#include <string_view>
 
 #include "Vector.hpp"
 #include "Color.hpp"
@@ -18,18 +18,18 @@ struct Character
 class TextRenderer
 {
 public:
-    static void initialize() noexcept;
+    static void initialize(unsigned font_size) noexcept;
 
-    static void renderText(const std::string& text,
-                           float              x,
-                           float              y,
-                           Color              color = Color::White,
-                           unsigned           size  = default_font_size) noexcept;
+    static void renderText(std::string_view text,
+                           float            x,
+                           float            y,
+                           Color            color = Color::White,
+                           unsigned         font_size  = text_size) noexcept;
 
 private:
-    static constexpr unsigned default_font_size = 96;
-
     static std::array<Character, 128> characters;
 
     static uint32_t VAO, VBO;
+
+    static unsigned text_size;
 };

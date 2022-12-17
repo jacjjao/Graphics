@@ -12,10 +12,14 @@
 
 std::array<Character, 128> TextRenderer::characters;
 
-uint32_t TextRenderer::VAO{}, TextRenderer::VBO = 0;
+uint32_t TextRenderer::VAO = 0, TextRenderer::VBO = 0;
 
-void TextRenderer::initialize() noexcept
+unsigned TextRenderer::text_size = 0;
+
+void TextRenderer::initialize(const unsigned font_size) noexcept
 {
+    text_size = font_size;
+
     glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
     FT_Library ft;
@@ -25,7 +29,7 @@ void TextRenderer::initialize() noexcept
         return;
     }
 
-    const auto font_name = FileSystem::getPath("/asset/fonts/BitterPro-Light.ttf").string();
+    const auto font_name = FileSystem::getPath("/asset/fonts/arial.ttf").string();
     if (font_name.empty())
     {
         std::cerr << "ERROR::FREETYPE: Failed to load font_name" << std::endl;
@@ -40,7 +44,7 @@ void TextRenderer::initialize() noexcept
     }
 
     // set size to load glyphs as
-    FT_Set_Pixel_Sizes(face, 0, default_font_size);
+    FT_Set_Pixel_Sizes(face, 0, font_size);
 
     // disable byte-alignment restriction
     glCheck(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
@@ -72,7 +76,7 @@ void TextRenderer::initialize() noexcept
                                            static_cast<float>(face->glyph->bitmap.rows)),
                                   Vector2f(static_cast<float>(face->glyph->bitmap_left),
                                            static_cast<float>(face->glyph->bitmap_top)),
-                                  static_cast<unsigned int>(face->glyph->advance.x)};
+                                  static_cast<unsigned>(face->glyph->advance.x)};
     }
 
     // destroy FreeType once we're finished
@@ -90,13 +94,13 @@ void TextRenderer::initialize() noexcept
     glCheck(glBindVertexArray(0));
 }
 
-void TextRenderer::renderText(const std::string& text, float x, float y, const Color color, const unsigned size) noexcept
+void TextRenderer::renderText(std::string_view text, float x, float y, const Color color, const unsigned font_size) noexcept
 {
     glCheck(glEnable(GL_BLEND));
 
-    const float scale = static_cast<float>(size) / static_cast<float>(default_font_size);
+    const float scale = static_cast<float>(font_size) / static_cast<float>(text_size);
 
-    y += static_cast<float>(size);
+    y += static_cast<float>(font_size);
 
     auto& shader = TextShaderProgram::instance();
     shader.use();
@@ -109,18 +113,18 @@ void TextRenderer::renderText(const std::string& text, float x, float y, const C
         auto& ch = characters[c];
 
         const float xpos = x + ch.bearing.x * scale;
-        const float ypos = y - (ch.size.y - ch.bearing.y) * scale;
+        const float ypos = y + (ch.size.y - ch.bearing.y) * scale;
 
         const float w = ch.size.x * scale;
-        const float h = ch.size.y * scale;
+        const float h = -ch.size.y * scale;
         // update VBO for each character
         const auto pos  = Window::pointToOpenGL(Vector3f{xpos, ypos, 0.0F});
-        const auto size = Window::vectorToOpenGL(Vector3f{w, -h, 0.0F});
+        const auto size = Window::vectorToOpenGL(Vector3f{w, h, 0.0F});
 
         // clang-format off
-        const float vertices[24] = {pos.x,          pos.y + size.y, 0.0f,  0.0f,           
-                                    pos.x,          pos.y,          0.0f,  1.0f,           
-                                    pos.x + size.x, pos.y,         1.0f, 1.0f,
+        const float vertices[24] = {pos.x,          pos.y + size.y, 0.0f, 0.0f,           
+                                    pos.x,          pos.y,          0.0f, 1.0f,           
+                                    pos.x + size.x, pos.y,          1.0f, 1.0f,
 
                                     pos.x,          pos.y + size.y, 0.0f, 0.0f,           
                                     pos.x + size.x, pos.y,          1.0f, 1.0f,           

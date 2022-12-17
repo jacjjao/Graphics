@@ -12,7 +12,6 @@ add_executable(${PROJECT_NAME}
 	"src/ShaderProgram.cpp"
 	"src/VertexArray.cpp"
 	"src/VertexBuffer.cpp"
-	
 	"src/Rectangle2D.cpp"
 	"src/Clock.cpp"
 	"src/ElementBuffer.cpp"
@@ -26,7 +25,7 @@ add_executable(${PROJECT_NAME}
 	"src/Line.cpp"
 	"src/Color.cpp"
 	"src/TextRenderer.cpp"
-	"demo/main.cpp"
+	"demo/console.cpp"
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
