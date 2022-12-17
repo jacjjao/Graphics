@@ -1,12 +1,11 @@
 #pragma once
 
-#include "Drawable.hpp"
 #include "Transformable.hpp"
 #include "Texture.hpp"
 #include "VertexArray.hpp"
 #include "Rect.hpp"
 
-class Shape : public Drawable, public Transformable
+class Shape : public Transformable
 {
 public:
     explicit Shape(size_t size) noexcept;

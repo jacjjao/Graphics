@@ -12,7 +12,7 @@ public:
     Rectangle2D(const Rectangle2D&)            = delete;
     Rectangle2D& operator=(const Rectangle2D&) = delete;
 
-    void draw() noexcept override;
+    void draw() noexcept;
     void update() noexcept override;
 
     void setWidth(float width) noexcept;

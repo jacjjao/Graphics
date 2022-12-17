@@ -66,11 +66,6 @@ void VertexArray::update() noexcept
     m_vbo.updateData(cache);
 }
 
-void VertexArray::draw() noexcept
-{
-    draw(PrimitiveType::Triangles);
-}
-
 void VertexArray::draw(const PrimitiveType primitive_type) noexcept
 {
     if (!isAvailable())

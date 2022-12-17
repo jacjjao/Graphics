@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 #include "Vector.hpp"
 #include "Color.hpp"
 

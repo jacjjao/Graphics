@@ -1,12 +1,11 @@
 #pragma once
 
-#include "Drawable.hpp"
 #include "VertexBuffer.hpp"
 #include "PrimitiveType.hpp"
 
 #include <vector>
 
-class VertexArray : public Drawable
+class VertexArray
 {
 public:
     using value_type             = std::vector<Vertex>::value_type;
@@ -16,7 +15,7 @@ public:
     using const_reverse_iterator = std::vector<Vertex>::const_reverse_iterator;
 
     explicit VertexArray(size_t size = 0) noexcept;
-    ~VertexArray() noexcept override;
+    ~VertexArray() noexcept;
 
     VertexArray(const VertexArray&)                  = delete;
     VertexArray& operator=(const VertexArray&) const = delete;
@@ -24,8 +23,7 @@ public:
     void destroy() noexcept;
     void create() noexcept;
     void update() noexcept;
-    void draw() noexcept override;
-    void draw(PrimitiveType primitive_type) noexcept;
+    void draw(PrimitiveType primitive_type = PrimitiveType::Triangles) noexcept;
 
     void resize(size_t size) noexcept;
     void reserve(size_t size) noexcept;

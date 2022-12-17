@@ -12,7 +12,7 @@ add_executable(${PROJECT_NAME}
 	"src/ShaderProgram.cpp"
 	"src/VertexArray.cpp"
 	"src/VertexBuffer.cpp"
-	"src/Vertex.cpp"
+	
 	"src/Rectangle2D.cpp"
 	"src/Clock.cpp"
 	"src/ElementBuffer.cpp"
