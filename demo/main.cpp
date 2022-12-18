@@ -57,7 +57,7 @@ int main()
     }
 
     Window::initialize(SCR_WIDTH, SCR_HEIGHT);
-    TextRenderer::initialize();
+    TextRenderer::initialize(48);
 
     {
         camera = std::make_unique<Camera>();
@@ -150,7 +150,7 @@ int main()
 
             Texture::unbind();
 
-            TextRenderer::renderText("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ", 0.0F, 48.0F, Color::White, 48);
+            TextRenderer::renderText("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ", 0.0F, 0.0F, Color::White, 48);
 
             glfwSwapBuffers(window);
 
