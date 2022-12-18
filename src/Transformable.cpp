@@ -35,8 +35,6 @@ const Matrix4& Transformable::getTransformMatrix() noexcept
 {
     if (should_update)
     {
-        m_model.toIdentity();
-
         const auto half_win_width    = Window::getHalfWindowWidth();
         const auto half_win_height   = Window::getHalfWindowHeight();
         const auto center_to_pos_vec = Vector3f{m_position.x - half_win_width, m_position.y - half_win_height, 0.0F};
