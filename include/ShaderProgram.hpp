@@ -9,6 +9,10 @@
 #include "Vector.hpp"
 #include "Color.hpp"
 
+static std::string read_shader_code(const std::filesystem::path& path);
+static bool checkShaderCompileStatus(uint32_t shader) noexcept;
+static bool checkProgramLinkStatus(uint32_t program) noexcept;
+
 class ShaderProgram
 {
 public:

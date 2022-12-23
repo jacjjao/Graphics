@@ -10,6 +10,55 @@
 #include "../include/FileSystem.hpp"
 #include "../include/glCheck.hpp"
 
+#define SUCCESS true
+#define FAILED false
+
+std::string read_shader_code(const std::filesystem::path & path)
+{
+    std::ifstream file{};
+
+    file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+    file.open(path);
+    if (!file.is_open())
+    {
+        throw std::runtime_error{std::string{"Cannot open the file: "} + path.string()};
+    }
+
+    std::stringstream stringstream{};
+    stringstream << file.rdbuf();
+
+    return std::move(stringstream).str();
+}
+
+bool checkShaderCompileStatus(const uint32_t shader) noexcept
+{
+    int32_t success       = 0;
+    char    info_log[512] = {};
+    glCheck(glGetShaderiv(shader, GL_COMPILE_STATUS, &success));
+    if (!success)
+    {
+        glCheck(glGetShaderInfoLog(shader, 512, nullptr, info_log));
+        std::cerr << "ERROR::SHADER::COMPILE\n" << info_log << '\n';
+        return FAILED;
+    }
+    return SUCCESS;
+}
+
+bool checkProgramLinkStatus(const uint32_t program) noexcept
+{
+    int32_t success       = 0;
+    char    info_log[512] = {};
+    glCheck(glGetProgramiv(program, GL_LINK_STATUS, &success));
+    if (!success)
+    {
+        glCheck(glGetProgramInfoLog(program, 512, nullptr, info_log));
+        std::cerr << "ERROR::PROGRAM::LINK\n" << info_log << '\n';
+        return FAILED;
+    }
+    return SUCCESS;
+}
+
 ShaderProgram* ShaderProgram::program_in_use = nullptr;
 
 ShaderProgram::ShaderProgram(const std::filesystem::path& vertex_path, const std::filesystem::path& fragment_path) noexcept :
@@ -17,63 +66,15 @@ m_id(0)
 {
     std::string   vertex_code{};
     std::string   fragment_code{};
-    std::ifstream v_shader_file{};
-    std::ifstream f_shader_file{};
-
-    v_shader_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    f_shader_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    
     try
     {
-        v_shader_file.open(vertex_path);
-        if (!v_shader_file.is_open())
-        {
-            throw std::runtime_error{std::string{"Cannot open the file: "} + vertex_path.string()};
-        }
-        f_shader_file.open(fragment_path);
-        if (!f_shader_file.is_open())
-        {
-            throw std::runtime_error{std::string{"Cannot open the file: "} + fragment_path.string()};
-        }
-
-        std::stringstream v_shader_stream{};
-        std::stringstream f_shader_stream{};
-
-        v_shader_stream << v_shader_file.rdbuf();
-        f_shader_stream << f_shader_file.rdbuf();
-
-        v_shader_file.close();
-        f_shader_file.close();
-
-        vertex_code   = std::move(v_shader_stream).str();
-        fragment_code = std::move(f_shader_stream).str();
+        vertex_code = read_shader_code(vertex_path);
+        fragment_code = read_shader_code(fragment_path);
     } catch (const std::exception& e)
     {
         std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ\n" << e.what() << '\n';
     }
-
-    const auto checkShaderProgramCompileStatus = [](const GLuint& shader, const char* name)
-    {
-        int32_t success       = 0;
-        char    info_log[512] = {};
-        glCheck(glGetShaderiv(shader, GL_COMPILE_STATUS, &success));
-        if (!success)
-        {
-            glCheck(glGetShaderInfoLog(shader, 512, nullptr, info_log));
-            std::cerr << "ERROR::" << name << "_SHADER::COMPILE\n" << info_log << '\n';
-        }
-    };
-
-    const auto checkProgramLinkStatus = [](const GLuint& program)
-    {
-        int32_t success       = 0;
-        char    info_log[512] = {};
-        glCheck(glGetProgramiv(program, GL_LINK_STATUS, &success));
-        if (!success)
-        {
-            glCheck(glGetProgramInfoLog(program, 512, nullptr, info_log));
-            std::cerr << "ERROR::PROGRAM::LINK\n" << info_log << '\n';
-        }
-    };
 
     const auto* v_shader_code = vertex_code.c_str();
     const auto* f_shader_code = fragment_code.c_str();
@@ -82,19 +83,31 @@ m_id(0)
     glCheck(vertex = glCreateShader(GL_VERTEX_SHADER));
     glCheck(glShaderSource(vertex, 1, &v_shader_code, nullptr));
     glCheck(glCompileShader(vertex));
-    checkShaderProgramCompileStatus(vertex, "VECTEX");
+    std::cout << "Checking vertex shader's compile status...\n";
+    if (checkShaderCompileStatus(vertex))
+    {
+        std::cout << "Vertex shader has been successfully compiled\n";
+    }
 
     GLuint fragment = 0;
     glCheck(fragment = glCreateShader(GL_FRAGMENT_SHADER));
     glCheck(glShaderSource(fragment, 1, &f_shader_code, nullptr));
     glCheck(glCompileShader(fragment));
-    checkShaderProgramCompileStatus(fragment, "FRAGMENT");
+    std::cout << "Checking fragment shader's compile status...\n";
+    if (checkShaderCompileStatus(fragment))
+    {
+        std::cout << "Fragment shader has been successfully compiled\n";
+    }
 
     glCheck(m_id = glCreateProgram());
     glCheck(glAttachShader(m_id, vertex));
     glCheck(glAttachShader(m_id, fragment));
     glCheck(glLinkProgram(m_id));
-    checkProgramLinkStatus(m_id);
+    std::cout << "Check shader program's link status...\n";
+    if (checkProgramLinkStatus(m_id))
+    {
+        std::cout << "Shaders have been successfully linked to the program\n";
+    }
 
     glCheck(glDeleteShader(vertex));
     glCheck(glDeleteShader(fragment));
