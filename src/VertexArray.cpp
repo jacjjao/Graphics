@@ -1,7 +1,6 @@
 #include "../include/VertexArray.hpp"
 #include "../include/glCheck.hpp"
 #include "../include/ShaderProgram.hpp"
-#include "../include/Window.hpp"
 
 #include <glad/glad.h>
 
@@ -38,8 +37,12 @@ void VertexArray::create() noexcept
 
     glCheck(glGenVertexArrays(1, &m_id));
 
-    transformData();
 
+    cache.resize(m_vertices.size());
+    for (int i = 0; i < m_vertices.size(); i++)
+    {
+        cache[i] = m_vertices[i];
+    }
     m_vbo.create(cache);
 
     VertexArray::bind(this);
@@ -62,7 +65,6 @@ void VertexArray::create() noexcept
 
 void VertexArray::update() noexcept
 {
-    transformData();
     m_vbo.updateData(cache);
 }
 
@@ -208,16 +210,5 @@ void VertexArray::unbind() noexcept
     {
         glCheck(glBindVertexArray(0));
         vao_in_bind = nullptr;
-    }
-}
-
-void VertexArray::transformData() noexcept
-{
-    cache.resize(m_vertices.size());
-    for (int i = 0; i < m_vertices.size(); i++)
-    {
-        cache[i].position  = Window::pointToOpenGL(m_vertices[i].position);
-        cache[i].color     = m_vertices[i].color;
-        cache[i].tex_coord = m_vertices[i].tex_coord;
     }
 }

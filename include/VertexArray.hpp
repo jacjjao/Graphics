@@ -59,8 +59,6 @@ public:
     static void unbind() noexcept;
 
 private:
-    void transformData() noexcept;
-
     static std::vector<Vertex> cache;
     static VertexArray*        vao_in_bind;
 

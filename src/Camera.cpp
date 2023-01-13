@@ -1,6 +1,6 @@
 #include "../include/Camera.hpp"
 #include "../include/ShaderProgram.hpp"
-#include "../include/Window.hpp"
+#include "../include/Math.hpp"
 
 #include <cmath>
 
@@ -9,7 +9,7 @@ m_view{Matrix4::makeIdentity()},
 should_update{true},
 dtheta{0.0F},
 dscale{1.0F, 1.0F},
-m_position{Window::getHalfWindowWidth(), Window::getHalfWindowHeight(), 0.0F}
+m_position{0.0F, 0.0F, 0.0F}
 {
 }
 
@@ -20,7 +20,7 @@ void Camera::use() noexcept
 
 void Camera::move(const Vector3f vector) noexcept
 {
-    const auto theta = Window::radians(dtheta);
+    const auto theta = radians(dtheta);
     const auto ccos  = std::cos(theta);
     const auto ssin  = std::sin(theta);
 
@@ -53,21 +53,19 @@ void Camera::scale(const Vector2f scale) noexcept
 
 void Camera::update() noexcept
 {
-    const auto [x, y, _] = -(Window::pointToOpenGL(m_position));
-    const auto theta     = Window::radians(dtheta);
+    const auto [x, y, _] = m_position;
+    const auto theta     = radians(dtheta);
     const auto ccos      = std::cos(theta);
     const auto ssin      = std::sin(theta);
-    const auto h         = Window::getWindowHeight();
-    const auto w         = Window::getWindowWidth();
     const auto [a, b]    = dscale;
 
     m_view[0][0] = a * ccos;
-    m_view[0][1] = -b * h * ssin / w;
-    m_view[0][3] = (a * x * w * ccos - a * h * y * ssin) / w;
+    m_view[0][1] = -b * ssin;
+    m_view[0][3] = a * x * ccos - a * y * ssin;
 
-    m_view[1][0] = a * w * ssin / h;
+    m_view[1][0] = a * ssin;
     m_view[1][1] = b * ccos;
-    m_view[1][3] = (b * h * y * ccos + b * w * x * ssin) / h;
+    m_view[1][3] = b * y * ccos + b * x * ssin;
 
     should_update = false;
 }

@@ -81,13 +81,13 @@ void processInput(GLFWwindow* window)
     }
 }
 
-void character_callback(GLFWwindow* window, unsigned codepoint)
+void character_callback(GLFWwindow* /*unused*/, const unsigned codepoint)
 {
     const char c = static_cast<char>(codepoint);
     str.push_back(c);
 }
 
-void framebuffer_size_callback(GLFWwindow* /*unused*/, int width, int height)
+void framebuffer_size_callback(GLFWwindow* /*unused*/, const int width, const int height)
 {
     glViewport(0, 0, width, height);
 }

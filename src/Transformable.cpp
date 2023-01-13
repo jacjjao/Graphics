@@ -1,15 +1,15 @@
 #include "../include/Transformable.hpp"
+#include "../include/Math.hpp"
 
 #include <cmath>
 
-#include "../include/Window.hpp"
 
 Transformable::Transformable() noexcept :
-m_model{Matrix4::makeIdentity()},
-m_position{},
 should_update{false},
-dtheta{},
-dscale{1.0F, 1.0F}
+dtheta{0.0F},
+dscale{1.0F, 1.0F},
+m_position{0.0F, 0.0F, 0.0F},
+m_model{Matrix4::makeIdentity()}
 {
 }
 
@@ -35,23 +35,17 @@ const Matrix4& Transformable::getTransformMatrix() noexcept
 {
     if (should_update)
     {
-        const auto half_win_width    = Window::getHalfWindowWidth();
-        const auto half_win_height   = Window::getHalfWindowHeight();
-        const auto center_to_pos_vec = Vector3f{m_position.x - half_win_width, m_position.y - half_win_height, 0.0F};
-        const auto [dx, dy, _]       = Window::vectorToOpenGL(center_to_pos_vec);
-        const auto h                 = half_win_height;
-        const auto w                 = half_win_width;
-        const auto theta             = Window::radians(dtheta);
-        const auto ssin              = std::sin(theta);
-        const auto ccos              = std::cos(theta);
+        const auto theta = radians(dtheta);
+        const auto ssin  = std::sin(theta);
+        const auto ccos  = std::cos(theta);
 
         m_model[0][0] = dscale.x * ccos;
-        m_model[0][1] = -dscale.y * h * ssin / w;
-        m_model[0][3] = dx;
+        m_model[0][1] = -dscale.y * ssin;
+        m_model[0][3] = m_position.x;
 
-        m_model[1][0] = dscale.x * w * ssin / h;
+        m_model[1][0] = dscale.x * ssin;
         m_model[1][1] = dscale.y * ccos;
-        m_model[1][3] = dy;
+        m_model[1][3] = m_position.y;
 
         should_update = false;
     }

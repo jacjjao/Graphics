@@ -2,7 +2,6 @@
 #include "../include/FileSystem.hpp"
 #include "../include/glCheck.hpp"
 #include "../include/ShaderProgram.hpp"
-#include "../include/Window.hpp"
 
 #include <iostream>
 
@@ -118,17 +117,15 @@ void TextRenderer::renderText(std::string_view text, float x, float y, const Col
         const float w = ch.size.x * scale;
         const float h = -ch.size.y * scale;
         // update VBO for each character
-        const auto pos  = Window::pointToOpenGL(Vector3f{xpos, ypos, 0.0F});
-        const auto size = Window::vectorToOpenGL(Vector3f{w, h, 0.0F});
 
         // clang-format off
-        const float vertices[24] = {pos.x,          pos.y + size.y, 0.0f, 0.0f,           
-                                    pos.x,          pos.y,          0.0f, 1.0f,           
-                                    pos.x + size.x, pos.y,          1.0f, 1.0f,
+        const float vertices[24] = {xpos,     ypos + h, 0.0f, 0.0f,           
+                                    xpos,     ypos,     0.0f, 1.0f,           
+                                    xpos + w, ypos,     1.0f, 1.0f,
 
-                                    pos.x,          pos.y + size.y, 0.0f, 0.0f,           
-                                    pos.x + size.x, pos.y,          1.0f, 1.0f,           
-                                    pos.x + size.x, pos.y + size.y, 1.0f, 0.0f};
+                                    xpos,     ypos + h, 0.0f, 0.0f,           
+                                    xpos + w, ypos,     1.0f, 1.0f,           
+                                    xpos + w, ypos + h, 1.0f, 0.0f};
         // clang-format on
 
         // render glyph texture over quad

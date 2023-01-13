@@ -44,7 +44,7 @@ void Texture::createFromImage(const std::filesystem::path& path, const TexConstr
     int nr_channels = 0;
     stbi_set_flip_vertically_on_load(true);
 
-    uint8_t* data = stbi_load(path.string().c_str(), &width, &height, &nr_channels, 0);
+    uint8_t* data = stbi_load(path.string().c_str(), &width, &height, &nr_channels, STBI_rgb);
     if (data != nullptr)
     {
         createFromData(data, width, height, parameters);

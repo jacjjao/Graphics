@@ -15,7 +15,7 @@ add_executable(${PROJECT_NAME}
 	"src/Rectangle2D.cpp"
 	"src/Clock.cpp"
 	"src/ElementBuffer.cpp"
-	"src/Window.cpp"
+	
 	"src/FileSystem.cpp"
 	"src/Circle2D.cpp"
 	"src/Shape.cpp"
@@ -25,7 +25,9 @@ add_executable(${PROJECT_NAME}
 	"src/Line.cpp"
 	"src/Color.cpp"
 	"src/TextRenderer.cpp"
-	"demo/console.cpp"
+	"src/Math.cpp"
+	"demo/main.cpp"
+	#"demo/mario/main.cpp"
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

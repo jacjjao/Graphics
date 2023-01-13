@@ -1,5 +1,4 @@
 #include "../include/ShaderProgram.hpp"
-#include "../include/Window.hpp"
 #include "../include/glCheck.hpp"
 #include "../include/Circle2D.hpp"
 
@@ -26,19 +25,19 @@ void Circle2D::draw() noexcept
 
 void Circle2D::update() noexcept
 {
-    constexpr auto f_pi = static_cast<float>(std::numbers::pi);
+    constexpr auto pi = std::numbers::pi_v<float>;
 
     const auto f_point_count = static_cast<float>(m_vao.size() - 1);
-    const auto slice         = 2.0F * f_pi / f_point_count;
-    const auto center        = Vector2f{Window::getHalfWindowWidth(), Window::getHalfWindowHeight()};
+    const auto slice    = 2.0F * pi / f_point_count;
+    const auto center = getPosition();
 
     const auto half_tex_width  = m_tex_rect.size.x / 2.0F;
     const auto half_tex_height = m_tex_rect.size.y / 2.0F;
 
     m_vao[0].position  = center;
     m_vao[0].color     = m_color;
-    m_vao[0].tex_coord = (hasTexture()) ? m_texture->pointToTexCoord(m_tex_rect.position) : Vector2f{};
-    for (int i = 1; i < m_vao.size() - 1; i++)
+    m_vao[0].tex_coord = (hasTexture()) ? m_tex_rect.position : Vector2f{0.0F, 0.0F};
+    for (size_t i = 1; i < m_vao.size() - 1; i++)
     {
         const auto  f_index = static_cast<float>(i);
         const float theta   = slice * f_index;
@@ -58,7 +57,7 @@ void Circle2D::update() noexcept
             tex_coord.x = m_tex_rect.position.x + half_tex_width * ccos;
             tex_coord.y = m_tex_rect.position.y + half_tex_height * ssin;
 
-            m_vao[i].tex_coord = m_texture->pointToTexCoord(tex_coord);
+            m_vao[i].tex_coord = tex_coord;
         }
     }
     m_vao.back() = m_vao[1];

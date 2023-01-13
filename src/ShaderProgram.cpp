@@ -25,10 +25,10 @@ std::string read_shader_code(const std::filesystem::path & path)
         throw std::runtime_error{std::string{"Cannot open the file: "} + path.string()};
     }
 
-    std::stringstream stringstream{};
-    stringstream << file.rdbuf();
+    std::stringstream code{};
+    code << file.rdbuf();
 
-    return std::move(stringstream).str();
+    return std::move(code).str();
 }
 
 bool checkShaderCompileStatus(const uint32_t shader) noexcept
@@ -76,8 +76,8 @@ m_id(0)
         std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ\n" << e.what() << '\n';
     }
 
-    const auto* v_shader_code = vertex_code.c_str();
-    const auto* f_shader_code = fragment_code.c_str();
+    const auto* v_shader_code = vertex_code.data();
+    const auto* f_shader_code = fragment_code.data();
 
     GLuint vertex = 0;
     glCheck(vertex = glCreateShader(GL_VERTEX_SHADER));
@@ -103,7 +103,7 @@ m_id(0)
     glCheck(glAttachShader(m_id, vertex));
     glCheck(glAttachShader(m_id, fragment));
     glCheck(glLinkProgram(m_id));
-    std::cout << "Check shader program's link status...\n";
+    std::cout << "Checking shader program's link status...\n";
     if (checkProgramLinkStatus(m_id))
     {
         std::cout << "Shaders have been successfully linked to the program\n";
@@ -218,6 +218,10 @@ int32_t ShaderProgram::getLocation(const std::string& name) noexcept
 ShaderProgram2D::ShaderProgram2D() noexcept :
 ShaderProgram{FileSystem::getPath("/shader/2D/VertexShader.glsl"), FileSystem::getPath("/shader/2D/FragmentShader.glsl")}
 {
+    use();
+
+    const Matrix4 identity = Matrix4::makeIdentity();
+    setMat4("view", identity);
 }
 
 ShaderProgram2D& ShaderProgram2D::instance() noexcept

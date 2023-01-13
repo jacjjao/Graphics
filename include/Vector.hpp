@@ -29,12 +29,12 @@ public:
         return Vector2<T>{x * other.x, y * other.y};
     }
 
-    constexpr T length() const noexcept
+    [[nodiscard]] T length() const noexcept
     {
         return std::sqrt(x * x + y * y);
     }
 
-    constexpr Vector2<T> normalize() const noexcept
+    [[nodiscard]] Vector2<T> normalize() const noexcept
     {
         const auto len = length();
 
@@ -77,6 +77,17 @@ public:
         return *this;
     }
 
+    Vector3<T> operator-(const Vector3<T>& other) const noexcept
+    {
+        Vector3<T> result{};
+
+        result.x = this->x - other.x;
+        result.y = this->y - other.y;
+        result.z = this->z - other.z;
+
+        return result;
+    }
+
     constexpr Vector3<T> operator-() const noexcept
     {
         return Vector3<T>{-x, -y, -z};
@@ -87,12 +98,12 @@ public:
         return Vector3<T>{x * other.x, y * other.y, z * other.z};
     }
 
-    T length() const noexcept
+    [[nodiscard]] T length() const noexcept
     {
         return std::sqrt(x * x + y * y + z * z);
     }
 
-    Vector3<T> normalize() const noexcept
+    [[nodiscard]] Vector3<T> normalize() const noexcept
     {
         const auto len = length();
 

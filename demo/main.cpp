@@ -12,7 +12,6 @@
 #include "../include/Clock.hpp"
 #include "../include/Rectangle2D.hpp"
 #include "../include/ShaderProgram.hpp"
-#include "../include/Window.hpp"
 #include "../include/Vector.hpp"
 #include "../include/Texture.hpp"
 #include "../include/FileSystem.hpp"
@@ -31,6 +30,15 @@ std::unique_ptr<Rectangle2D> rect{};
 std::unique_ptr<Circle2D>    circle{};
 std::unique_ptr<Texture>     texture{};
 std::unique_ptr<Camera>      camera{};
+
+Vector2f screenPointToNDC(const Vector2f vector) noexcept
+{
+    constexpr float
+    Vector2f result{0.0F, 0.0F};
+
+
+    result.x = (vector.x - )
+}
 
 int main()
 {
@@ -60,6 +68,9 @@ int main()
     TextRenderer::initialize(48);
 
     {
+        Rectangle2D rect2{Vector2f{100.0F, 100.0F}};
+        rect2.setPosition(Vector3f{0.0F, 0.0F, 0.0F});
+
         camera = std::make_unique<Camera>();
 
         auto& shaderProgram = ShaderProgram2D::instance();
@@ -147,6 +158,7 @@ int main()
             circle->draw();
             vao.draw();
             line.draw();
+            rect2.draw();
 
             Texture::unbind();
 
