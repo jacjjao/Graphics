@@ -147,3 +147,11 @@ void TextRenderer::renderText(std::string_view text, float x, float y, const Col
 
     glCheck(glDisable(GL_BLEND));
 }
+
+void TextRenderer::releaseResources() noexcept
+{
+    for (auto& character : characters)
+    {
+        character.texture.destroy();
+    }
+}

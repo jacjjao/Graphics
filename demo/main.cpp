@@ -31,13 +31,48 @@ std::unique_ptr<Circle2D>    circle{};
 std::unique_ptr<Texture>     texture{};
 std::unique_ptr<Camera>      camera{};
 
-Vector2f screenPointToNDC(const Vector2f vector) noexcept
+constexpr auto scr_half_width  = static_cast<float>(SCR_WIDTH / 2);
+constexpr auto scr_half_height = static_cast<float>(SCR_HEIGHT / 2);
+
+Vector2f screenPointToNDC(const Vector2f point) noexcept
 {
-    constexpr float
     Vector2f result{0.0F, 0.0F};
 
+    result.x = (point.x - scr_half_width) / scr_half_width;
+    result.y = (scr_half_height - point.y) / scr_half_height;
 
-    result.x = (vector.x - )
+    return result;
+}
+
+Vector3f screenPointToNDC(const Vector3f point) noexcept
+{
+    Vector3f result{0.0F, 0.0F, 0.0F};
+
+    result.x = (point.x - scr_half_width) / scr_half_width;
+    result.y = (scr_half_height - point.y) / scr_half_height;
+
+    return result;
+}
+
+
+Vector2f screenVecToNDC(const Vector2f vector) noexcept
+{
+    Vector2f result{0.0F, 0.0F};
+
+    result.x = vector.x / scr_half_width;
+    result.y = vector.y / scr_half_height;
+
+    return result;
+}
+
+Vector3f screenVecToNDC(const Vector3f vector) noexcept
+{
+    Vector3f result{0.0F, 0.0F, 0.0F};
+
+    result.x = vector.x / scr_half_width;
+    result.y = vector.y / scr_half_height;
+
+    return result;
 }
 
 int main()
@@ -64,12 +99,11 @@ int main()
         return -1;
     }
 
-    Window::initialize(SCR_WIDTH, SCR_HEIGHT);
     TextRenderer::initialize(48);
 
     {
-        Rectangle2D rect2{Vector2f{100.0F, 100.0F}};
-        rect2.setPosition(Vector3f{0.0F, 0.0F, 0.0F});
+        Rectangle2D rect2{screenVecToNDC(Vector2f{100.0F, 100.0F})};
+        rect2.setPosition(screenPointToNDC(Vector3f{0.0F, 0.0F, 0.0F}));
 
         camera = std::make_unique<Camera>();
 
@@ -77,8 +111,8 @@ int main()
 
         texture = std::make_unique<Texture>(FileSystem::getPath("/asset/images/container.jpg"));
 
-        rect = std::make_unique<Rectangle2D>(Vector2f{100, 100});
-        rect->setPosition(Vector3f{300, 1000, 0});
+        rect = std::make_unique<Rectangle2D>(screenVecToNDC(Vector2f{100, 100}));
+        rect->setPosition(screenPointToNDC(Vector3f{300, 1000, 0}));
 
         rect->applyTexture(texture.get());
 
@@ -89,24 +123,24 @@ int main()
         tex_rect.position.y /= 2.0F;
         // rect->setTextureRect(tex_rect);
 
-        circle = std::make_unique<Circle2D>(50.0F);
-        circle->setPosition(Vector3f{1800.0F, 1000.0F, 0});
+        circle = std::make_unique<Circle2D>(screenVecToNDC(Vector2f{50.0F, 0.0F}).x);
+        circle->setPosition(screenPointToNDC(Vector3f{1800.0F, 1000.0F, 0}));
 
         circle->applyTexture(texture.get());
 
         circle->setTextureRect(tex_rect);
 
         VertexArray vao{3};
-        vao[0].position = Vector2f{1000.0, 100.0};
-        vao[1].position = Vector2f{static_cast<float>(1000.0 + 500.0 * std::sqrt(3.0) / 2.0), 850.0};
-        vao[2].position = Vector2f{static_cast<float>(1000.0 - 500.0 * std::sqrt(3.0) / 2.0), 850.0};
+        vao[0].position = screenPointToNDC(Vector2f{1000.0, 100.0});
+        vao[1].position = screenPointToNDC(Vector2f{static_cast<float>(1000.0 + 500.0 * std::sqrt(3.0) / 2.0), 850.0});
+        vao[2].position = screenPointToNDC(Vector2f{static_cast<float>(1000.0 - 500.0 * std::sqrt(3.0) / 2.0), 850.0});
         vao.setUsage(VertexBuffer::Usage::StreamDraw);
 
         circle->scale(Vector2f{2.0F, 2.0F});
         rect->scale(Vector2f{2.0F, 2.0F});
-        rect->translate(Vector3f{100, 0, 0});
+        rect->translate(screenVecToNDC(Vector3f{100, 0, 0}));
 
-        Line line{Vector2f{100.0F, 100.0F}, Vector2f{500.0F, 100.0F}};
+        Line line{screenPointToNDC(Vector2f{100.0F, 100.0F}), screenPointToNDC(Vector2f{500.0F, 100.0F})};
         line.setLineWidth(10.0F);
         line.setColor(Color{255, 127, 127});
 
@@ -162,7 +196,7 @@ int main()
 
             Texture::unbind();
 
-            TextRenderer::renderText("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ", 0.0F, 0.0F, Color::White, 48);
+            // TextRenderer::renderText("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ", 0.0F, 0.0F, Color::White, 48);
 
             glfwSwapBuffers(window);
 
@@ -175,6 +209,8 @@ int main()
             fps_cnt++;
         }
     }
+
+    TextRenderer::releaseResources();
 
     glfwTerminate();
 
@@ -195,22 +231,22 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
         // rect->translate({0.0F, -1.0F});
-        camera->move(Vector3f{0.0F, -1.0F, 0.0F});
+        camera->move(screenVecToNDC(Vector3f{0.0F, -1.0F, 0.0F}));
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
         // rect->translate({0.0F, 1.0F});
-        camera->move(Vector3f{0.0F, 1.0F, 0.0F});
+        camera->move(screenVecToNDC(Vector3f{0.0F, 1.0F, 0.0F}));
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
         // rect->translate({-1.0F, 0.0F});
-        camera->move(Vector3f{-1.0F, 0.0F, 0.0F});
+        camera->move(screenVecToNDC(Vector3f{1.0F, 0.0F, 0.0F}));
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
         // rect->translate({1.0F, 0.0F});
-        camera->move(Vector3f{1.0F, 0.0F, 0.0F});
+        camera->move(screenVecToNDC(Vector3f{-1.0F, 0.0F, 0.0F}));
     }
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
     {

@@ -26,6 +26,8 @@ public:
                            Color            color = Color::White,
                            unsigned         font_size  = text_size) noexcept;
 
+    static void releaseResources() noexcept;
+
 private:
     static std::array<Character, 128> characters;
 
