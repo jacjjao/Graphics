@@ -14,16 +14,16 @@ Camera::Camera(
 m_view{Matrix4::makeIdentity()},
 should_update{true},
 dtheta{0.0F},
-dscale{1.0F, 1.0F},
-m_position{0.0F, 0.0F, 0.0F}
+dscale{1.0F},
+m_position{0.0F}
 {
     m_proj = ortho(left, right, bottom, top, zNear, zFar);
 }
 
 void Camera::use() noexcept
 {
-    ShaderProgram2D::instance().setMat4("view", getViewMatrix());
-    ShaderProgram2D::instance().setMat4("proj", m_proj);
+    DefaultShaderProgram::instance().setMat4("view", getViewMatrix());
+    DefaultShaderProgram::instance().setMat4("proj", m_proj);
 }
 
 void Camera::move(const Vector3f vector) noexcept

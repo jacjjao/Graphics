@@ -10,11 +10,6 @@ Rectangle2D::Rectangle2D(const Vector2f size) noexcept : Shape{4}, m_ebo{6}, m_s
 
 void Rectangle2D::draw() noexcept
 {
-    if (!m_vao.isAvailable())
-    {
-        create();
-    }
-
     setupDraw();
     glCheck(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_ebo.size()), GL_UNSIGNED_INT, 0));
     VertexArray::unbind();
@@ -48,7 +43,7 @@ void Rectangle2D::update() noexcept
         m_vao[3].tex_coord = Vector2f{m_tex_rect.position.x, m_tex_rect.position.y + m_tex_rect.size.y};
     }
 
-    if (m_vao.isAvailable())
+    if (m_vao.isCreated())
     {
         m_vao.update();
     }
@@ -66,6 +61,10 @@ void Rectangle2D::setHeight(const float height) noexcept
 
 void Rectangle2D::create() noexcept
 {
+    if (isCreated())
+    {
+        return;
+    }
     update();
 
     m_vao.create();
@@ -81,7 +80,7 @@ void Rectangle2D::create() noexcept
 
 void Rectangle2D::setupDraw() noexcept
 {
-    auto& program = ShaderProgram2D::instance();
+    auto& program = DefaultShaderProgram::instance();
 
     program.setFloat("color_alpha", hasTexture() ? 0.0F : 1.0F);
     program.setMat4("model", getTransformMatrix());

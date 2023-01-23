@@ -2,6 +2,7 @@
 
 #include "VertexBuffer.hpp"
 #include "PrimitiveType.hpp"
+#include "Matrix.hpp"
 
 #include <vector>
 
@@ -23,7 +24,9 @@ public:
     void destroy() noexcept;
     void create() noexcept;
     void update() noexcept;
-    void draw(PrimitiveType primitive_type = PrimitiveType::Triangles) noexcept;
+    void draw(PrimitiveType primitive_type = PrimitiveType::Triangles,
+              const Matrix4& model_mat = Constants::identity_mat4,
+              float color_alpha = 1.0F) noexcept;
 
     void resize(size_t size) noexcept;
     void reserve(size_t size) noexcept;
@@ -37,7 +40,7 @@ public:
     value_type&                     back() noexcept;
     [[nodiscard]] const value_type& back() const noexcept;
 
-    [[nodiscard]] bool isAvailable() const noexcept;
+    [[nodiscard]] bool isCreated() const noexcept;
 
     [[nodiscard]] size_t size() const noexcept;
 

@@ -16,8 +16,11 @@ static bool checkProgramLinkStatus(uint32_t program) noexcept;
 class ShaderProgram
 {
 public:
-    ShaderProgram(const std::filesystem::path& vertex_path, const std::filesystem::path& fragment_path) noexcept;
+    ShaderProgram() = default;
+    explicit ShaderProgram(const std::filesystem::path& vertex_path, const std::filesystem::path& fragment_path) noexcept;
     ~ShaderProgram() noexcept;
+
+    void create(const std::string& vertex_src, const std::string& fragment_src) noexcept;
 
     void use() noexcept;
 
@@ -46,24 +49,105 @@ private:
     std::unordered_map<std::string, int32_t> locations;
 };
 
-class ShaderProgram2D : public ShaderProgram
+class DefaultShaderProgram : public ShaderProgram
 {
 public:
-    ShaderProgram2D() noexcept;
+    explicit DefaultShaderProgram() noexcept;
 
-    [[nodiscard]] static ShaderProgram2D& instance() noexcept;
+    [[nodiscard]] static DefaultShaderProgram& instance() noexcept;
 
-    ShaderProgram2D(const ShaderProgram2D&)            = delete;
-    ShaderProgram2D& operator=(const ShaderProgram2D&) = delete;
+    DefaultShaderProgram(const DefaultShaderProgram&)            = delete;
+    DefaultShaderProgram& operator=(const DefaultShaderProgram&) = delete;
 };
 
 class TextShaderProgram : public ShaderProgram
 {
 public:
-    TextShaderProgram() noexcept;
+    explicit TextShaderProgram() noexcept;
 
     [[nodiscard]] static TextShaderProgram& instance() noexcept;
 
     TextShaderProgram(const TextShaderProgram&)            = delete;
     TextShaderProgram& operator=(const TextShaderProgram&) = delete;
 };
+
+namespace ShaderSrcs 
+{
+
+    namespace GraphicsRendering 
+    {
+        inline const std::string vertex_shader_src = R"(
+            #version 460 core
+
+            layout (location = 0) in vec3 in_pos;
+            layout (location = 1) in vec4 in_color; 
+            layout (location = 2) in vec2 in_tex_coord;
+            
+            uniform mat4 model;
+            uniform mat4 view;
+            uniform mat4 proj;
+            
+            out vec4 frag_color;
+            out vec2 tex_coord;
+            
+            void main()
+            {
+            	gl_Position = proj * view * model * vec4(in_pos, 1.0);
+            	frag_color = in_color;
+            	tex_coord = in_tex_coord;
+            }
+        )"; 
+
+        inline const std::string fragment_shader_src = R"(
+            #version 460 core
+
+            in vec4 frag_color;
+            in vec2 tex_coord;
+            
+            out vec4 color;
+            
+            uniform float color_alpha;
+            uniform sampler2D texture1;
+            
+            void main()
+            {	
+            	color = mix(texture(texture1, tex_coord), frag_color, color_alpha);
+            }
+        )";
+
+    } // GraphicsRendering
+
+    namespace TextRendering
+    {
+        inline const std::string vertex_shader_src = R"(
+            #version 460 core
+            layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
+            out vec2 TexCoords;
+            
+            uniform mat4 proj;
+            
+            void main()
+            {
+                gl_Position = proj * vec4(vertex.xy, 0.0, 1.0);
+                TexCoords = vertex.zw;
+            }  
+        )";
+
+        inline const std::string fragment_shader_src = R"(
+            #version 460 core
+            in vec2 TexCoords;
+            out vec4 color;
+            
+            uniform sampler2D text;
+            uniform vec4 textColor;
+            
+            void main()
+            {    
+                vec4 sampled = vec4(1.0, 1.0, 1.0, texture(text, TexCoords).r);
+                color = textColor * sampled;
+            }  
+        )";
+    } // TextRendering
+
+
+} // ShaderSrcs

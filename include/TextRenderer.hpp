@@ -22,8 +22,7 @@ public:
     static void initialize(unsigned font_size, unsigned screen_width, unsigned screen_height) noexcept;
 
     static void renderText(std::string_view text,
-                           float            x,
-                           float            y,
+                           Vector2f         pos,
                            Color            color = Color::White,
                            unsigned         font_size  = text_size) noexcept;
 

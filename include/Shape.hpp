@@ -28,6 +28,10 @@ public:
 
     [[nodiscard]] Rect getTextureRect() const noexcept;
 
+    virtual void create() = 0;
+
+    bool isCreated() const noexcept;
+
 protected:
     VertexArray m_vao;
 
@@ -36,4 +40,6 @@ protected:
     Texture* m_texture;
 
     Rect m_tex_rect;
+
+    bool m_is_created = false;
 };

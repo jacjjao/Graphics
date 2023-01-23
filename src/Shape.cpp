@@ -41,3 +41,8 @@ Rect Shape::getTextureRect() const noexcept
 {
     return m_tex_rect;
 }
+
+bool Shape::isCreated() const noexcept
+{
+    return m_is_created;
+}

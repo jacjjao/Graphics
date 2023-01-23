@@ -75,7 +75,7 @@ int main()
     mario->setPosition(Vector3f(6.0F, 200.0F, 0.0F)); // so mario will in the right position
 
 
-    auto& program = ShaderProgram2D::instance();
+    auto& program = DefaultShaderProgram::instance();
     constexpr double update_time_interval = 1.0 / target_fps;
     Clock timer{};
     while (!glfwWindowShouldClose(window))
@@ -163,7 +163,7 @@ void release_resources()
     map_tex.reset();
     map.reset();
     cam.reset();
-    ShaderProgram2D::instance().destroy();
+    DefaultShaderProgram::instance().destroy();
     mario_tex.reset();
     mario.reset();
 }

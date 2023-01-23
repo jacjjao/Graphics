@@ -6,7 +6,7 @@ template <typename T>
 class Vector2
 {
 public:
-    constexpr Vector2(T val = T{0}) noexcept : x{val}, y{val}
+    constexpr Vector2(T val = static_cast<T>(0)) noexcept : x{val}, y{val}
     {
     }
 
@@ -24,22 +24,22 @@ public:
 
     constexpr Vector2<T> operator+(const Vector2<T>& other) const noexcept
     {
-        return Vector2<T>{this->x + other.x, this->y + other.y};
+        return {this->x + other.x, this->y + other.y};
     }
 
     constexpr Vector2<T> operator-() const noexcept
     {
-        return Vector2<T>{-x, -y};
+        return {-x, -y};
     }
 
     constexpr Vector2<T> operator*(const Vector2<T>& other) const noexcept
     {
-        return Vector2<T>{x * other.x, y * other.y};
+        return {x * other.x, y * other.y};
     }
 
     constexpr Vector2<T> operator/(const T& factor) const noexcept
     {
-        return Vector2<T>{x / factor, y / factor};
+        return {x / factor, y / factor};
     }
 
     [[nodiscard]] T length() const noexcept
@@ -63,7 +63,7 @@ template <typename T>
 class Vector3
 {
 public:
-    constexpr Vector3(T val = T{0}) noexcept : x{val}, y{val}, z{val}
+    constexpr Vector3(T val = static_cast<T>(0)) noexcept : x{val}, y{val}, z{val}
     {
     }
 
@@ -79,12 +79,12 @@ public:
     {
         x = other.x;
         y = other.y;
-        z = T{};
+        z = static_cast<T>(0);
 
         return *this;
     }
 
-    Vector3<T>& operator+=(const Vector3<T>& other) noexcept
+    constexpr Vector3<T>& operator+=(const Vector3<T>& other) noexcept
     {
         x += other.x;
         y += other.y;
@@ -93,7 +93,7 @@ public:
         return *this;
     }
 
-    Vector3<T> operator+(const Vector3<T>& other) const noexcept
+    constexpr Vector3<T> operator+(const Vector3<T>& other) const noexcept
     {
         Vector3<T> result{};
 
@@ -104,7 +104,7 @@ public:
         return result;
     }
 
-    Vector3<T> operator-(const Vector3<T>& other) const noexcept
+    constexpr Vector3<T> operator-(const Vector3<T>& other) const noexcept
     {
         Vector3<T> result{};
 
@@ -118,11 +118,6 @@ public:
     constexpr Vector3<T> operator-() const noexcept
     {
         return Vector3<T>{-x, -y, -z};
-    }
-
-    constexpr Vector3<T> operator*(const Vector3<T>& other) const noexcept
-    {
-        return Vector3<T>{x * other.x, y * other.y, z * other.z};
     }
 
     [[nodiscard]] T length() const noexcept
@@ -143,13 +138,19 @@ public:
 using Vector3f = Vector3<float>;
 
 template <typename T>
-constexpr Vector3<T> crossProduct(const Vector3<T>& a, const Vector3<T>& b) noexcept
+constexpr Vector3<T> cross(const Vector3<T>& lhs, const Vector3<T>& rhs) noexcept
 {
     Vector3<T> result{};
 
-    result.x = a.y * b.z - a.z * b.y;
-    result.y = a.z * b.x - a.x * b.z;
-    result.z = a.x * b.y - a.y * b.x;
+    result.x = lhs.y * rhs.z - lhs.z * rhs.y;
+    result.y = lhs.z * rhs.x - lhs.x * rhs.z;
+    result.z = lhs.x * rhs.y - lhs.y * rhs.x;
 
     return result;
+}
+
+template<typename T>
+constexpr Vector3<T> dot(const Vector3<T>& lhs, const Vector3<T>& rhs) noexcept 
+{
+    return {lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z};
 }

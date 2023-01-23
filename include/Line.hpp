@@ -12,6 +12,8 @@ public:
 
     void draw() noexcept;
 
+    void create() noexcept;
+
     Line(const Line&)            = delete;
     Line& operator=(const Line&) = delete;
 

@@ -22,7 +22,7 @@ VertexArray::~VertexArray() noexcept
 
 void VertexArray::destroy() noexcept
 {
-    if (isAvailable())
+    if (isCreated())
     {
         glCheck(glDeleteVertexArrays(1, &m_id));
         m_id = 0;
@@ -32,7 +32,7 @@ void VertexArray::destroy() noexcept
 
 void VertexArray::create() noexcept
 {
-    if (isAvailable())
+    if (isCreated())
     {
         return;
     }
@@ -66,17 +66,14 @@ void VertexArray::update() noexcept
     m_vbo.updateData(cache);
 }
 
-void VertexArray::draw(const PrimitiveType primitive_type) noexcept
+void VertexArray::draw(const PrimitiveType primitive_type,
+                       const Matrix4&      model_mat,
+                       const float         color_alpha) noexcept
 {
-    if (!isAvailable())
-    {
-        create();
-    }
+    auto& program = DefaultShaderProgram::instance();
 
-    auto& program = ShaderProgram2D::instance();
-
-    program.setMat4("model", Constants::identity_mat4);
-    program.setFloat("color_alpha", 1.0F);
+    program.setMat4("model", model_mat);
+    program.setFloat("color_alpha", color_alpha);
 
     VertexArray::bind(this);
     glCheck(glDrawArrays(static_cast<GLenum>(primitive_type), 0, static_cast<GLsizei>(m_vertices.size())));
@@ -128,7 +125,7 @@ const VertexArray::value_type& VertexArray::back() const noexcept
     return m_vertices.back();
 }
 
-bool VertexArray::isAvailable() const noexcept
+bool VertexArray::isCreated() const noexcept
 {
     return m_id != 0;
 }

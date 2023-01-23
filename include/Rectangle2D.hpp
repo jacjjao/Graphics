@@ -15,11 +15,12 @@ public:
     void draw() noexcept;
     void update() noexcept override;
 
+    void create() noexcept override;
+
     void setWidth(float width) noexcept;
     void setHeight(float height) noexcept;
 
 private:
-    void create() noexcept;
     void setupDraw() noexcept;
 
     Vector2f m_size;

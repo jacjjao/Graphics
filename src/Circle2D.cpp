@@ -12,16 +12,19 @@ m_radius{radius}
 {
 }
 
+Circle2D::Circle2D(const Vector2f radius, const size_t point_count) noexcept : 
+Shape{point_count + 2}, 
+m_radius{radius}
+{
+}
+
 void Circle2D::draw() noexcept
 {
-    if (!m_vao.isAvailable())
-    {
-        create();
-    }
-
-    setupDraw();
-    glCheck(glDrawArrays(GL_TRIANGLE_FAN, 0, static_cast<GLsizei>(m_vao.size())));
-    VertexArray::unbind();
+    m_vao.draw(
+        PrimitiveType::TriangleFan, 
+        getTransformMatrix(), 
+        hasTexture() ? 0.0F : 1.0F
+    );
 }
 
 void Circle2D::update() noexcept
@@ -45,8 +48,8 @@ void Circle2D::update() noexcept
         constexpr auto aspect = 2000.0F / 1200.0F;
 
         Vector2f position{};
-        position.x = m_radius * ccos;
-        position.y = m_radius * ssin;
+        position.x = m_radius.x * ccos;
+        position.y = m_radius.y * ssin;
 
         m_vao[i].position = position;
         m_vao[i].color    = m_color;
@@ -62,7 +65,7 @@ void Circle2D::update() noexcept
     }
     m_vao.back() = m_vao[1];
 
-    if (m_vao.isAvailable())
+    if (m_vao.isCreated())
     {
         m_vao.update();
     }
@@ -70,22 +73,20 @@ void Circle2D::update() noexcept
 
 void Circle2D::setRadius(const float radius) noexcept
 {
+    m_radius.x = m_radius.y = radius;
+}
+
+void Circle2D::setRadius(const Vector2f radius) noexcept
+{
     m_radius = radius;
 }
 
 void Circle2D::create() noexcept
 {
+    if (isCreated())
+    {
+        return;
+    }
     update();
-
     m_vao.create();
-}
-
-void Circle2D::setupDraw() noexcept
-{
-    auto& program = ShaderProgram2D::instance();
-
-    program.setFloat("color_alpha", hasTexture() ? 0.0F : 1.0F);
-    program.setMat4("model", getTransformMatrix());
-
-    VertexArray::bind(&m_vao);
 }

@@ -15,8 +15,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
-const unsigned int SCR_WIDTH  = 2000;
-const unsigned int SCR_HEIGHT = 1200;
+constexpr unsigned SCR_WIDTH  = 2000;
+constexpr unsigned SCR_HEIGHT = 1200;
 
 std::unique_ptr<Rectangle2D> rect{};
 std::unique_ptr<Circle2D>    circle{};
@@ -75,13 +75,12 @@ int main()
     { 
         camera = std::make_unique<Camera>(-scr_half_width, scr_half_width, -scr_half_height, scr_half_height);
 
-        auto& shaderProgram = ShaderProgram2D::instance();
+        auto& shaderProgram = DefaultShaderProgram::instance();
         
         texture = std::make_unique<Texture>(FileSystem::getPath("/asset/images/container.jpg"));
 
         rect = std::make_unique<Rectangle2D>(Vector2f{100, 100});
         rect->setPosition(screenPointToNDC(Vector3f{300, 1000, 0.0F}));
-
         rect->applyTexture(texture.get());
 
         auto tex_rect = rect->getTextureRect();
@@ -102,8 +101,8 @@ int main()
         vao[2].position = screenPointToNDC({static_cast<float>(1000.0 - 500.0 * std::sqrt(3.0) / 2.0), 850.0});
         vao.setUsage(VertexBuffer::Usage::StreamDraw);
 
-        circle->scale({2.0F, 2.0F});
-        rect->scale({2.0F, 2.0F});
+        circle->scale({2.0F});
+        rect->scale({2.0F});
         
         Line line{screenPointToNDC({100.0F, 100.0F}), screenPointToNDC({500.0F, 100.0F})};
         line.setLineWidth(10.0F);
@@ -111,6 +110,12 @@ int main()
 
         Clock clock{};
         Clock timer{};
+
+        rect->create();
+        circle->create();
+        line.create();
+        vao.create();
+
         while (!glfwWindowShouldClose(window))
         {
             processInput(window);
@@ -162,8 +167,7 @@ int main()
             constexpr auto text_pos = screenPointToNDC({0, 0});
             constexpr auto text_color = Color::fromHex(0x11F311FF);
             TextRenderer::renderText("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-                                     text_pos.x,
-                                     text_pos.y,
+                                     text_pos,
                                      text_color,
                                      48);
 
@@ -236,7 +240,7 @@ void processInput(GLFWwindow* window)
 
 void scrollCallback(GLFWwindow* window, double /* xoffset */, double yoffset)
 {
-    static Vector2f scale{1.0F, 1.0F};
+    static Vector2f scale{1.0F};
     if (yoffset > 0)
     {
         scale.x *= 1.1F;

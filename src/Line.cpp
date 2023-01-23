@@ -32,3 +32,8 @@ void Line::draw() noexcept
     glCheck(glLineWidth(m_line_width));
     m_vao.draw(PrimitiveType::Lines);
 }
+
+void Line::create() noexcept 
+{
+    m_vao.create();
+}

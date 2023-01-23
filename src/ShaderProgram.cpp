@@ -72,8 +72,18 @@ m_id(0)
         std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ\n" << e.what() << '\n';
     }
 
-    const auto* v_shader_code = vertex_code.data();
-    const auto* f_shader_code = fragment_code.data();
+    create(vertex_code, fragment_code);
+}
+
+ShaderProgram::~ShaderProgram() noexcept
+{
+    destroy();
+}
+
+void ShaderProgram::create(const std::string& vertex_src, const std::string& fragment_src) noexcept
+{
+    const auto* v_shader_code = vertex_src.data();
+    const auto* f_shader_code = fragment_src.data();
 
     GLuint vertex = 0;
     glCheck(vertex = glCreateShader(GL_VERTEX_SHADER));
@@ -107,11 +117,6 @@ m_id(0)
 
     glCheck(glDeleteShader(vertex));
     glCheck(glDeleteShader(fragment));
-}
-
-ShaderProgram::~ShaderProgram() noexcept
-{
-    destroy();
 }
 
 void ShaderProgram::use() noexcept
@@ -211,24 +216,21 @@ int32_t ShaderProgram::getLocation(const std::string& name) noexcept
     return loc;
 }
 
-ShaderProgram2D::ShaderProgram2D() noexcept :
-ShaderProgram{FileSystem::getPath("/shader/2D/VertexShader.glsl"), FileSystem::getPath("/shader/2D/FragmentShader.glsl")}
+DefaultShaderProgram::DefaultShaderProgram() noexcept :
+ShaderProgram{}
 {
-    use();
-
-    const Matrix4 identity = Matrix4::makeIdentity();
-    setMat4("view", identity);
+    create(ShaderSrcs::GraphicsRendering::vertex_shader_src, ShaderSrcs::GraphicsRendering::fragment_shader_src);
 }
 
-ShaderProgram2D& ShaderProgram2D::instance() noexcept
+DefaultShaderProgram& DefaultShaderProgram::instance() noexcept
 {
-    static ShaderProgram2D program{};
+    static DefaultShaderProgram program{};
     return program;
 }
 
-TextShaderProgram::TextShaderProgram() noexcept :
-ShaderProgram{FileSystem::getPath("/shader/TextVertexShader.glsl"), FileSystem::getPath("/shader/TextFragmentShader.glsl")}
+TextShaderProgram::TextShaderProgram() noexcept : ShaderProgram{}
 {
+    create(ShaderSrcs::TextRendering::vertex_shader_src, ShaderSrcs::TextRendering::fragment_shader_src);
 }
 
 TextShaderProgram& TextShaderProgram::instance() noexcept

@@ -52,7 +52,7 @@ void TextRenderer::initialize(const unsigned font_size, const unsigned screen_wi
     glCheck(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
 
     TexConstructParameter parameters{};
-    parameters.wrap_s = parameters.wrap_t = Parameter::Wrapping::ClampToEdge;
+    parameters.wrap_s     = parameters.wrap_t     = Parameter::Wrapping::ClampToEdge;
     parameters.min_filter = parameters.mag_filter = Parameter::Filtering::Linear;
     parameters.format                             = Parameter::Format::Red;
 
@@ -96,7 +96,7 @@ void TextRenderer::initialize(const unsigned font_size, const unsigned screen_wi
     glCheck(glBindVertexArray(0));
 }
 
-void TextRenderer::renderText(std::string_view text, float x, float y, const Color color, const unsigned font_size) noexcept
+void TextRenderer::renderText(std::string_view text, Vector2f pos, const Color color, const unsigned font_size) noexcept
 {
     static auto proj = ortho(-half_scr_size.x, half_scr_size.x, -half_scr_size.y, half_scr_size.y, -1.0, 1.0);
 
@@ -104,7 +104,7 @@ void TextRenderer::renderText(std::string_view text, float x, float y, const Col
 
     const float scale = static_cast<float>(font_size) / static_cast<float>(text_size);
 
-    y -= static_cast<float>(font_size);
+    pos.y -= static_cast<float>(font_size);
 
     auto& shader = TextShaderProgram::instance();
     shader.use();
@@ -117,8 +117,8 @@ void TextRenderer::renderText(std::string_view text, float x, float y, const Col
     {
         auto& ch = characters[c];
 
-        const float xpos = x + ch.bearing.x * scale;
-        const float ypos = y - (ch.size.y - ch.bearing.y) * scale;
+        const float xpos = pos.x + ch.bearing.x * scale;
+        const float ypos = pos.y - (ch.size.y - ch.bearing.y) * scale;
 
         const float w = ch.size.x * scale;
         const float h = ch.size.y * scale;
@@ -146,7 +146,7 @@ void TextRenderer::renderText(std::string_view text, float x, float y, const Col
         glCheck(glDrawArrays(GL_TRIANGLES, 0, 6));
         // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
         // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
-        x += (ch.advance >> 6) * scale;
+        pos.x += (ch.advance >> 6) * scale;
     }
     glCheck(glBindVertexArray(0));
     Texture::unbind();
