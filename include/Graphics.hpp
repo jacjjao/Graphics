@@ -21,3 +21,5 @@
 #include "Vertex.hpp"
 #include "VertexArray.hpp"
 #include "VertexBuffer.hpp"
+#include "Drawable.hpp"
+#include "Renderer.hpp"

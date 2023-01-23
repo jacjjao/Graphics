@@ -73,6 +73,8 @@ int main()
     TextRenderer::initialize(48, SCR_WIDTH, SCR_HEIGHT);
 
     { 
+        Renderer renderer{SCR_WIDTH, SCR_HEIGHT};
+
         camera = std::make_unique<Camera>(-scr_half_width, scr_half_width, -scr_half_height, scr_half_height);
 
         auto& shaderProgram = DefaultShaderProgram::instance();
@@ -156,6 +158,7 @@ int main()
 
             Texture::bind(texture.get());
 
+            shaderProgram.use();
             camera->use();
             rect->draw();
             circle->draw();

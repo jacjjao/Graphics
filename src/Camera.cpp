@@ -23,7 +23,7 @@ m_position{0.0F}
 void Camera::use() noexcept
 {
     DefaultShaderProgram::instance().setMat4("view", getViewMatrix());
-    DefaultShaderProgram::instance().setMat4("proj", m_proj);
+    DefaultShaderProgram::instance().setMat4("proj", getProjMatrix());
 }
 
 void Camera::move(const Vector3f vector) noexcept
@@ -83,11 +83,16 @@ Vector3f Camera::getPosition() const noexcept
     return m_position;
 }
 
-Matrix4& Camera::getViewMatrix() noexcept
+const Matrix4& Camera::getViewMatrix() noexcept
 {
     if (should_update)
     {
         update();
     }
     return m_view;
+}
+
+const Matrix4& Camera::getProjMatrix() const noexcept
+{
+    return m_proj;
 }

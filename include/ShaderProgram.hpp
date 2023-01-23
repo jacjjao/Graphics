@@ -29,9 +29,8 @@ public:
     void setI32(const std::string& name, int32_t value) noexcept;
     void setFloat(const std::string& name, float value) noexcept;
     void setBool(const std::string& name, bool value) noexcept;
-    void setMat3(const std::string& name, const Matrix3& matrix) noexcept;
     void setMat4(const std::string& name, const Matrix4& matrix) noexcept;
-    void setVec3(const std::string& name, Vector3<float> vec) noexcept;
+    void setVec3(const std::string& name, Vector3f vec) noexcept;
     void setVec4(const std::string& name, Color color) noexcept;
 
     void destroy() noexcept;
@@ -44,7 +43,7 @@ private:
 
     int32_t getLocation(const std::string& name) noexcept;
 
-    uint32_t m_id;
+    uint32_t m_id = 0;
 
     std::unordered_map<std::string, int32_t> locations;
 };

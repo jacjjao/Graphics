@@ -15,7 +15,8 @@ public:
     void scale(Vector2f scale) noexcept;
 
     [[nodiscard]] Vector3f getPosition() const noexcept;
-    [[nodiscard]] Matrix4& getViewMatrix() noexcept;
+    [[nodiscard]] const Matrix4& getViewMatrix() noexcept;
+    [[nodiscard]] const Matrix4& getProjMatrix() const noexcept;
 
     Camera(const Camera&)            = delete;
     Camera& operator=(const Camera&) = delete;

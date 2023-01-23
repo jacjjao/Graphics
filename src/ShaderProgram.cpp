@@ -57,8 +57,7 @@ bool checkProgramLinkStatus(const uint32_t program) noexcept
 
 ShaderProgram* ShaderProgram::program_in_use = nullptr;
 
-ShaderProgram::ShaderProgram(const std::filesystem::path& vertex_path, const std::filesystem::path& fragment_path) noexcept :
-m_id(0)
+ShaderProgram::ShaderProgram(const std::filesystem::path& vertex_path, const std::filesystem::path& fragment_path) noexcept
 {
     std::string   vertex_code{};
     std::string   fragment_code{};
@@ -151,19 +150,13 @@ void ShaderProgram::setBool(const std::string& name, const bool value) noexcept
     glCheck(glUniform1i(loc, value));
 }
 
-void ShaderProgram::setMat3(const std::string& name, const Matrix3& matrix) noexcept
-{
-    const auto loc = getLocation(name);
-    glCheck(glUniformMatrix3fv(loc, 1, GL_TRUE, matrix.data()));
-}
-
 void ShaderProgram::setMat4(const std::string& name, const Matrix4& matrix) noexcept
 {
     const auto loc = getLocation(name);
     glCheck(glUniformMatrix4fv(loc, 1, GL_TRUE, matrix.data()));
 }
 
-void ShaderProgram::setVec3(const std::string& name, const Vector3<float> vec) noexcept
+void ShaderProgram::setVec3(const std::string& name, const Vector3f vec) noexcept
 {
     const auto loc = getLocation(name);
     glCheck(glUniform3f(loc, vec.x, vec.y, vec.z));

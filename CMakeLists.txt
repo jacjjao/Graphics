@@ -28,7 +28,7 @@ add_executable(${PROJECT_NAME}
 	"src/Math.cpp"
 	"demo/main.cpp"
 	#"demo/mario/main.cpp"
-)
+ "src/Renderer.cpp")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	add_compile_definitions(DEBUG=1)
@@ -40,7 +40,7 @@ set(ROOT_DIR "${CMAKE_SOURCE_DIR}")
 configure_file("${PROJECT_SOURCE_DIR}/configuration/root_directory.h.in" 
 			   "${PROJECT_SOURCE_DIR}/configuration/root_directory.h")
 
-add_library(glad "dependencies/glad/src/glad.c")
+add_library(glad "dependencies/glad/src/glad.c" "src/Renderer.cpp")
 
 find_package(glfw3 CONFIG REQUIRED)
 
