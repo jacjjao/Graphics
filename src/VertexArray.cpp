@@ -1,5 +1,8 @@
-#include "../include/VertexArray.hpp"
 #include "../include/pch.hpp"
+#include "../include/VertexArray.hpp"
+
+#include "../include/ShaderProgram.hpp"
+#include "../include/Matrix.hpp"
 
 #include <glad/glad.h>
 

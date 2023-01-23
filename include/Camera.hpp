@@ -5,7 +5,7 @@
 class Camera
 {
 public:
-    Camera(float left, float right, float bottom, float top, float zNear, float zFar) noexcept;
+    explicit Camera(float left, float right, float bottom, float top, float zNear = -1.0F, float zFar = 1.0F) noexcept;
 
     void use() noexcept;
 

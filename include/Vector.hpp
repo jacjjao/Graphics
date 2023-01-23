@@ -6,8 +6,11 @@ template <typename T>
 class Vector2
 {
 public:
-    explicit constexpr Vector2() noexcept = default;
-    explicit constexpr Vector2(T x, T y) noexcept : x{x}, y{y}
+    constexpr Vector2(T val = T{0}) noexcept : x{val}, y{val}
+    {
+    }
+
+    constexpr Vector2(T x, T y) noexcept : x{x}, y{y}
     {
     }
 
@@ -60,8 +63,11 @@ template <typename T>
 class Vector3
 {
 public:
-    explicit constexpr Vector3() noexcept = default;
-    explicit constexpr Vector3(T x, T y, T z) noexcept : x{x}, y{y}, z{z}
+    constexpr Vector3(T val = T{0}) noexcept : x{val}, y{val}, z{val}
+    {
+    }
+
+    constexpr Vector3(T x, T y, T z) noexcept : x{x}, y{y}, z{z}
     {
     }
 

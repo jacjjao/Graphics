@@ -4,6 +4,7 @@
 #include <string_view>
 
 #include "Vector.hpp"
+#include "Matrix.hpp"
 #include "Color.hpp"
 #include "Texture.hpp"
 
@@ -18,7 +19,7 @@ struct Character
 class TextRenderer
 {
 public:
-    static void initialize(unsigned font_size) noexcept;
+    static void initialize(unsigned font_size, unsigned screen_width, unsigned screen_height) noexcept;
 
     static void renderText(std::string_view text,
                            float            x,
@@ -32,6 +33,8 @@ private:
     static std::array<Character, 128> characters;
 
     static uint32_t VAO, VBO;
+
+    static Vector2f half_scr_size;
 
     static unsigned text_size;
 };

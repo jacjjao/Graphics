@@ -1,11 +1,12 @@
 #include "../include/pch.hpp"
 #include "../include/Circle2D.hpp"
+#include "../include/ShaderProgram.hpp"
 
 #include <glad/glad.h>
 
 #include <numbers>
 
-Circle2D::Circle2D(const Vector2f radius, const size_t point_count) noexcept :
+Circle2D::Circle2D(const float radius, const size_t point_count) noexcept :
 Shape{point_count + 2},
 m_radius{radius}
 {
@@ -44,8 +45,8 @@ void Circle2D::update() noexcept
         constexpr auto aspect = 2000.0F / 1200.0F;
 
         Vector2f position{};
-        position.x = m_radius.x * ccos;
-        position.y = m_radius.y * ssin;
+        position.x = m_radius * ccos;
+        position.y = m_radius * ssin;
 
         m_vao[i].position = position;
         m_vao[i].color    = m_color;
@@ -67,7 +68,7 @@ void Circle2D::update() noexcept
     }
 }
 
-void Circle2D::setRadius(const Vector2f radius) noexcept
+void Circle2D::setRadius(const float radius) noexcept
 {
     m_radius = radius;
 }

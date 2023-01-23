@@ -1,5 +1,6 @@
-#include "../include/Transformable.hpp"
 #include "../include/pch.hpp"
+#include "../include/Transformable.hpp"
+#include "../include/Math.hpp"
 
 
 Transformable::Transformable() noexcept :

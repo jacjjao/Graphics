@@ -1,5 +1,7 @@
-#include "../include/Camera.hpp"
 #include "../include/pch.hpp"
+#include "../include/Camera.hpp"
+#include "../include/ShaderProgram.hpp"
+#include "../include/Math.hpp"
 
 Camera::Camera(
     const float left, 
@@ -67,11 +69,11 @@ void Camera::update() noexcept
 
     m_view[0][0] = a * ccos;
     m_view[0][1] = -b * ssin;
-    m_view[0][3] = a * x * ccos - a * y * ssin;
+    m_view[0][3] = -(a * x * ccos - a * y * ssin);
 
     m_view[1][0] = a * ssin;
     m_view[1][1] = b * ccos;
-    m_view[1][3] = b * y * ccos + b * x * ssin;
+    m_view[1][3] = -(b * y * ccos + b * x * ssin);
 
     should_update = false;
 }

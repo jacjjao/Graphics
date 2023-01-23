@@ -1,3 +1,4 @@
+#include "../include/pch.hpp"
 #include "../include/FileSystem.hpp"
 
 #include "../configuration/root_directory.h"

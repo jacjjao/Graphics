@@ -1,4 +1,5 @@
 #include "../include/pch.hpp"
+#include "../include/glCheck.hpp"
 
 #include <glad/glad.h>
 

@@ -1,3 +1,4 @@
+#include "../include/pch.hpp"
 #include "../include/Shape.hpp"
 
 Shape::Shape(const size_t size) noexcept :

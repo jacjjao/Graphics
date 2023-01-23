@@ -1,5 +1,6 @@
-#include "../include/Rectangle2D.hpp"
 #include "../include/pch.hpp"
+#include "../include/Rectangle2D.hpp"
+#include "../include/ShaderProgram.hpp"
 
 #include <glad/glad.h>
 

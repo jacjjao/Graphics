@@ -1,3 +1,6 @@
+#include "../include/pch.hpp"
+#include "../include/Graphics.hpp"
+
 // third party
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
@@ -7,17 +10,6 @@
 #include <cmath>
 #include <memory>
 #include <numbers>
-
-#include "../include/Circle2D.hpp"
-#include "../include/Clock.hpp"
-#include "../include/Rectangle2D.hpp"
-#include "../include/ShaderProgram.hpp"
-#include "../include/Vector.hpp"
-#include "../include/Texture.hpp"
-#include "../include/FileSystem.hpp"
-#include "../include/Camera.hpp"
-#include "../include/Line.hpp"
-#include "../include/TextRenderer.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -34,7 +26,7 @@ std::unique_ptr<Camera>      camera{};
 constexpr auto scr_half_width  = static_cast<float>(SCR_WIDTH / 2);
 constexpr auto scr_half_height = static_cast<float>(SCR_HEIGHT / 2);
 
-Vector2f screenPointToNDC(const Vector2f point) noexcept
+constexpr Vector2f screenPointToNDC(const Vector2f point) noexcept
 {
     Vector2f result{0.0F, 0.0F};
 
@@ -44,7 +36,7 @@ Vector2f screenPointToNDC(const Vector2f point) noexcept
     return result;
 }
 
-Vector3f screenPointToNDC(const Vector3f point) noexcept
+constexpr Vector3f screenPointToNDC(const Vector3f point) noexcept
 {
     Vector3f result{0.0F, 0.0F, 0.0F};
 
@@ -78,10 +70,10 @@ int main()
         return -1;
     }
 
-    TextRenderer::initialize(48);
+    TextRenderer::initialize(48, SCR_WIDTH, SCR_HEIGHT);
 
     { 
-        camera = std::make_unique<Camera>(-scr_half_width, scr_half_width, -scr_half_height, scr_half_height, -1.0F, 1.0F);
+        camera = std::make_unique<Camera>(-scr_half_width, scr_half_width, -scr_half_height, scr_half_height);
 
         auto& shaderProgram = ShaderProgram2D::instance();
         
@@ -99,21 +91,21 @@ int main()
         tex_rect.position.y /= 2.0F;
         rect->setTextureRect(tex_rect);
 
-        circle = std::make_unique<Circle2D>(Vector2f{50.0F, 50.0F});
-        circle->setPosition(screenPointToNDC(Vector3f{1800.0F, 1000.0F, 0.0F}));
+        circle = std::make_unique<Circle2D>(50.0F);
+        circle->setPosition(screenPointToNDC({1800.0F, 1000.0F, 0.0F}));
         circle->applyTexture(texture.get());
         circle->setTextureRect(tex_rect);
 
         VertexArray vao{3};
-        vao[0].position = screenPointToNDC(Vector2f{1000.0, 100.0});
-        vao[1].position = screenPointToNDC(Vector2f{static_cast<float>(1000.0 + 500.0 * std::sqrt(3.0) / 2.0), 850.0});
-        vao[2].position = screenPointToNDC(Vector2f{static_cast<float>(1000.0 - 500.0 * std::sqrt(3.0) / 2.0), 850.0});
+        vao[0].position = screenPointToNDC({1000.0, 100.0});
+        vao[1].position = screenPointToNDC({static_cast<float>(1000.0 + 500.0 * std::sqrt(3.0) / 2.0), 850.0});
+        vao[2].position = screenPointToNDC({static_cast<float>(1000.0 - 500.0 * std::sqrt(3.0) / 2.0), 850.0});
         vao.setUsage(VertexBuffer::Usage::StreamDraw);
 
-        circle->scale(Vector2f{2.0F, 2.0F});
-        rect->scale(Vector2f{2.0F, 2.0F});
+        circle->scale({2.0F, 2.0F});
+        rect->scale({2.0F, 2.0F});
         
-        Line line{screenPointToNDC(Vector2f{100.0F, 100.0F}), screenPointToNDC(Vector2f{500.0F, 100.0F})};
+        Line line{screenPointToNDC({100.0F, 100.0F}), screenPointToNDC({500.0F, 100.0F})};
         line.setLineWidth(10.0F);
         line.setColor(Color{255, 127, 127});
 
@@ -150,7 +142,7 @@ int main()
             vao[2].color = color;
 
             const float factor = std::sin(tp * 2) / 2.0F + 1.5F;
-            circle->scale(Vector2f{factor, factor});
+            circle->scale({factor, factor});
             rect->rotate(-0.05F);
 
             rect->update();
@@ -167,7 +159,13 @@ int main()
 
             Texture::unbind();
 
-            // TextRenderer::renderText("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ", 0.0F, 0.0F, Color::White, 48);
+            constexpr auto text_pos = screenPointToNDC({0, 0});
+            constexpr auto text_color = Color::fromHex(0x11F311FF);
+            TextRenderer::renderText("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+                                     text_pos.x,
+                                     text_pos.y,
+                                     text_color,
+                                     48);
 
             glfwSwapBuffers(window);
 
@@ -198,23 +196,23 @@ void processInput(GLFWwindow* window)
     }
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        // rect->translate({0.0F, -1.0F});
-        camera->move(Vector3f{0.0F, -1.0F, 0.0F});
+        // rect->translate({0.0F, 1.0F, 0.0F});
+        camera->move({0.0F, 1.0F, 0.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        // rect->translate({0.0F, 1.0F});
-        camera->move(Vector3f{0.0F, 1.0F, 0.0F});
+        // rect->translate({0.0F, -1.0F, 0.0F});
+        camera->move({0.0F, -1.0F, 0.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        // rect->translate({-1.0F, 0.0F});
-        camera->move(Vector3f{1.0F, 0.0F, 0.0F});
+        // rect->translate({-1.0F, 0.0F, 0.0F});
+        camera->move({-1.0F, 0.0F, 0.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        // rect->translate({1.0F, 0.0F});
-        camera->move(Vector3f{-1.0F, 0.0F, 0.0F});
+        // rect->translate({1.0F, 0.0F, 0.0F});d
+        camera->move({1.0F, 0.0F, 0.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
     {

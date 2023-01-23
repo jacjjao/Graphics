@@ -1,3 +1,4 @@
+#include "../include/pch.hpp"
 #include "../include/Math.hpp"
 
 float radians(const float degrees) noexcept

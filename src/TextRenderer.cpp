@@ -1,4 +1,7 @@
 #include "../include/pch.hpp"
+#include "../include/TextRenderer.hpp"
+#include "../include/ShaderProgram.hpp"
+#include "../include/Math.hpp"
 
 #include <iostream>
 
@@ -11,10 +14,13 @@ std::array<Character, 128> TextRenderer::characters;
 uint32_t TextRenderer::VAO = 0, TextRenderer::VBO = 0;
 
 unsigned TextRenderer::text_size = 0;
+Vector2f TextRenderer::half_scr_size{};
 
-void TextRenderer::initialize(const unsigned font_size) noexcept
+void TextRenderer::initialize(const unsigned font_size, const unsigned screen_width, const unsigned screen_height) noexcept
 {
     text_size = font_size;
+    half_scr_size.x = static_cast<float>(screen_width / 2);
+    half_scr_size.y = static_cast<float>(screen_height / 2);
 
     glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
@@ -92,16 +98,19 @@ void TextRenderer::initialize(const unsigned font_size) noexcept
 
 void TextRenderer::renderText(std::string_view text, float x, float y, const Color color, const unsigned font_size) noexcept
 {
+    static auto proj = ortho(-half_scr_size.x, half_scr_size.x, -half_scr_size.y, half_scr_size.y, -1.0, 1.0);
+
     glCheck(glEnable(GL_BLEND));
 
     const float scale = static_cast<float>(font_size) / static_cast<float>(text_size);
 
-    y += static_cast<float>(font_size);
+    y -= static_cast<float>(font_size);
 
     auto& shader = TextShaderProgram::instance();
     shader.use();
 
     shader.setVec4("textColor", color);
+    shader.setMat4("proj", proj);
 
     // iterate through all characters
     for (const char& c : text)
@@ -109,10 +118,10 @@ void TextRenderer::renderText(std::string_view text, float x, float y, const Col
         auto& ch = characters[c];
 
         const float xpos = x + ch.bearing.x * scale;
-        const float ypos = y + (ch.size.y - ch.bearing.y) * scale;
+        const float ypos = y - (ch.size.y - ch.bearing.y) * scale;
 
         const float w = ch.size.x * scale;
-        const float h = -ch.size.y * scale;
+        const float h = ch.size.y * scale;
         // update VBO for each character
 
         // clang-format off

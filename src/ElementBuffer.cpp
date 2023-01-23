@@ -1,5 +1,5 @@
-#include "../include/ElementBuffer.hpp"
 #include "../include/pch.hpp"
+#include "../include/ElementBuffer.hpp"
 
 #include <glad/glad.h>
 
