@@ -44,6 +44,11 @@ add_library(glad "dependencies/glad/src/glad.c")
 
 find_package(glfw3 CONFIG REQUIRED)
 
+target_precompile_headers(${PROJECT_NAME} 
+	PRIVATE
+		"include/pch.hpp"
+)
+
 target_link_libraries(${PROJECT_NAME} 
 	PRIVATE
 		glfw

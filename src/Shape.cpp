@@ -1,17 +1,19 @@
 #include "../include/Shape.hpp"
 
-Shape::Shape(const size_t size) noexcept : m_vao{size}, m_color{Color::White}, m_texture{nullptr}, m_tex_rect{}
+Shape::Shape(const size_t size) noexcept :
+m_vao{size},
+m_color{Color::White},
+m_texture{nullptr},
+m_tex_rect{
+    Vector2f{0.0F, 0.0F},
+    Vector2f{1.0F, 1.0F}
+}
 {
 }
 
 void Shape::applyTexture(Texture* texture) noexcept
 {
     m_texture = texture;
-    if (texture != nullptr)
-    {
-        m_tex_rect.size     = texture->getSize();
-        m_tex_rect.position = Vector2f{m_tex_rect.size.x / 2.0F, m_tex_rect.size.y / 2.0F};
-    }
 }
 
 bool Shape::hasTexture() const noexcept

@@ -38,8 +38,8 @@ Vector2f screenPointToNDC(const Vector2f point) noexcept
 {
     Vector2f result{0.0F, 0.0F};
 
-    result.x = (point.x - scr_half_width) / scr_half_width;
-    result.y = (scr_half_height - point.y) / scr_half_height;
+    result.x = (point.x - scr_half_width);
+    result.y = (scr_half_height - point.y);
 
     return result;
 }
@@ -48,29 +48,8 @@ Vector3f screenPointToNDC(const Vector3f point) noexcept
 {
     Vector3f result{0.0F, 0.0F, 0.0F};
 
-    result.x = (point.x - scr_half_width) / scr_half_width;
-    result.y = (scr_half_height - point.y) / scr_half_height;
-
-    return result;
-}
-
-
-Vector2f screenVecToNDC(const Vector2f vector) noexcept
-{
-    Vector2f result{0.0F, 0.0F};
-
-    result.x = vector.x / scr_half_width;
-    result.y = vector.y / scr_half_height;
-
-    return result;
-}
-
-Vector3f screenVecToNDC(const Vector3f vector) noexcept
-{
-    Vector3f result{0.0F, 0.0F, 0.0F};
-
-    result.x = vector.x / scr_half_width;
-    result.y = vector.y / scr_half_height;
+    result.x = (point.x - scr_half_width);
+    result.y = (scr_half_height - point.y);
 
     return result;
 }
@@ -101,18 +80,15 @@ int main()
 
     TextRenderer::initialize(48);
 
-    {
-        Rectangle2D rect2{screenVecToNDC(Vector2f{100.0F, 100.0F})};
-        rect2.setPosition(screenPointToNDC(Vector3f{0.0F, 0.0F, 0.0F}));
-
-        camera = std::make_unique<Camera>();
+    { 
+        camera = std::make_unique<Camera>(-scr_half_width, scr_half_width, -scr_half_height, scr_half_height, -1.0F, 1.0F);
 
         auto& shaderProgram = ShaderProgram2D::instance();
-
+        
         texture = std::make_unique<Texture>(FileSystem::getPath("/asset/images/container.jpg"));
 
-        rect = std::make_unique<Rectangle2D>(screenVecToNDC(Vector2f{100, 100}));
-        rect->setPosition(screenPointToNDC(Vector3f{300, 1000, 0}));
+        rect = std::make_unique<Rectangle2D>(Vector2f{100, 100});
+        rect->setPosition(screenPointToNDC(Vector3f{300, 1000, 0.0F}));
 
         rect->applyTexture(texture.get());
 
@@ -121,13 +97,11 @@ int main()
         tex_rect.size.y /= 2.0F;
         tex_rect.position.x /= 2.0F;
         tex_rect.position.y /= 2.0F;
-        // rect->setTextureRect(tex_rect);
+        rect->setTextureRect(tex_rect);
 
-        circle = std::make_unique<Circle2D>(screenVecToNDC(Vector2f{50.0F, 0.0F}).x);
-        circle->setPosition(screenPointToNDC(Vector3f{1800.0F, 1000.0F, 0}));
-
+        circle = std::make_unique<Circle2D>(Vector2f{50.0F, 50.0F});
+        circle->setPosition(screenPointToNDC(Vector3f{1800.0F, 1000.0F, 0.0F}));
         circle->applyTexture(texture.get());
-
         circle->setTextureRect(tex_rect);
 
         VertexArray vao{3};
@@ -138,15 +112,13 @@ int main()
 
         circle->scale(Vector2f{2.0F, 2.0F});
         rect->scale(Vector2f{2.0F, 2.0F});
-        rect->translate(screenVecToNDC(Vector3f{100, 0, 0}));
-
+        
         Line line{screenPointToNDC(Vector2f{100.0F, 100.0F}), screenPointToNDC(Vector2f{500.0F, 100.0F})};
         line.setLineWidth(10.0F);
         line.setColor(Color{255, 127, 127});
 
         Clock clock{};
         Clock timer{};
-        int   fps_cnt = 0;
         while (!glfwWindowShouldClose(window))
         {
             processInput(window);
@@ -192,7 +164,6 @@ int main()
             circle->draw();
             vao.draw();
             line.draw();
-            rect2.draw();
 
             Texture::unbind();
 
@@ -200,13 +171,10 @@ int main()
 
             glfwSwapBuffers(window);
 
-            if (auto tp = timer.getElapsedTime().asSeconds(); tp >= 1.0)
+            while (timer.getElapsedTime().asMilliseconds() < 1)
             {
-                std::printf("FPS: %.2lf\n", static_cast<double>(fps_cnt) / tp);
-                fps_cnt = 0;
-                timer.restart();
             }
-            fps_cnt++;
+            timer.restart();
         }
     }
 
@@ -231,22 +199,22 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
         // rect->translate({0.0F, -1.0F});
-        camera->move(screenVecToNDC(Vector3f{0.0F, -1.0F, 0.0F}));
+        camera->move(Vector3f{0.0F, -1.0F, 0.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
         // rect->translate({0.0F, 1.0F});
-        camera->move(screenVecToNDC(Vector3f{0.0F, 1.0F, 0.0F}));
+        camera->move(Vector3f{0.0F, 1.0F, 0.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
         // rect->translate({-1.0F, 0.0F});
-        camera->move(screenVecToNDC(Vector3f{1.0F, 0.0F, 0.0F}));
+        camera->move(Vector3f{1.0F, 0.0F, 0.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
         // rect->translate({1.0F, 0.0F});
-        camera->move(screenVecToNDC(Vector3f{-1.0F, 0.0F, 0.0F}));
+        camera->move(Vector3f{-1.0F, 0.0F, 0.0F});
     }
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
     {

@@ -1,6 +1,5 @@
 #include "../include/VertexArray.hpp"
-#include "../include/glCheck.hpp"
-#include "../include/ShaderProgram.hpp"
+#include "../include/pch.hpp"
 
 #include <glad/glad.h>
 
@@ -38,11 +37,7 @@ void VertexArray::create() noexcept
     glCheck(glGenVertexArrays(1, &m_id));
 
 
-    cache.resize(m_vertices.size());
-    for (int i = 0; i < m_vertices.size(); i++)
-    {
-        cache[i] = m_vertices[i];
-    }
+    sendDataToCache();
     m_vbo.create(cache);
 
     VertexArray::bind(this);
@@ -55,8 +50,7 @@ void VertexArray::create() noexcept
     glCheck(glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, stride, (void*)(sizeof(Vertex::position))));
     glCheck(glEnableVertexAttribArray(1));
 
-    glCheck(
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)(sizeof(Vertex::position) + sizeof(Vertex::color))));
+    glCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)(sizeof(Vertex::position) + sizeof(Vertex::color))));
     glCheck(glEnableVertexAttribArray(2));
 
     VertexArray::unbind();
@@ -65,6 +59,7 @@ void VertexArray::create() noexcept
 
 void VertexArray::update() noexcept
 {
+    sendDataToCache();
     m_vbo.updateData(cache);
 }
 
@@ -77,7 +72,7 @@ void VertexArray::draw(const PrimitiveType primitive_type) noexcept
 
     auto& program = ShaderProgram2D::instance();
 
-    program.setMat4("model", identity_mat4);
+    program.setMat4("model", Constants::identity_mat4);
     program.setFloat("color_alpha", 1.0F);
 
     VertexArray::bind(this);
@@ -210,5 +205,14 @@ void VertexArray::unbind() noexcept
     {
         glCheck(glBindVertexArray(0));
         vao_in_bind = nullptr;
+    }
+}
+
+void VertexArray::sendDataToCache() noexcept
+{
+    cache.resize(m_vertices.size());
+    for (int i = 0; i < m_vertices.size(); i++)
+    {
+        cache[i] = m_vertices[i];
     }
 }

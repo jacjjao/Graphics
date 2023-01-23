@@ -1,5 +1,4 @@
-#include "../include/VertexBuffer.hpp"
-#include "../include/glCheck.hpp"
+#include "../include/pch.hpp"
 
 #include <glad/glad.h>
 

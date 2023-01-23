@@ -1,14 +1,9 @@
-#include "../include/ShaderProgram.hpp"
+#include "../include/pch.hpp"
 
 #include <glad/glad.h>
 
 #include <fstream>
-#include <iostream>
-#include <sstream>
 #include <stdexcept>
-
-#include "../include/FileSystem.hpp"
-#include "../include/glCheck.hpp"
 
 #define SUCCESS true
 #define FAILED false

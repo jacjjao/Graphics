@@ -1,26 +1,32 @@
 #include "../include/Camera.hpp"
-#include "../include/ShaderProgram.hpp"
-#include "../include/Math.hpp"
+#include "../include/pch.hpp"
 
-#include <cmath>
-
-Camera::Camera() noexcept :
+Camera::Camera(
+    const float left, 
+    const float right, 
+    const float bottom, 
+    const float top, 
+    const float zNear, 
+    const float zFar
+) noexcept :
 m_view{Matrix4::makeIdentity()},
 should_update{true},
 dtheta{0.0F},
 dscale{1.0F, 1.0F},
 m_position{0.0F, 0.0F, 0.0F}
 {
+    m_proj = ortho(left, right, bottom, top, zNear, zFar);
 }
 
 void Camera::use() noexcept
 {
     ShaderProgram2D::instance().setMat4("view", getViewMatrix());
+    ShaderProgram2D::instance().setMat4("proj", m_proj);
 }
 
 void Camera::move(const Vector3f vector) noexcept
-{
-    const auto theta = radians(dtheta);
+{ 
+    const auto theta = radians(-dtheta);
     const auto ccos  = std::cos(theta);
     const auto ssin  = std::sin(theta);
 

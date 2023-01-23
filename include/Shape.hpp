@@ -9,6 +9,7 @@ class Shape : public Transformable
 {
 public:
     explicit Shape(size_t size) noexcept;
+    virtual ~Shape() = default;
 
     Shape(const Shape&)            = delete;
     Shape& operator=(const Shape&) = delete;

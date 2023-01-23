@@ -1,13 +1,11 @@
 #include "../include/Transformable.hpp"
-#include "../include/Math.hpp"
-
-#include <cmath>
+#include "../include/pch.hpp"
 
 
 Transformable::Transformable() noexcept :
 should_update{false},
-dtheta{0.0F},
-dscale{1.0F, 1.0F},
+m_theta{0.0F},
+m_scale{1.0F, 1.0F},
 m_position{0.0F, 0.0F, 0.0F},
 m_model{Matrix4::makeIdentity()}
 {
@@ -21,13 +19,13 @@ void Transformable::translate(const Vector3f vector) noexcept
 
 void Transformable::scale(const Vector2f factor) noexcept
 {
-    dscale        = factor;
+    m_scale        = factor;
     should_update = true;
 }
 
 void Transformable::rotate(const float degree) noexcept
 {
-    dtheta += degree;
+    m_theta += degree;
     should_update = true;
 }
 
@@ -35,17 +33,18 @@ const Matrix4& Transformable::getTransformMatrix() noexcept
 {
     if (should_update)
     {
-        const auto theta = radians(dtheta);
-        const auto ssin  = std::sin(theta);
-        const auto ccos  = std::cos(theta);
+        const auto theta = radians(m_theta);
+        const auto sine  = std::sin(theta);
+        const auto cosine  = std::cos(theta);
+        const auto [x, y, _]  = m_position;
 
-        m_model[0][0] = dscale.x * ccos;
-        m_model[0][1] = -dscale.y * ssin;
-        m_model[0][3] = m_position.x;
+        m_model[0][0] = m_scale.x * cosine;
+        m_model[0][1] = -m_scale.y * sine;
+        m_model[0][3] = x;
 
-        m_model[1][0] = dscale.x * ssin;
-        m_model[1][1] = dscale.y * ccos;
-        m_model[1][3] = m_position.y;
+        m_model[1][0] = m_scale.x * sine;
+        m_model[1][1] = m_scale.y * cosine;
+        m_model[1][3] = y;
 
         should_update = false;
     }
@@ -55,7 +54,7 @@ const Matrix4& Transformable::getTransformMatrix() noexcept
 
 void Transformable::setPosition(const Vector3f position) noexcept
 {
-    m_position    = position;
+    m_position = position;
     should_update = true;
 }
 

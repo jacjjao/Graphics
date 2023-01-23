@@ -66,8 +66,6 @@ public:
     [[nodiscard]] float getWidth() const noexcept;
     [[nodiscard]] float getHeight() const noexcept;
 
-    [[nodiscard]] Vector2f pointToTexCoord(Vector2f point) const noexcept;
-
     static void bind(Texture*) noexcept;
     static void unbind() noexcept;
 

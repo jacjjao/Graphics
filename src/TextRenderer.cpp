@@ -1,7 +1,4 @@
-#include "../include/TextRenderer.hpp"
-#include "../include/FileSystem.hpp"
-#include "../include/glCheck.hpp"
-#include "../include/ShaderProgram.hpp"
+#include "../include/pch.hpp"
 
 #include <iostream>
 

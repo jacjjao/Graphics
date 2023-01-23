@@ -2,11 +2,8 @@
 
 #include "Vector.hpp"
 
-class Rect
+struct Rect
 {
-public:
-    explicit constexpr Rect() noexcept = default;
-
     Vector2f position;
     Vector2f size;
 };

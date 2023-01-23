@@ -1,11 +1,9 @@
 #include "../include/Texture.hpp"
-#include "../include/glCheck.hpp"
+#include "../include/pch.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include <glad/glad.h>
-
-#include <iostream>
 
 TexConstructParameter::TexConstructParameter() noexcept :
 wrap_s{Parameter::Wrapping::Repeat},
@@ -127,16 +125,6 @@ float Texture::getWidth() const noexcept
 float Texture::getHeight() const noexcept
 {
     return m_size.y;
-}
-
-Vector2f Texture::pointToTexCoord(const Vector2f point) const noexcept
-{
-    Vector2f result{};
-
-    result.x = point.x / m_size.x;
-    result.y = -(point.y - m_size.y) / m_size.y;
-
-    return result;
 }
 
 void Texture::bind(Texture* texture) noexcept

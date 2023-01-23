@@ -5,7 +5,7 @@
 class Camera
 {
 public:
-    Camera() noexcept;
+    Camera(float left, float right, float bottom, float top, float zNear, float zFar) noexcept;
 
     void use() noexcept;
 
@@ -26,6 +26,7 @@ private:
     bool should_update;
 
     Matrix4 m_view;
+    Matrix4 m_proj;
 
     Vector3f m_position;
 

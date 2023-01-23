@@ -1,8 +1,6 @@
-#include "../include/glCheck.hpp"
+#include "../include/pch.hpp"
 
 #include <glad/glad.h>
-
-#include <iostream>
 
 void glCheckError(const char* file, const unsigned line, const char* function) noexcept
 {

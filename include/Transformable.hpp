@@ -21,8 +21,8 @@ public:
 
 private:
     bool     should_update;
-    float    dtheta;
-    Vector2f dscale;
+    float    m_theta;
+    Vector2f m_scale;
 
     Vector3f m_position;
 

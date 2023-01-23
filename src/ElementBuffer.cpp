@@ -1,10 +1,7 @@
 #include "../include/ElementBuffer.hpp"
+#include "../include/pch.hpp"
 
 #include <glad/glad.h>
-
-#include <utility>
-
-#include "../include/glCheck.hpp"
 
 ElementBuffer* ElementBuffer::ebo_in_bind = nullptr;
 
