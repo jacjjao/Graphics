@@ -23,6 +23,7 @@ public:
     void create(const std::string& vertex_src, const std::string& fragment_src) noexcept;
 
     void use() noexcept;
+    static void unuse() noexcept;
 
     [[nodiscard]] uint32_t getID() const noexcept;
 
@@ -106,11 +107,46 @@ namespace ShaderSrcs
             out vec4 color;
             
             uniform float color_alpha;
-            uniform sampler2D texture1;
+            uniform sampler2D textures[32];
+            uniform int unit_index;
             
             void main()
             {	
-            	color = mix(texture(texture1, tex_coord), frag_color, color_alpha);
+                switch(unit_index)
+	            {
+	            	case  0: color = mix(texture(textures[ 0], tex_coord), frag_color, color_alpha); break;
+	            	case  1: color = mix(texture(textures[ 1], tex_coord), frag_color, color_alpha); break;
+	            	case  2: color = mix(texture(textures[ 2], tex_coord), frag_color, color_alpha); break;
+	            	case  3: color = mix(texture(textures[ 3], tex_coord), frag_color, color_alpha); break;
+	            	case  4: color = mix(texture(textures[ 4], tex_coord), frag_color, color_alpha); break;
+	            	case  5: color = mix(texture(textures[ 5], tex_coord), frag_color, color_alpha); break;
+	            	case  6: color = mix(texture(textures[ 6], tex_coord), frag_color, color_alpha); break;
+	            	case  7: color = mix(texture(textures[ 7], tex_coord), frag_color, color_alpha); break;
+	            	case  8: color = mix(texture(textures[ 8], tex_coord), frag_color, color_alpha); break;
+	            	case  9: color = mix(texture(textures[ 9], tex_coord), frag_color, color_alpha); break;
+	            	case 10: color = mix(texture(textures[10], tex_coord), frag_color, color_alpha); break;
+	            	case 11: color = mix(texture(textures[11], tex_coord), frag_color, color_alpha); break;
+	            	case 12: color = mix(texture(textures[12], tex_coord), frag_color, color_alpha); break;
+	            	case 13: color = mix(texture(textures[13], tex_coord), frag_color, color_alpha); break;
+	            	case 14: color = mix(texture(textures[14], tex_coord), frag_color, color_alpha); break;
+	            	case 15: color = mix(texture(textures[15], tex_coord), frag_color, color_alpha); break;
+	            	case 16: color = mix(texture(textures[16], tex_coord), frag_color, color_alpha); break;
+	            	case 17: color = mix(texture(textures[17], tex_coord), frag_color, color_alpha); break;
+	            	case 18: color = mix(texture(textures[18], tex_coord), frag_color, color_alpha); break;
+	            	case 19: color = mix(texture(textures[19], tex_coord), frag_color, color_alpha); break;
+	            	case 20: color = mix(texture(textures[20], tex_coord), frag_color, color_alpha); break;
+	            	case 21: color = mix(texture(textures[21], tex_coord), frag_color, color_alpha); break;
+	            	case 22: color = mix(texture(textures[22], tex_coord), frag_color, color_alpha); break;
+	            	case 23: color = mix(texture(textures[23], tex_coord), frag_color, color_alpha); break;
+	            	case 24: color = mix(texture(textures[24], tex_coord), frag_color, color_alpha); break;
+	            	case 25: color = mix(texture(textures[25], tex_coord), frag_color, color_alpha); break;
+	            	case 26: color = mix(texture(textures[26], tex_coord), frag_color, color_alpha); break;
+	            	case 27: color = mix(texture(textures[27], tex_coord), frag_color, color_alpha); break;
+	            	case 28: color = mix(texture(textures[28], tex_coord), frag_color, color_alpha); break;
+	            	case 29: color = mix(texture(textures[29], tex_coord), frag_color, color_alpha); break;
+	            	case 30: color = mix(texture(textures[30], tex_coord), frag_color, color_alpha); break;
+	            	case 31: color = mix(texture(textures[31], tex_coord), frag_color, color_alpha); break;
+	            }
             }
         )";
 

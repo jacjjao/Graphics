@@ -70,6 +70,7 @@ int main()
         return -1;
     }
 
+    Texture::Init();
     TextRenderer::initialize(48, SCR_WIDTH, SCR_HEIGHT);
 
     { 
@@ -80,6 +81,7 @@ int main()
         auto& shaderProgram = DefaultShaderProgram::instance();
         
         texture = std::make_unique<Texture>(FileSystem::getPath("/asset/images/container.jpg"));
+        Texture texture2{FileSystem::getPath("/asset/images/awesomeface.png")};
 
         rect = std::make_unique<Rectangle2D>(Vector2f{100, 100});
         rect->setPosition(screenPointToNDC(Vector3f{300, 1000, 0.0F}));
@@ -94,8 +96,7 @@ int main()
 
         circle = std::make_unique<Circle2D>(50.0F);
         circle->setPosition(screenPointToNDC({1800.0F, 1000.0F, 0.0F}));
-        circle->applyTexture(texture.get());
-        circle->setTextureRect(tex_rect);
+        circle->applyTexture(&texture2);
 
         VertexArray vao{3};
         vao[0].position = screenPointToNDC({1000.0, 100.0});
@@ -117,7 +118,7 @@ int main()
         circle->create();
         line.create();
         vao.create();
-
+        
         while (!glfwWindowShouldClose(window))
         {
             processInput(window);
@@ -156,7 +157,8 @@ int main()
             circle->update();
             vao.update();
 
-            Texture::bind(texture.get());
+            Texture::bind(texture.get(), 0);
+            Texture::bind(&texture2, 10);
 
             shaderProgram.use();
             camera->use();

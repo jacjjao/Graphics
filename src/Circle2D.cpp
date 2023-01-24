@@ -23,7 +23,8 @@ void Circle2D::draw() noexcept
     m_vao.draw(
         PrimitiveType::TriangleFan, 
         getTransformMatrix(), 
-        hasTexture() ? 0.0F : 1.0F
+        hasTexture() ? 0.0F : 1.0F,
+        m_texture
     );
 }
 

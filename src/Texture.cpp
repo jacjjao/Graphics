@@ -1,5 +1,6 @@
 #include "../include/pch.hpp"
 #include "../include/Texture.hpp"
+#include "../include/ShaderProgram.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -15,7 +16,27 @@ use_mipmap{false}
 {
 }
 
-Texture* Texture::texture_in_bind = nullptr;
+std::array<Texture*, 32> Texture::textures_in_bind{};
+
+void Texture::Init() noexcept
+{
+    auto& program = DefaultShaderProgram::instance();
+    program.use();
+    
+    char tex0_9[] = "textures[0]";
+    for (int i = 0; i < 10; i++)
+    {
+        tex0_9[9] = i + '0';
+        program.setI32(tex0_9, i);
+    }
+    char tex10_31[] = "textures[10]";
+    for (int i = 10; i < 32; i++)
+    {
+        tex10_31[9] = (i / 10) + '0';
+        tex10_31[10] = (i % 10) + '0';
+        program.setI32(tex10_31, i);
+    }
+}
 
 Texture::Texture(const std::filesystem::path& path, TexConstructParameter parameters) noexcept : m_id{0}, m_size{}
 {
@@ -42,7 +63,7 @@ void Texture::createFromImage(const std::filesystem::path& path, const TexConstr
     int nr_channels = 0;
     stbi_set_flip_vertically_on_load(true);
 
-    uint8_t* data = stbi_load(path.string().c_str(), &width, &height, &nr_channels, STBI_rgb);
+    auto data = stbi_load(path.string().c_str(), &width, &height, &nr_channels, STBI_rgb);
     if (data != nullptr)
     {
         createFromData(data, width, height, parameters);
@@ -53,7 +74,6 @@ void Texture::createFromImage(const std::filesystem::path& path, const TexConstr
     }
 
     stbi_image_free(data);
-    unbind();
 }
 
 void Texture::createFromData(const void* data, const int32_t width, const int32_t height, const TexConstructParameter parameters) noexcept
@@ -127,20 +147,28 @@ float Texture::getHeight() const noexcept
     return m_size.y;
 }
 
-void Texture::bind(Texture* texture) noexcept
+size_t Texture::getUnit() const noexcept
 {
-    if (texture_in_bind != texture)
+    return which_unit;
+}
+
+void Texture::bind(Texture* texture, const size_t unit_index) noexcept
+{
+    if (textures_in_bind[unit_index] != texture)
     {
+        texture->which_unit = unit_index;
+        glCheck(glActiveTexture(GL_TEXTURE0 + unit_index));
         glCheck(glBindTexture(GL_TEXTURE_2D, texture->m_id));
-        texture_in_bind = texture;
+        textures_in_bind[unit_index] = texture;
     }
 }
 
-void Texture::unbind() noexcept
+void Texture::unbind(const size_t unit_index) noexcept
 {
-    if (texture_in_bind != nullptr)
+    if (textures_in_bind[unit_index] != nullptr)
     {
+        glCheck(glActiveTexture(GL_TEXTURE0 + unit_index));
         glCheck(glBindTexture(GL_TEXTURE_2D, 0));
-        texture_in_bind = nullptr;
+        textures_in_bind[unit_index] = nullptr;
     }
 }

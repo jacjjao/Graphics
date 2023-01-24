@@ -127,6 +127,15 @@ void ShaderProgram::use() noexcept
     }
 }
 
+void ShaderProgram::unuse() noexcept
+{
+    if (program_in_use != nullptr)
+    {
+        glCheck(glUseProgram(0));
+        program_in_use = nullptr;
+    }
+}
+
 uint32_t ShaderProgram::getID() const noexcept
 {
     return m_id;

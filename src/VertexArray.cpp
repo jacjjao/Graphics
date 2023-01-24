@@ -68,12 +68,17 @@ void VertexArray::update() noexcept
 
 void VertexArray::draw(const PrimitiveType primitive_type,
                        const Matrix4&      model_mat,
-                       const float         color_alpha) noexcept
+                       const float         color_alpha,
+                       Texture* texture) noexcept
 {
     auto& program = DefaultShaderProgram::instance();
 
     program.setMat4("model", model_mat);
     program.setFloat("color_alpha", color_alpha);
+    if (texture != nullptr)
+    {
+        program.setI32("unit_index", texture->getUnit());
+    }
 
     VertexArray::bind(this);
     glCheck(glDrawArrays(static_cast<GLenum>(primitive_type), 0, static_cast<GLsizei>(m_vertices.size())));

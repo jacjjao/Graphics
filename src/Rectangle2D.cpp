@@ -84,6 +84,10 @@ void Rectangle2D::setupDraw() noexcept
 
     program.setFloat("color_alpha", hasTexture() ? 0.0F : 1.0F);
     program.setMat4("model", getTransformMatrix());
+    if (hasTexture())
+    {
+        program.setI32("unit_index", m_texture->getUnit());
+    }
 
     VertexArray::bind(&m_vao);
 }

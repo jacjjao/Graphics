@@ -3,6 +3,7 @@
 #include "VertexBuffer.hpp"
 #include "PrimitiveType.hpp"
 #include "Matrix.hpp"
+#include "Texture.hpp"
 
 #include <vector>
 
@@ -26,7 +27,8 @@ public:
     void update() noexcept;
     void draw(PrimitiveType primitive_type = PrimitiveType::Triangles,
               const Matrix4& model_mat = Constants::identity_mat4,
-              float color_alpha = 1.0F) noexcept;
+              float color_alpha = 1.0F, 
+              Texture* texture = nullptr) noexcept;
 
     void resize(size_t size) noexcept;
     void reserve(size_t size) noexcept;

@@ -20,7 +20,5 @@ public:
     Circle2D& operator=(const Circle2D&) = delete;
 
 private:
-    void setupDraw() noexcept;
-
     Vector2f m_radius;
 };

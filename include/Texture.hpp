@@ -48,6 +48,8 @@ public:
 class Texture
 {
 public:
+    static void Init() noexcept;
+
     Texture() = default;
     explicit Texture(const std::filesystem::path& path, TexConstructParameter parameters = {}) noexcept;
     explicit Texture(const void* data, int32_t width, int32_t height, TexConstructParameter parameters) noexcept;
@@ -66,15 +68,20 @@ public:
     [[nodiscard]] float getWidth() const noexcept;
     [[nodiscard]] float getHeight() const noexcept;
 
-    static void bind(Texture*) noexcept;
-    static void unbind() noexcept;
+    [[nodiscard]] size_t getUnit() const noexcept;
+
+    static void bind(Texture* texture, size_t unit_index = 0) noexcept;
+    static void unbind(size_t unit_index = 0) noexcept;
 
 private:
     void createFromImage(const std::filesystem::path& path, TexConstructParameter parameters = {}) noexcept;
     void createFromData(const void* data, int32_t width, int32_t height, TexConstructParameter parameters) noexcept;
 
-    static Texture* texture_in_bind;
+    static std::array<Texture*, 32> textures_in_bind;
 
     uint32_t m_id;
+
+    size_t which_unit = 0;
+
     Vector2f m_size;
 };
