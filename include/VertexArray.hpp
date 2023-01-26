@@ -1,6 +1,7 @@
 #pragma once
 
 #include "VertexBuffer.hpp"
+#include "ElementBuffer.hpp"
 #include "PrimitiveType.hpp"
 #include "Matrix.hpp"
 #include "Texture.hpp"
@@ -10,68 +11,62 @@
 class VertexArray
 {
 public:
-    using value_type             = std::vector<Vertex>::value_type;
-    using iterator               = std::vector<Vertex>::iterator;
-    using const_iterator         = std::vector<Vertex>::const_iterator;
-    using reverse_iterator       = std::vector<Vertex>::reverse_iterator;
-    using const_reverse_iterator = std::vector<Vertex>::const_reverse_iterator;
+    using value_type = std::vector<Vertex>::value_type;
+    using iterator   = std::vector<Vertex>::iterator;
 
-    explicit VertexArray(size_t size = 0) noexcept;
+    explicit VertexArray(size_t size, VertexBuffer::Usage usage = VertexBuffer::Usage::StaticDraw) noexcept;
     ~VertexArray() noexcept;
 
     VertexArray(const VertexArray&)                  = delete;
     VertexArray& operator=(const VertexArray&) const = delete;
 
+    VertexArray(VertexArray&& other) noexcept;
+    VertexArray& operator=(VertexArray&& other) noexcept;
+
     void destroy() noexcept;
-    void create() noexcept;
     void update() noexcept;
     void draw(PrimitiveType primitive_type = PrimitiveType::Triangles,
               const Matrix4& model_mat = Constants::identity_mat4,
               float color_alpha = 1.0F, 
               Texture* texture = nullptr) noexcept;
+    void drawIndices(int32_t size,
+                     PrimitiveType primitive_type = PrimitiveType::Triangles,
+                     const Matrix4& model_mat = Constants::identity_mat4,
+                     float color_alpha = 1.0F,
+                     Texture* texture = nullptr) noexcept;
+
+    void setElementBuffer(ElementBuffer& ebo) noexcept;
 
     void resize(size_t size) noexcept;
-    void reserve(size_t size) noexcept;
-    void push_back(const value_type& item) noexcept;
-    void pop_back() noexcept;
-    void clear() noexcept;
+    void push_back(const value_type& item) noexcept { m_vertices.push_back(item); }
+    void pop_back() noexcept { m_vertices.pop_back(); }
+    void clear() noexcept { m_vertices.clear(); }
 
-    value_type&                     front() noexcept;
-    [[nodiscard]] const value_type& front() const noexcept;
+    value_type& front() noexcept { return m_vertices.front(); }
+    value_type& back() noexcept { return m_vertices.back(); }
 
-    value_type&                     back() noexcept;
-    [[nodiscard]] const value_type& back() const noexcept;
+    [[nodiscard]] bool isCreated() const noexcept { return m_id > 0; }
+    [[nodiscard]] size_t size() const noexcept { return m_vertices.size(); }
 
-    [[nodiscard]] bool isCreated() const noexcept;
+    void setUsage(VertexBuffer::Usage usage) noexcept { m_vbo.setUsage(usage); }
 
-    [[nodiscard]] size_t size() const noexcept;
+    [[nodiscard]] iterator begin() noexcept { return m_vertices.begin(); }
+    [[nodiscard]] iterator end() noexcept { return m_vertices.end(); }
 
-    void setUsage(VertexBuffer::Usage usage) noexcept;
-
-    [[nodiscard]] iterator               begin() noexcept;
-    [[nodiscard]] iterator               end() noexcept;
-    [[nodiscard]] const_iterator         cbegin() const noexcept;
-    [[nodiscard]] const_iterator         cend() const noexcept;
-    [[nodiscard]] reverse_iterator       rbegin() noexcept;
-    [[nodiscard]] reverse_iterator       rend() noexcept;
-    [[nodiscard]] const_reverse_iterator crbegin() const noexcept;
-    [[nodiscard]] const_reverse_iterator crend() const noexcept;
-
-    value_type&       operator[](size_t index) noexcept;
-    const value_type& operator[](size_t index) const noexcept;
+    value_type&       operator[](size_t index) noexcept { return m_vertices[index]; }
+    const value_type& operator[](size_t index) const noexcept { return m_vertices[index]; }
 
     static void bind(VertexArray* vao) noexcept;
     static void unbind() noexcept;
 
 private:
-    void sendDataToCache() noexcept;
+    void create();
 
-    static std::vector<Vertex> cache;
-    static VertexArray*        vao_in_bind;
+    static VertexArray* vao_in_bind;
 
     uint32_t m_id;
 
-    VertexBuffer        m_vbo;
+    VertexBuffer m_vbo;
 
     std::vector<Vertex> m_vertices;
 };

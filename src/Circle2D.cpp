@@ -81,13 +81,3 @@ void Circle2D::setRadius(const Vector2f radius) noexcept
 {
     m_radius = radius;
 }
-
-void Circle2D::create() noexcept
-{
-    if (isCreated())
-    {
-        return;
-    }
-    update();
-    m_vao.create();
-}

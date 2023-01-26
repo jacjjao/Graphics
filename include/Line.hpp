@@ -12,12 +12,11 @@ public:
 
     void draw() noexcept;
 
-    void create() noexcept;
-
     Line(const Line&)            = delete;
     Line& operator=(const Line&) = delete;
 
 private:
+
     Vector2f m_start_pos, m_end_pos;
 
     float m_line_width;

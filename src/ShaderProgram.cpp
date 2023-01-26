@@ -71,7 +71,7 @@ ShaderProgram::ShaderProgram(const std::filesystem::path& vertex_path, const std
         std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ\n" << e.what() << '\n';
     }
 
-    create(vertex_code, fragment_code);
+    resize(vertex_code, fragment_code);
 }
 
 ShaderProgram::~ShaderProgram() noexcept
@@ -79,7 +79,7 @@ ShaderProgram::~ShaderProgram() noexcept
     destroy();
 }
 
-void ShaderProgram::create(const std::string& vertex_src, const std::string& fragment_src) noexcept
+void ShaderProgram::resize(const std::string& vertex_src, const std::string& fragment_src) noexcept
 {
     const auto* v_shader_code = vertex_src.data();
     const auto* f_shader_code = fragment_src.data();
@@ -221,7 +221,7 @@ int32_t ShaderProgram::getLocation(const std::string& name) noexcept
 DefaultShaderProgram::DefaultShaderProgram() noexcept :
 ShaderProgram{}
 {
-    create(ShaderSrcs::GraphicsRendering::vertex_shader_src, ShaderSrcs::GraphicsRendering::fragment_shader_src);
+    resize(ShaderSrcs::GraphicsRendering::vertex_shader_src, ShaderSrcs::GraphicsRendering::fragment_shader_src);
 }
 
 DefaultShaderProgram& DefaultShaderProgram::instance() noexcept
@@ -232,7 +232,7 @@ DefaultShaderProgram& DefaultShaderProgram::instance() noexcept
 
 TextShaderProgram::TextShaderProgram() noexcept : ShaderProgram{}
 {
-    create(ShaderSrcs::TextRendering::vertex_shader_src, ShaderSrcs::TextRendering::fragment_shader_src);
+    resize(ShaderSrcs::TextRendering::vertex_shader_src, ShaderSrcs::TextRendering::fragment_shader_src);
 }
 
 TextShaderProgram& TextShaderProgram::instance() noexcept

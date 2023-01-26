@@ -15,27 +15,32 @@ public:
         DynamicDraw = 0x88E8
     };
 
-    explicit VertexBuffer() noexcept;
+    VertexBuffer(size_t size, Usage usage = Usage::StaticDraw) noexcept;
     ~VertexBuffer() noexcept;
 
     VertexBuffer(const VertexBuffer&)            = delete;
     VertexBuffer& operator=(const VertexBuffer&) = delete;
 
-    VertexBuffer(VertexBuffer&&) = delete;
-    VertexBuffer& operator=(VertexBuffer&&) = delete;
+    VertexBuffer(VertexBuffer&& other) noexcept;
+    VertexBuffer& operator=(VertexBuffer&& other) noexcept;
 
     void destroy() noexcept;
     void updateData(std::span<Vertex> vertices) noexcept;
-    void create(std::span<Vertex> vertices) noexcept;
+    void resize(size_t size) noexcept;
 
-    [[nodiscard]] bool isAvailable() const noexcept;
+    [[nodiscard]] size_t size() const noexcept { return m_size; }
+    [[nodiscard]] size_t getCapacity() const noexcept { return m_capacity; }
 
-    void setUsage(Usage usage) noexcept;
+    [[nodiscard]] bool isCreated() const noexcept { return m_id > 0; }
+
+    void setUsage(Usage usage) noexcept { m_usage = usage; }
 
     static void bind(VertexBuffer* vbo) noexcept;
     static void unbind() noexcept;
 
 private:
+    void create() noexcept;
+
     static VertexBuffer* vbo_in_bind;
 
     Usage m_usage;
@@ -43,6 +48,5 @@ private:
     uint32_t m_id;
 
     size_t m_size;
-
-    int32_t m_size_in_bytes;
+    size_t m_capacity;
 };

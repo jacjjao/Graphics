@@ -9,6 +9,8 @@
 #include <ranges>
 #include <utility>
 
+#include <optional>
+#include <span>
 #include <string>
 #include <sstream>
 #include <string_view>

@@ -1,21 +1,37 @@
 #pragma once
 
-#include "Drawable.hpp"
+#include "VertexArray.hpp"
 #include "Camera.hpp"
 #include "ShaderProgram.hpp"
+#include "ElementBuffer.hpp"
 #include <vector>
 #include <memory>
 
-class Renderer
+namespace detail 
+{
+struct QuadData
+{
+    VertexArray vao;
+    ElementBuffer ebo;
+};
+} // detail
+
+class Renderer2D
 {
 public:
-    Renderer(unsigned scene_width, unsigned scene_height);
+    static constexpr size_t max_quad_num     = 2000;
+    static constexpr size_t max_vertices_num = max_quad_num * 4;
 
-    void add(Drawable* drawable) noexcept;
-    void drawAll() noexcept;
+    static void Init();
+
+    static void begin(Camera& scene_cam);
+    static void end();
+
+    static void drawQuad(Vector2f position, Vector2f size, Color color);
 
 private:
-    std::vector<std::unique_ptr<Drawable>> m_drawables;
+    static std::unique_ptr<detail::QuadData> quad_data;
+    static Camera* cam;
 
-    Camera m_camera;
+    static size_t quad_count;
 };

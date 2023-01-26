@@ -6,12 +6,12 @@
 #include <stb_image.h>
 #include <glad/glad.h>
 
-TexConstructParameter::TexConstructParameter() noexcept :
-wrap_s{Parameter::Wrapping::Repeat},
-wrap_t{Parameter::Wrapping::Repeat},
-min_filter{Parameter::Filtering::Linear},
-mag_filter{Parameter::Filtering::Linear},
-format{Parameter::Format::RGB},
+TexConstructParams::TexConstructParams() noexcept :
+wrap_s{Wrapping::Repeat},
+wrap_t{Wrapping::Repeat},
+min_filter{Filtering::Linear},
+mag_filter{Filtering::Linear},
+format{Format::RGB},
 use_mipmap{false}
 {
 }
@@ -36,14 +36,16 @@ void Texture::Init() noexcept
         tex10_31[10] = (i % 10) + '0';
         program.setI32(tex10_31, i);
     }
+
+    program.unuse();
 }
 
-Texture::Texture(const std::filesystem::path& path, TexConstructParameter parameters) noexcept : m_id{0}, m_size{}
+Texture::Texture(const std::filesystem::path& path, const TexConstructParams& parameters) noexcept : m_id{0}, m_size{}
 {
     createFromImage(path);
 }
 
-Texture::Texture(const void* data, int32_t width, int32_t height, TexConstructParameter parameters) noexcept :
+Texture::Texture(const void* data, int32_t width, int32_t height, const TexConstructParams& parameters) noexcept :
 m_id{0},
 m_size{}
 {
@@ -55,7 +57,7 @@ Texture::~Texture() noexcept
     destroy();
 }
 
-void Texture::createFromImage(const std::filesystem::path& path, const TexConstructParameter parameters) noexcept
+void Texture::createFromImage(const std::filesystem::path& path, const TexConstructParams& parameters) noexcept
 {
     // load image
     int width      = 0;
@@ -76,7 +78,7 @@ void Texture::createFromImage(const std::filesystem::path& path, const TexConstr
     stbi_image_free(data);
 }
 
-void Texture::createFromData(const void* data, const int32_t width, const int32_t height, const TexConstructParameter parameters) noexcept
+void Texture::createFromData(const void* data, const int32_t width, const int32_t height, const TexConstructParams& parameters) noexcept
 {
     // create texture
     glCheck(glGenTextures(1, &m_id));

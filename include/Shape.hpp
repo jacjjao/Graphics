@@ -28,8 +28,6 @@ public:
 
     [[nodiscard]] Rect getTextureRect() const noexcept;
 
-    virtual void create() = 0;
-
     bool isCreated() const noexcept;
 
 protected:

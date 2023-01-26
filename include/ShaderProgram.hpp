@@ -20,7 +20,7 @@ public:
     explicit ShaderProgram(const std::filesystem::path& vertex_path, const std::filesystem::path& fragment_path) noexcept;
     ~ShaderProgram() noexcept;
 
-    void create(const std::string& vertex_src, const std::string& fragment_src) noexcept;
+    void resize(const std::string& vertex_src, const std::string& fragment_src) noexcept;
 
     void use() noexcept;
     static void unuse() noexcept;
@@ -145,8 +145,8 @@ namespace ShaderSrcs
 	            	case 28: color = mix(texture(textures[28], tex_coord), frag_color, color_alpha); break;
 	            	case 29: color = mix(texture(textures[29], tex_coord), frag_color, color_alpha); break;
 	            	case 30: color = mix(texture(textures[30], tex_coord), frag_color, color_alpha); break;
-	            	case 31: color = mix(texture(textures[31], tex_coord), frag_color, color_alpha); break;
-	            }
+	            	case 31: color = mix(texture(textures[31], tex_coord), frag_color, color_alpha); break; 
+                }
             }
         )";
 

@@ -4,15 +4,23 @@
 
 #include <glad/glad.h>
 
-Rectangle2D::Rectangle2D(const Vector2f size) noexcept : Shape{4}, m_ebo{6}, m_size{size}
+Rectangle2D::Rectangle2D(const Vector2f size) noexcept : 
+Shape{4}, 
+m_ebo{6}, 
+m_size{size}
 {
+    create();
 }
 
 void Rectangle2D::draw() noexcept
 {
-    setupDraw();
-    glCheck(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_ebo.size()), GL_UNSIGNED_INT, 0));
-    VertexArray::unbind();
+    m_vao.drawIndices(
+        m_ebo.size(), 
+        PrimitiveType::Triangles, 
+        getTransformMatrix(), 
+        hasTexture() ? 0.0F : 1.0F, 
+        m_texture
+    );
 }
 
 void Rectangle2D::update() noexcept
@@ -61,33 +69,7 @@ void Rectangle2D::setHeight(const float height) noexcept
 
 void Rectangle2D::create() noexcept
 {
-    if (isCreated())
-    {
-        return;
-    }
-    update();
-
-    m_vao.create();
-    VertexArray::bind(&m_vao);
-
-    m_ebo = {0, 1, 3, 1, 2, 3};
-    m_ebo.create();
-    ElementBuffer::bind(&m_ebo);
-
-    VertexArray::unbind();
-    ElementBuffer::unbind();
-}
-
-void Rectangle2D::setupDraw() noexcept
-{
-    auto& program = DefaultShaderProgram::instance();
-
-    program.setFloat("color_alpha", hasTexture() ? 0.0F : 1.0F);
-    program.setMat4("model", getTransformMatrix());
-    if (hasTexture())
-    {
-        program.setI32("unit_index", m_texture->getUnit());
-    }
-
-    VertexArray::bind(&m_vao);
+    m_ebo = { 0, 1, 3, 1, 2, 3 };
+    m_ebo.update(); 
+    m_vao.setElementBuffer(m_ebo);
 }

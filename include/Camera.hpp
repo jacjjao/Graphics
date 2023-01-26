@@ -2,6 +2,7 @@
 
 #include "Vector.hpp"
 #include "Matrix.hpp"
+
 class Camera
 {
 public:

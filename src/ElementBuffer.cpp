@@ -5,13 +5,31 @@
 
 ElementBuffer* ElementBuffer::ebo_in_bind = nullptr;
 
-ElementBuffer::ElementBuffer(const size_t size) noexcept : m_id(0), m_indices(size)
+ElementBuffer::ElementBuffer(const size_t size) noexcept : 
+m_id(0), 
+m_indices(size)
 {
+    create();
 }
 
 ElementBuffer::~ElementBuffer() noexcept
 {
     destroy();
+}
+
+ElementBuffer::ElementBuffer(ElementBuffer&& other) noexcept
+{
+    operator=(std::move(other));
+}
+
+ElementBuffer& ElementBuffer::operator=(ElementBuffer&& other) noexcept
+{
+    m_id      = other.m_id;
+    m_indices = std::move(other.m_indices);
+
+    other.m_id = 0;
+
+    return *this;
 }
 
 ElementBuffer& ElementBuffer::operator=(std::vector<uint32_t> indices) noexcept
@@ -26,22 +44,18 @@ ElementBuffer& ElementBuffer::operator=(const std::initializer_list<uint32_t> li
     return *this;
 }
 
-void ElementBuffer::create() noexcept
+void ElementBuffer::update() noexcept
 {
-    if (isAvailable())
-    {
-        return;
-    }
-    glCheck(glGenBuffers(1, &m_id));
     ElementBuffer::bind(this);
-    const auto size_in_bytes = static_cast<GLsizei>(m_indices.size() * sizeof(uint32_t));
-    glCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size_in_bytes, m_indices.data(), GL_STATIC_DRAW));
+
+    glCheck(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, m_indices.size() * sizeof(uint32_t), m_indices.data()));
+
     ElementBuffer::unbind();
 }
 
 void ElementBuffer::destroy() noexcept
 {
-    if (isAvailable())
+    if (isCreated())
     {
         glCheck(glDeleteBuffers(1, &m_id));
         m_id = 0;
@@ -53,7 +67,7 @@ size_t ElementBuffer::size() const noexcept
     return m_indices.size();
 }
 
-bool ElementBuffer::isAvailable() const noexcept
+bool ElementBuffer::isCreated() const noexcept
 {
     return m_id != 0;
 }
@@ -74,4 +88,16 @@ void ElementBuffer::unbind() noexcept
         glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
         ebo_in_bind = nullptr;
     }
+}
+
+void ElementBuffer::create() noexcept
+{
+    glCheck(glGenBuffers(1, &m_id));
+
+    ElementBuffer::bind(this);
+
+    const auto size_in_bytes = static_cast<GLsizei>(m_indices.size() * sizeof(uint32_t));
+    glCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size_in_bytes, nullptr, GL_STATIC_DRAW));
+    
+    ElementBuffer::unbind();
 }

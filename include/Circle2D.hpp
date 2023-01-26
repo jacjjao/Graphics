@@ -11,7 +11,6 @@ public:
 
     void draw() noexcept;
     void update() noexcept override;
-    void create() noexcept override;
 
     void setRadius(float radius) noexcept;
     void setRadius(Vector2f radius) noexcept;

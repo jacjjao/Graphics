@@ -51,10 +51,10 @@ void TextRenderer::initialize(const unsigned font_size, const unsigned screen_wi
     // disable byte-alignment restriction
     glCheck(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
 
-    TexConstructParameter parameters{};
-    parameters.wrap_s     = parameters.wrap_t     = Parameter::Wrapping::ClampToEdge;
-    parameters.min_filter = parameters.mag_filter = Parameter::Filtering::Linear;
-    parameters.format                             = Parameter::Format::Red;
+    TexConstructParams parameters{};
+    parameters.wrap_s     = parameters.wrap_t     = TexConstructParams::Wrapping::ClampToEdge;
+    parameters.min_filter = parameters.mag_filter = TexConstructParams::Filtering::Linear;
+    parameters.format                             = TexConstructParams::Format::Red;
 
     // load first 128 characters of ASCII set
     for (unsigned char c = 0; c < 128; c++)
