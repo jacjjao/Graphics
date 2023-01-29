@@ -1,7 +1,7 @@
 #include "../include/pch.hpp"
 #include "../include/Shape.hpp"
 
-Shape::Shape(const size_t size) noexcept :
+Shape::Shape(const size_t size) :
 m_vao{size},
 m_color{Color::White},
 m_texture{nullptr},
@@ -12,37 +12,37 @@ m_tex_rect{
 {
 }
 
-void Shape::applyTexture(Texture* texture) noexcept
+void Shape::applyTexture(Texture* texture)
 {
     m_texture = texture;
 }
 
-bool Shape::hasTexture() const noexcept
+bool Shape::hasTexture() const
 {
     return (m_texture != nullptr);
 }
 
-void Shape::setColor(const Color color) noexcept
+void Shape::setColor(const Color color)
 {
     m_color = color;
 }
 
-Color Shape::getColor() const noexcept
+Color Shape::getColor() const
 {
     return m_color;
 }
 
-void Shape::setTextureRect(const Rect rect) noexcept
+void Shape::setTextureRect(const Rect rect)
 {
     m_tex_rect = rect;
 }
 
-Rect Shape::getTextureRect() const noexcept
+Rect Shape::getTextureRect() const
 {
     return m_tex_rect;
 }
 
-bool Shape::isCreated() const noexcept
+bool Shape::isCreated() const
 {
     return m_is_created;
 }

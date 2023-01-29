@@ -27,7 +27,7 @@ std::string read_shader_code(const std::filesystem::path & path)
     return std::move(code).str();
 }
 
-bool checkShaderCompileStatus(const uint32_t shader) noexcept
+bool checkShaderCompileStatus(const uint32_t shader)
 {
     int32_t success       = 0;
     char    info_log[512] = {};
@@ -41,7 +41,7 @@ bool checkShaderCompileStatus(const uint32_t shader) noexcept
     return SUCCESS;
 }
 
-bool checkProgramLinkStatus(const uint32_t program) noexcept
+bool checkProgramLinkStatus(const uint32_t program)
 {
     int32_t success       = 0;
     char    info_log[512] = {};
@@ -57,7 +57,7 @@ bool checkProgramLinkStatus(const uint32_t program) noexcept
 
 ShaderProgram* ShaderProgram::program_in_use = nullptr;
 
-ShaderProgram::ShaderProgram(const std::filesystem::path& vertex_path, const std::filesystem::path& fragment_path) noexcept
+ShaderProgram::ShaderProgram(const std::filesystem::path& vertex_path, const std::filesystem::path& fragment_path)
 {
     std::string   vertex_code{};
     std::string   fragment_code{};
@@ -74,12 +74,12 @@ ShaderProgram::ShaderProgram(const std::filesystem::path& vertex_path, const std
     resize(vertex_code, fragment_code);
 }
 
-ShaderProgram::~ShaderProgram() noexcept
+ShaderProgram::~ShaderProgram()
 {
     destroy();
 }
 
-void ShaderProgram::resize(const std::string& vertex_src, const std::string& fragment_src) noexcept
+void ShaderProgram::resize(const std::string& vertex_src, const std::string& fragment_src)
 {
     const auto* v_shader_code = vertex_src.data();
     const auto* f_shader_code = fragment_src.data();
@@ -118,7 +118,7 @@ void ShaderProgram::resize(const std::string& vertex_src, const std::string& fra
     glCheck(glDeleteShader(fragment));
 }
 
-void ShaderProgram::use() noexcept
+void ShaderProgram::use()
 {
     if (program_in_use != this)
     {
@@ -127,7 +127,7 @@ void ShaderProgram::use() noexcept
     }
 }
 
-void ShaderProgram::unuse() noexcept
+void ShaderProgram::unuse()
 {
     if (program_in_use != nullptr)
     {
@@ -136,42 +136,42 @@ void ShaderProgram::unuse() noexcept
     }
 }
 
-uint32_t ShaderProgram::getID() const noexcept
+uint32_t ShaderProgram::getID() const
 {
     return m_id;
 }
 
-void ShaderProgram::setI32(const std::string& name, const int32_t value) noexcept
+void ShaderProgram::setI32(const std::string& name, const int32_t value)
 {
     const auto loc = getLocation(name);
     glCheck(glUniform1i(loc, value));
 }
 
-void ShaderProgram::setFloat(const std::string& name, const float value) noexcept
+void ShaderProgram::setFloat(const std::string& name, const float value)
 {
     const auto loc = getLocation(name);
     glCheck(glUniform1f(loc, value));
 }
 
-void ShaderProgram::setBool(const std::string& name, const bool value) noexcept
+void ShaderProgram::setBool(const std::string& name, const bool value)
 {
     const auto loc = getLocation(name);
     glCheck(glUniform1i(loc, value));
 }
 
-void ShaderProgram::setMat4(const std::string& name, const Matrix4& matrix) noexcept
+void ShaderProgram::setMat4(const std::string& name, const Matrix4& matrix)
 {
     const auto loc = getLocation(name);
     glCheck(glUniformMatrix4fv(loc, 1, GL_TRUE, matrix.data()));
 }
 
-void ShaderProgram::setVec3(const std::string& name, const Vector3f vec) noexcept
+void ShaderProgram::setVec3(const std::string& name, const Vector3f vec)
 {
     const auto loc = getLocation(name);
     glCheck(glUniform3f(loc, vec.x, vec.y, vec.z));
 }
 
-void ShaderProgram::setVec4(const std::string& name, const Color color) noexcept
+void ShaderProgram::setVec4(const std::string& name, const Color color)
 {
     const auto loc = getLocation(name);
 
@@ -183,7 +183,7 @@ void ShaderProgram::setVec4(const std::string& name, const Color color) noexcept
     glCheck(glUniform4f(loc, r, g, b, a));
 }
 
-void ShaderProgram::destroy() noexcept
+void ShaderProgram::destroy()
 {
     if (m_id > 0)
     {
@@ -192,7 +192,7 @@ void ShaderProgram::destroy() noexcept
     }
 }
 
-int32_t ShaderProgram::getLocation(const std::string& name) noexcept
+int32_t ShaderProgram::getLocation(const std::string& name)
 {
     const auto it = locations.find(name);
 
@@ -218,24 +218,24 @@ int32_t ShaderProgram::getLocation(const std::string& name) noexcept
     return loc;
 }
 
-DefaultShaderProgram::DefaultShaderProgram() noexcept :
+DefaultShaderProgram::DefaultShaderProgram() :
 ShaderProgram{}
 {
     resize(ShaderSrcs::GraphicsRendering::vertex_shader_src, ShaderSrcs::GraphicsRendering::fragment_shader_src);
 }
 
-DefaultShaderProgram& DefaultShaderProgram::instance() noexcept
+DefaultShaderProgram& DefaultShaderProgram::instance()
 {
     static DefaultShaderProgram program{};
     return program;
 }
 
-TextShaderProgram::TextShaderProgram() noexcept : ShaderProgram{}
+TextShaderProgram::TextShaderProgram() : ShaderProgram{}
 {
     resize(ShaderSrcs::TextRendering::vertex_shader_src, ShaderSrcs::TextRendering::fragment_shader_src);
 }
 
-TextShaderProgram& TextShaderProgram::instance() noexcept
+TextShaderProgram& TextShaderProgram::instance()
 {
     static TextShaderProgram program{};
     return program;

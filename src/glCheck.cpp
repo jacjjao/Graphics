@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 
-void glCheckError(const char* file, const unsigned line, const char* function) noexcept
+void glCheckError(const char* file, const unsigned line, const char* function)
 {
     const GLenum error_code = glGetError();
 

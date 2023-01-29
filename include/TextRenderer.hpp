@@ -19,14 +19,14 @@ struct Character
 class TextRenderer
 {
 public:
-    static void initialize(unsigned font_size, unsigned screen_width, unsigned screen_height) noexcept;
+    static void initialize(unsigned font_size, unsigned screen_width, unsigned screen_height);
 
     static void renderText(std::string_view text,
                            Vector2f         pos,
                            Color            color = Color::White,
-                           unsigned         font_size  = text_size) noexcept;
+                           unsigned         font_size  = text_size);
 
-    static void releaseResources() noexcept;
+    static void releaseResources();
 
 private:
     static std::array<Character, 128> characters;

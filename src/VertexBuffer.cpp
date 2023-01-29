@@ -5,7 +5,7 @@
 
 VertexBuffer* VertexBuffer::vbo_in_bind = nullptr;
 
-VertexBuffer::VertexBuffer(const size_t size, const Usage usage) noexcept : 
+VertexBuffer::VertexBuffer(const size_t size, const Usage usage) : 
 m_usage{usage}, 
 m_id{0},
 m_size{size},
@@ -14,7 +14,7 @@ m_capacity{size}
     create();
 }
 
-VertexBuffer::~VertexBuffer() noexcept
+VertexBuffer::~VertexBuffer()
 {
     destroy();
 }
@@ -35,7 +35,7 @@ VertexBuffer& VertexBuffer::operator=(VertexBuffer&& other) noexcept
     return *this;
 }
 
-void VertexBuffer::destroy() noexcept
+void VertexBuffer::destroy()
 {
     if (isCreated())
     {
@@ -45,16 +45,12 @@ void VertexBuffer::destroy() noexcept
     }
 }
 
-void VertexBuffer::updateData(const std::span<Vertex> vertices) noexcept
+void VertexBuffer::updateData(const std::span<Vertex> vertices)
 {  
-    VertexBuffer::bind(this);
-
-    glCheck(glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), vertices.data()));
-
-    VertexBuffer::unbind();
+    glCheck(glNamedBufferSubData(m_id, 0, vertices.size() * sizeof(Vertex), vertices.data()));
 }
 
-void VertexBuffer::resize(const size_t size) noexcept
+void VertexBuffer::resize(const size_t size)
 {    
     m_size = size;
     if (size <= m_capacity) 
@@ -62,14 +58,10 @@ void VertexBuffer::resize(const size_t size) noexcept
         return;
     }
 
-    VertexBuffer::bind(this);
-
-    glCheck(glBufferData(GL_ARRAY_BUFFER, m_size * sizeof(Vertex), nullptr, static_cast<GLenum>(m_usage)));
-
-    VertexBuffer::unbind();
+    glCheck(glNamedBufferData(m_id, m_size * sizeof(Vertex), nullptr, static_cast<GLenum>(m_usage)));
 }
 
-void VertexBuffer::bind(VertexBuffer* vbo) noexcept
+void VertexBuffer::bind(VertexBuffer* vbo)
 {
     if (vbo_in_bind != vbo)
     {
@@ -78,7 +70,7 @@ void VertexBuffer::bind(VertexBuffer* vbo) noexcept
     }
 }
 
-void VertexBuffer::unbind() noexcept
+void VertexBuffer::unbind()
 {
     if (vbo_in_bind != nullptr)
     {
@@ -87,13 +79,8 @@ void VertexBuffer::unbind() noexcept
     }
 }
 
-void VertexBuffer::create() noexcept
+void VertexBuffer::create()
 {
-    glCheck(glGenBuffers(1, &m_id));
-
-    VertexBuffer::bind(this);
-
-    glCheck(glBufferData(GL_ARRAY_BUFFER, m_size * sizeof(Vertex), nullptr, static_cast<GLenum>(m_usage)));
-
-    VertexBuffer::unbind();
+    glCheck(glCreateBuffers(1, &m_id));
+    glCheck(glNamedBufferData(m_id, m_size * sizeof(Vertex), nullptr, static_cast<GLenum>(m_usage)));
 }

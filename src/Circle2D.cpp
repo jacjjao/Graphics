@@ -6,19 +6,19 @@
 
 #include <numbers>
 
-Circle2D::Circle2D(const float radius, const size_t point_count) noexcept :
+Circle2D::Circle2D(const float radius, const size_t point_count) :
 Shape{point_count + 2},
 m_radius{radius}
 {
 }
 
-Circle2D::Circle2D(const Vector2f radius, const size_t point_count) noexcept : 
+Circle2D::Circle2D(const Vector2f radius, const size_t point_count) : 
 Shape{point_count + 2}, 
 m_radius{radius}
 {
 }
 
-void Circle2D::draw() noexcept
+void Circle2D::draw()
 {
     m_vao.draw(
         PrimitiveType::TriangleFan, 
@@ -28,7 +28,7 @@ void Circle2D::draw() noexcept
     );
 }
 
-void Circle2D::update() noexcept
+void Circle2D::update()
 {
     constexpr auto pi = std::numbers::pi_v<float>;
 
@@ -72,12 +72,12 @@ void Circle2D::update() noexcept
     }
 }
 
-void Circle2D::setRadius(const float radius) noexcept
+void Circle2D::setRadius(const float radius)
 {
     m_radius.x = m_radius.y = radius;
 }
 
-void Circle2D::setRadius(const Vector2f radius) noexcept
+void Circle2D::setRadius(const Vector2f radius)
 {
     m_radius = radius;
 }

@@ -3,12 +3,9 @@
 #include "Vector.hpp"
 #include "Color.hpp"
 
-class Vertex
+struct Vertex
 {
-public:
-    explicit constexpr Vertex() noexcept : position{}, color{}, tex_coord{}
-    {
-    }
+    Vertex() = default;
 
     Vector3f position;
     Color    color;

@@ -7,8 +7,8 @@
 class ElementBuffer
 {
 public:
-    explicit ElementBuffer(size_t size) noexcept;
-    ~ElementBuffer() noexcept;
+    explicit ElementBuffer(size_t size);
+    ~ElementBuffer();
 
     ElementBuffer(const ElementBuffer&)            = delete;
     ElementBuffer& operator=(const ElementBuffer&) = delete;
@@ -16,22 +16,22 @@ public:
     ElementBuffer(ElementBuffer&& other) noexcept;
     ElementBuffer& operator=(ElementBuffer&& other) noexcept;
 
-    ElementBuffer& operator=(std::vector<uint32_t> indices) noexcept;
-    ElementBuffer& operator=(std::initializer_list<uint32_t> list) noexcept;
+    ElementBuffer& operator=(std::vector<uint32_t> indices);
+    ElementBuffer& operator=(std::initializer_list<uint32_t> list);
 
-    void update() noexcept;
+    void update();
 
-    void destroy() noexcept;
+    void destroy();
 
-    [[nodiscard]] size_t size() const noexcept;
+    [[nodiscard]] size_t size() const;
 
-    [[nodiscard]] bool isCreated() const noexcept;
+    [[nodiscard]] bool isCreated() const;
 
-    static void bind(ElementBuffer* ebo) noexcept;
-    static void unbind() noexcept;
+    static void bind(ElementBuffer* ebo);
+    static void unbind();
 
 private:
-    void create() noexcept;
+    void create();
 
     static ElementBuffer* ebo_in_bind;
 

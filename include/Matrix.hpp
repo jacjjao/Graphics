@@ -1,11 +1,13 @@
 #pragma once
 
 #include <cstdint>
+#include <cassert>
 #include <initializer_list>
 #include <vector>
 
 #if (DEBUG)
-#include <iostream>
+#define ENABLE_BOUNDS_CHECK
+#include <sstream>
 #endif
 
 namespace detail
@@ -15,33 +17,37 @@ template <typename T, size_t Width>
 class Row
 {
 public:
-    explicit constexpr Row(T* ptr) noexcept : ptr_(ptr)
+    explicit constexpr Row(T* ptr) : ptr_(ptr)
     {
     }
 
-    constexpr T& operator[](const size_t index) noexcept
+    constexpr T& operator[](const size_t index)
     {
-#if (DEBUG)
+#ifdef ENABLE_BOUNDS_CHECK
         if (index >= Width)
         {
-            std::cerr << "Index out of bounds! Index: " << index << " Size: " << Width << '\n';
+            std::stringstream ss;
+            ss << "Index out of bounds! Index: " << index << " Size: " << Width << '\n';
+            throw std::runtime_error{ std::move(ss).str() };
         }
 #endif
         return ptr_[index];
     }
 
-    constexpr T& operator[](const size_t index) const noexcept
+    constexpr T& operator[](const size_t index) const
     {
-#if (DEBUG)
+#ifdef ENABLE_BOUNDS_CHECK
         if (index >= Width)
         {
-            std::cerr << "Index out of bounds! Index: " << index << " Size: " << Width << '\n';
+            std::stringstream ss;
+            ss << "Index out of bounds! Index: " << index << " Size: " << Width << '\n';
+            throw std::runtime_error{ std::move(ss).str() };
         }
 #endif
         return ptr_[index];
     }
 
-    [[nodiscard]] constexpr size_t size() const noexcept
+    [[nodiscard]] constexpr size_t size() const
     {
         return Width;
     }
@@ -54,22 +60,24 @@ template <typename T, size_t Width>
 class ConstRow
 {
 public:
-    explicit constexpr ConstRow(const T* ptr) noexcept : ptr_(ptr)
+    explicit constexpr ConstRow(const T* ptr) : ptr_(ptr)
     {
     }
 
-    constexpr const T& operator[](const size_t index) const noexcept
+    constexpr const T& operator[](const size_t index) const
     {
-#if (DEBUG)
+#ifdef ENABLE_BOUNDS_CHECK
         if (index >= Width)
         {
-            std::cerr << "Index out of bounds! Index: " << index << " Size: " << Width << '\n';
+            std::stringstream ss;
+            ss << "Index out of bounds! Index: " << index << " Size: " << Width << '\n';
+            throw std::runtime_error{ std::move(ss).str() };
         }
 #endif
         return ptr_[index];
     }
 
-    [[nodiscard]] constexpr size_t size() const noexcept
+    [[nodiscard]] constexpr size_t size() const
     {
         return Width;
     }
@@ -87,46 +95,51 @@ public:
     static_assert(Width > 0, "Invalid width value");
     static_assert(Height > 0, "Invalid Height value");
 
-    explicit Matrix() noexcept : items_(Width * Height)
+    explicit Matrix() : items_(Width * Height)
     {
     }
 
-    Matrix(std::initializer_list<T> list) noexcept : items_(list)
+    Matrix(std::initializer_list<T> list) : items_(list)
     {
+        assert(list.size() == Width * Height);
         items_.resize(Width * Height);
     }
 
-    ~Matrix() noexcept = default;
+    ~Matrix() = default;
 
     Matrix(const Matrix<T, Height, Width>&)            = delete;
     Matrix& operator=(const Matrix<T, Height, Width>&) = delete;
 
-    Matrix(Matrix<T, Height, Width>&&) noexcept            = default;
-    Matrix& operator=(Matrix<T, Height, Width>&&) noexcept = default;
+    Matrix(Matrix<T, Height, Width>&&)            = default;
+    Matrix& operator=(Matrix<T, Height, Width>&&) = default;
 
-    detail::Row<T, Width> operator[](const size_t index) noexcept
+    detail::Row<T, Width> operator[](const size_t index)
     {
-#if (DEBUG)
+#ifdef ENABLE_BOUNDS_CHECK
         if (index >= Height)
         {
-            std::cerr << "Index out of bounds! Index: " << index << " Size: " << Height << '\n';
+            std::stringstream ss;
+            ss << "Index out of bounds! Index: " << index << " Size: " << Height << '\n';
+            throw std::runtime_error{ std::move(ss).str() };
         }
 #endif
         return detail::Row<T, Width>{&items_[index * Width]};
     }
 
-    detail::ConstRow<T, Width> operator[](const size_t index) const noexcept
+    detail::ConstRow<T, Width> operator[](const size_t index) const
     {
-#if (DEBUG)
+#ifdef ENABLE_BOUNDS_CHECK
         if (index >= Height)
         {
-            std::cerr << "Index out of bounds! Index: " << index << " Size: " << Height << '\n';
+            std::stringstream ss;
+            ss << "Index out of bounds! Index: " << index << " Size: " << Height << '\n';
+            throw std::runtime_error{ std::move(ss).str() };
         }
 #endif
         return detail::ConstRow<T, Width>{&items_[index * Width]};
     }
 
-    friend Matrix<T, Height, Width> operator+(const Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs) noexcept
+    friend Matrix<T, Height, Width> operator+(const Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs)
     {
         Matrix<T, Height, Width> result{};
 
@@ -141,7 +154,7 @@ public:
         return result;
     }
 
-    friend Matrix<T, Height, Width> operator-(const Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs) noexcept
+    friend Matrix<T, Height, Width> operator-(const Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs)
     {
         Matrix<T, Height, Width> result{};
 
@@ -156,7 +169,7 @@ public:
         return result;
     }
 
-    friend Matrix<T, Height, Width>& operator+=(Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs) noexcept
+    friend Matrix<T, Height, Width>& operator+=(Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs)
     {
         for (size_t i = 0; i < Height; i++)
         {
@@ -169,7 +182,7 @@ public:
         return lhs;
     }
 
-    friend Matrix<T, Height, Width>& operator-=(Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs) noexcept
+    friend Matrix<T, Height, Width>& operator-=(Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs)
     {
         for (size_t i = 0; i < Height; i++)
         {
@@ -183,7 +196,7 @@ public:
     }
 
     template <size_t W>
-    friend Matrix<T, Height, W> operator*(const Matrix<T, Height, Width>& lhs, const Matrix<T, Width, W>& rhs) noexcept
+    friend Matrix<T, Height, W> operator*(const Matrix<T, Height, Width>& lhs, const Matrix<T, Width, W>& rhs)
     {
         Matrix<T, Height, W> result{};
 
@@ -201,43 +214,27 @@ public:
         return result;
     }
 
-    [[nodiscard]] size_t width() const noexcept
+    [[nodiscard]] size_t width() const
     {
         return Width;
     }
 
-    [[nodiscard]] size_t height() const noexcept
+    [[nodiscard]] size_t height() const
     {
         return Height;
     }
 
-    [[nodiscard]] T* data() noexcept
+    [[nodiscard]] T* data()
     {
         return items_.data();
     }
 
-    [[nodiscard]] const T* data() const noexcept
+    [[nodiscard]] const T* data() const
     {
         return items_.data();
     }
 
-    void toIdentity() noexcept
-    {
-        static_assert(Width == Height, "Cannot turn to identity matrix");
-
-        const auto zero = static_cast<T>(0);
-        const auto one  = static_cast<T>(1);
-
-        for (size_t i = 0; i < Height; i++)
-        {
-            for (size_t j = 0; j < Width; j++)
-            {
-                items_[i * Width + j] = (i == j) ? one : zero;
-            }
-        }
-    }
-
-    static Matrix<T, Height, Width> makeIdentity() noexcept
+    static Matrix<T, Height, Width> makeIdentity()
     {
         static_assert(Width == Height, "Invalid identity matrix size");
 
@@ -256,7 +253,6 @@ public:
 private:
     std::vector<T> items_;
 };
-
 
 using Matrix3 = Matrix<float, 3, 3>;
 using Matrix4 = Matrix<float, 4, 4>;

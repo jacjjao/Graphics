@@ -16,7 +16,7 @@ uint32_t TextRenderer::VAO = 0, TextRenderer::VBO = 0;
 unsigned TextRenderer::text_size = 0;
 Vector2f TextRenderer::half_scr_size{};
 
-void TextRenderer::initialize(const unsigned font_size, const unsigned screen_width, const unsigned screen_height) noexcept
+void TextRenderer::initialize(const unsigned font_size, const unsigned screen_width, const unsigned screen_height)
 {
     text_size = font_size;
     half_scr_size.x = static_cast<float>(screen_width / 2);
@@ -96,7 +96,7 @@ void TextRenderer::initialize(const unsigned font_size, const unsigned screen_wi
     glCheck(glBindVertexArray(0));
 }
 
-void TextRenderer::renderText(std::string_view text, Vector2f pos, const Color color, const unsigned font_size) noexcept
+void TextRenderer::renderText(std::string_view text, Vector2f pos, const Color color, const unsigned font_size)
 {
     static auto proj = ortho(-half_scr_size.x, half_scr_size.x, -half_scr_size.y, half_scr_size.y, -1.0, 1.0);
 
@@ -154,7 +154,7 @@ void TextRenderer::renderText(std::string_view text, Vector2f pos, const Color c
     glCheck(glDisable(GL_BLEND));
 }
 
-void TextRenderer::releaseResources() noexcept
+void TextRenderer::releaseResources()
 {
     for (auto& character : characters)
     {

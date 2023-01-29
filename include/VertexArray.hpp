@@ -14,8 +14,8 @@ public:
     using value_type = std::vector<Vertex>::value_type;
     using iterator   = std::vector<Vertex>::iterator;
 
-    explicit VertexArray(size_t size, VertexBuffer::Usage usage = VertexBuffer::Usage::StaticDraw) noexcept;
-    ~VertexArray() noexcept;
+    explicit VertexArray(size_t size, VertexBuffer::Usage usage = VertexBuffer::Usage::StaticDraw);
+    ~VertexArray();
 
     VertexArray(const VertexArray&)                  = delete;
     VertexArray& operator=(const VertexArray&) const = delete;
@@ -23,41 +23,41 @@ public:
     VertexArray(VertexArray&& other) noexcept;
     VertexArray& operator=(VertexArray&& other) noexcept;
 
-    void destroy() noexcept;
-    void update() noexcept;
+    void destroy();
+    void update();
     void draw(PrimitiveType primitive_type = PrimitiveType::Triangles,
               const Matrix4& model_mat = Constants::identity_mat4,
               float color_alpha = 1.0F, 
-              Texture* texture = nullptr) noexcept;
+              Texture* texture = nullptr);
     void drawIndices(int32_t size,
                      PrimitiveType primitive_type = PrimitiveType::Triangles,
                      const Matrix4& model_mat = Constants::identity_mat4,
                      float color_alpha = 1.0F,
-                     Texture* texture = nullptr) noexcept;
+                     Texture* texture = nullptr);
 
-    void setElementBuffer(ElementBuffer& ebo) noexcept;
+    void setElementBuffer(ElementBuffer& ebo);
 
-    void resize(size_t size) noexcept;
-    void push_back(const value_type& item) noexcept { m_vertices.push_back(item); }
-    void pop_back() noexcept { m_vertices.pop_back(); }
-    void clear() noexcept { m_vertices.clear(); }
+    void resize(size_t size);
+    void push_back(const value_type& item) { m_vertices.push_back(item); }
+    void pop_back() { m_vertices.pop_back(); }
+    void clear() { m_vertices.clear(); }
 
-    value_type& front() noexcept { return m_vertices.front(); }
-    value_type& back() noexcept { return m_vertices.back(); }
+    value_type& front() { return m_vertices.front(); }
+    value_type& back() { return m_vertices.back(); }
 
-    [[nodiscard]] bool isCreated() const noexcept { return m_id > 0; }
-    [[nodiscard]] size_t size() const noexcept { return m_vertices.size(); }
+    [[nodiscard]] bool isCreated() const { return m_id > 0; }
+    [[nodiscard]] size_t size() const { return m_vertices.size(); }
 
-    void setUsage(VertexBuffer::Usage usage) noexcept { m_vbo.setUsage(usage); }
+    void setUsage(VertexBuffer::Usage usage) { m_vbo.setUsage(usage); }
 
-    [[nodiscard]] iterator begin() noexcept { return m_vertices.begin(); }
-    [[nodiscard]] iterator end() noexcept { return m_vertices.end(); }
+    [[nodiscard]] iterator begin() { return m_vertices.begin(); }
+    [[nodiscard]] iterator end() { return m_vertices.end(); }
 
-    value_type&       operator[](size_t index) noexcept { return m_vertices[index]; }
-    const value_type& operator[](size_t index) const noexcept { return m_vertices[index]; }
+    value_type&       operator[](size_t index) { return m_vertices[index]; }
+    const value_type& operator[](size_t index) const { return m_vertices[index]; }
 
-    static void bind(VertexArray* vao) noexcept;
-    static void unbind() noexcept;
+    static void bind(VertexArray* vao);
+    static void unbind();
 
 private:
     void create();

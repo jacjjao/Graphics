@@ -10,31 +10,31 @@
 #include "Color.hpp"
 
 static std::string read_shader_code(const std::filesystem::path& path);
-static bool checkShaderCompileStatus(uint32_t shader) noexcept;
-static bool checkProgramLinkStatus(uint32_t program) noexcept;
+static bool checkShaderCompileStatus(uint32_t shader);
+static bool checkProgramLinkStatus(uint32_t program);
 
 class ShaderProgram
 {
 public:
     ShaderProgram() = default;
-    explicit ShaderProgram(const std::filesystem::path& vertex_path, const std::filesystem::path& fragment_path) noexcept;
-    ~ShaderProgram() noexcept;
+    explicit ShaderProgram(const std::filesystem::path& vertex_path, const std::filesystem::path& fragment_path);
+    ~ShaderProgram();
 
-    void resize(const std::string& vertex_src, const std::string& fragment_src) noexcept;
+    void resize(const std::string& vertex_src, const std::string& fragment_src);
 
-    void use() noexcept;
-    static void unuse() noexcept;
+    void use();
+    static void unuse();
 
-    [[nodiscard]] uint32_t getID() const noexcept;
+    [[nodiscard]] uint32_t getID() const;
 
-    void setI32(const std::string& name, int32_t value) noexcept;
-    void setFloat(const std::string& name, float value) noexcept;
-    void setBool(const std::string& name, bool value) noexcept;
-    void setMat4(const std::string& name, const Matrix4& matrix) noexcept;
-    void setVec3(const std::string& name, Vector3f vec) noexcept;
-    void setVec4(const std::string& name, Color color) noexcept;
+    void setI32(const std::string& name, int32_t value);
+    void setFloat(const std::string& name, float value);
+    void setBool(const std::string& name, bool value);
+    void setMat4(const std::string& name, const Matrix4& matrix);
+    void setVec3(const std::string& name, Vector3f vec);
+    void setVec4(const std::string& name, Color color);
 
-    void destroy() noexcept;
+    void destroy();
 
     ShaderProgram(const ShaderProgram&)            = delete;
     ShaderProgram& operator=(const ShaderProgram&) = delete;
@@ -42,7 +42,7 @@ public:
 private:
     static ShaderProgram* program_in_use;
 
-    int32_t getLocation(const std::string& name) noexcept;
+    int32_t getLocation(const std::string& name);
 
     uint32_t m_id = 0;
 
@@ -52,9 +52,9 @@ private:
 class DefaultShaderProgram : public ShaderProgram
 {
 public:
-    explicit DefaultShaderProgram() noexcept;
+    explicit DefaultShaderProgram();
 
-    [[nodiscard]] static DefaultShaderProgram& instance() noexcept;
+    [[nodiscard]] static DefaultShaderProgram& instance();
 
     DefaultShaderProgram(const DefaultShaderProgram&)            = delete;
     DefaultShaderProgram& operator=(const DefaultShaderProgram&) = delete;
@@ -63,9 +63,9 @@ public:
 class TextShaderProgram : public ShaderProgram
 {
 public:
-    explicit TextShaderProgram() noexcept;
+    explicit TextShaderProgram();
 
-    [[nodiscard]] static TextShaderProgram& instance() noexcept;
+    [[nodiscard]] static TextShaderProgram& instance();
 
     TextShaderProgram(const TextShaderProgram&)            = delete;
     TextShaderProgram& operator=(const TextShaderProgram&) = delete;

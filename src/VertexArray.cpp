@@ -8,7 +8,7 @@
 
 VertexArray* VertexArray::vao_in_bind = nullptr;
 
-VertexArray::VertexArray(const size_t size, const VertexBuffer::Usage usage) noexcept :
+VertexArray::VertexArray(const size_t size, const VertexBuffer::Usage usage) :
 m_vertices(size),
 m_id{0},
 m_vbo{size, usage}
@@ -16,12 +16,12 @@ m_vbo{size, usage}
     create();
 }
 
-VertexArray::~VertexArray() noexcept
+VertexArray::~VertexArray()
 {
     destroy();
 }
 
-VertexArray::VertexArray(VertexArray&& other) noexcept : 
+VertexArray::VertexArray(VertexArray&& other) noexcept :
 m_vbo{std::move(other.m_vbo)}
 {
     operator=(std::move(other));
@@ -37,7 +37,7 @@ VertexArray& VertexArray::operator=(VertexArray&& other) noexcept
     return *this;
 }
 
-void VertexArray::destroy() noexcept
+void VertexArray::destroy()
 {
     if (isCreated())
     {
@@ -47,7 +47,7 @@ void VertexArray::destroy() noexcept
     m_vbo.destroy();
 }
 
-void VertexArray::update() noexcept
+void VertexArray::update()
 {
     if (m_vertices.size() > m_vbo.size())
     {
@@ -59,7 +59,7 @@ void VertexArray::update() noexcept
 void VertexArray::draw(const PrimitiveType primitive_type,
                        const Matrix4&      model_mat,
                        const float         color_alpha,
-                       Texture* texture) noexcept
+                       Texture* texture)
 {
     auto& program = DefaultShaderProgram::instance();
 
@@ -79,7 +79,7 @@ void VertexArray::drawIndices(const int32_t size,
                               const PrimitiveType primitive_type, 
                               const Matrix4& model_mat, 
                               const float color_alpha, 
-                              Texture* texture) noexcept
+                              Texture* texture)
 {
     auto& program = DefaultShaderProgram::instance();
 
@@ -95,7 +95,7 @@ void VertexArray::drawIndices(const int32_t size,
     VertexArray::unbind();
 }
 
-void VertexArray::setElementBuffer(ElementBuffer& ebo) noexcept
+void VertexArray::setElementBuffer(ElementBuffer& ebo)
 {
     VertexArray::bind(this);
     ElementBuffer::bind(&ebo);
@@ -103,13 +103,13 @@ void VertexArray::setElementBuffer(ElementBuffer& ebo) noexcept
     ElementBuffer::unbind();
 }
 
-void VertexArray::resize(const size_t size) noexcept
+void VertexArray::resize(const size_t size)
 {
     m_vertices.resize(size);
     m_vbo.resize(size);
 }
 
-void VertexArray::bind(VertexArray* vao) noexcept
+void VertexArray::bind(VertexArray* vao)
 {
     if (vao_in_bind != vao)
     {
@@ -118,7 +118,7 @@ void VertexArray::bind(VertexArray* vao) noexcept
     }
 }
 
-void VertexArray::unbind() noexcept
+void VertexArray::unbind()
 {
     if (vao_in_bind != nullptr)
     {

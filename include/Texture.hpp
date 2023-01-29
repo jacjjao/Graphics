@@ -11,7 +11,7 @@
 class TexConstructParams
 {
 public:
-    TexConstructParams() noexcept;
+    TexConstructParams();
 
     enum class Wrapping : uint32_t
     {
@@ -46,33 +46,33 @@ public:
 class Texture
 {
 public:
-    static void Init() noexcept;
+    static void Init();
 
     Texture() = default;
-    explicit Texture(const std::filesystem::path& path, const TexConstructParams& parameters = {}) noexcept;
-    explicit Texture(const void* data, int32_t width, int32_t height, const TexConstructParams& parameters = {}) noexcept;
-    ~Texture() noexcept;
+    explicit Texture(const std::filesystem::path& path, const TexConstructParams& parameters = {});
+    explicit Texture(const void* data, int32_t width, int32_t height, const TexConstructParams& parameters = {});
+    ~Texture();
 
     Texture(const Texture&)            = delete;
     Texture& operator=(const Texture&) = delete;
 
-    Texture(Texture&& other) noexcept;
-    Texture& operator=(Texture&& other) noexcept;
+    Texture(Texture&& other);
+    Texture& operator=(Texture&& other);
 
-    void destroy() noexcept;
+    void destroy();
 
-    [[nodiscard]] Vector2f getSize() const noexcept;
+    [[nodiscard]] Vector2f getSize() const;
 
-    [[nodiscard]] float getWidth() const noexcept;
-    [[nodiscard]] float getHeight() const noexcept;
+    [[nodiscard]] float getWidth() const;
+    [[nodiscard]] float getHeight() const;
 
-    [[nodiscard]] size_t getUnit() const noexcept;
+    [[nodiscard]] size_t getUnit() const;
 
-    static void bind(Texture* texture, size_t unit_index = 0) noexcept;
-    static void unbind(size_t unit_index = 0) noexcept;
+    static void bind(Texture* texture, size_t unit_index = 0);
+    static void unbind(size_t unit_index = 0);
 
-    void createFromImage(const std::filesystem::path& path, const TexConstructParams& parameters = {}) noexcept;
-    void createFromData(const void* data, int32_t width, int32_t height, const TexConstructParams& parameters = {}) noexcept;
+    void createFromImage(const std::filesystem::path& path, const TexConstructParams& parameters = {});
+    void createFromData(const void* data, int32_t width, int32_t height, const TexConstructParams& parameters = {});
 
 private:
     static std::array<Texture*, 32> textures_in_bind;

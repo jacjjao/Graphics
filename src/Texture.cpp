@@ -6,7 +6,7 @@
 #include <stb_image.h>
 #include <glad/glad.h>
 
-TexConstructParams::TexConstructParams() noexcept :
+TexConstructParams::TexConstructParams() :
 wrap_s{Wrapping::Repeat},
 wrap_t{Wrapping::Repeat},
 min_filter{Filtering::Linear},
@@ -18,7 +18,7 @@ use_mipmap{false}
 
 std::array<Texture*, 32> Texture::textures_in_bind{};
 
-void Texture::Init() noexcept
+void Texture::Init()
 {
     auto& program = DefaultShaderProgram::instance();
     program.use();
@@ -40,24 +40,24 @@ void Texture::Init() noexcept
     program.unuse();
 }
 
-Texture::Texture(const std::filesystem::path& path, const TexConstructParams& parameters) noexcept : m_id{0}, m_size{}
+Texture::Texture(const std::filesystem::path& path, const TexConstructParams& parameters) : m_id{0}, m_size{}
 {
     createFromImage(path);
 }
 
-Texture::Texture(const void* data, int32_t width, int32_t height, const TexConstructParams& parameters) noexcept :
+Texture::Texture(const void* data, int32_t width, int32_t height, const TexConstructParams& parameters) :
 m_id{0},
 m_size{}
 {
     createFromData(data, width, height, parameters);
 }
 
-Texture::~Texture() noexcept
+Texture::~Texture()
 {
     destroy();
 }
 
-void Texture::createFromImage(const std::filesystem::path& path, const TexConstructParams& parameters) noexcept
+void Texture::createFromImage(const std::filesystem::path& path, const TexConstructParams& parameters)
 {
     // load image
     int width      = 0;
@@ -78,7 +78,7 @@ void Texture::createFromImage(const std::filesystem::path& path, const TexConstr
     stbi_image_free(data);
 }
 
-void Texture::createFromData(const void* data, const int32_t width, const int32_t height, const TexConstructParams& parameters) noexcept
+void Texture::createFromData(const void* data, const int32_t width, const int32_t height, const TexConstructParams& parameters)
 {
     // create texture
     glCheck(glGenTextures(1, &m_id));
@@ -110,12 +110,12 @@ void Texture::createFromData(const void* data, const int32_t width, const int32_
     unbind();
 }
 
-Texture::Texture(Texture&& other) noexcept : m_id{other.m_id}, m_size{other.m_size}
+Texture::Texture(Texture&& other) : m_id{other.m_id}, m_size{other.m_size}
 {
     other.m_id = 0;
 }
 
-Texture& Texture::operator=(Texture&& other) noexcept
+Texture& Texture::operator=(Texture&& other)
 {
     m_id = other.m_id;
     m_size = other.m_size;
@@ -125,7 +125,7 @@ Texture& Texture::operator=(Texture&& other) noexcept
     return *this;
 }
 
-void Texture::destroy() noexcept
+void Texture::destroy()
 {
     if (m_id != 0)
     {
@@ -134,27 +134,27 @@ void Texture::destroy() noexcept
     }
 }
 
-Vector2f Texture::getSize() const noexcept
+Vector2f Texture::getSize() const
 {
     return m_size;
 }
 
-float Texture::getWidth() const noexcept
+float Texture::getWidth() const
 {
     return m_size.x;
 }
 
-float Texture::getHeight() const noexcept
+float Texture::getHeight() const
 {
     return m_size.y;
 }
 
-size_t Texture::getUnit() const noexcept
+size_t Texture::getUnit() const
 {
     return which_unit;
 }
 
-void Texture::bind(Texture* texture, const size_t unit_index) noexcept
+void Texture::bind(Texture* texture, const size_t unit_index)
 {
     if (textures_in_bind[unit_index] != texture)
     {
@@ -165,7 +165,7 @@ void Texture::bind(Texture* texture, const size_t unit_index) noexcept
     }
 }
 
-void Texture::unbind(const size_t unit_index) noexcept
+void Texture::unbind(const size_t unit_index)
 {
     if (textures_in_bind[unit_index] != nullptr)
     {

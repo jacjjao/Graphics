@@ -6,15 +6,15 @@ template <typename T>
 class Vector2
 {
 public:
-    constexpr Vector2(T val = static_cast<T>(0)) noexcept : x{val}, y{val}
+    constexpr Vector2(T val = static_cast<T>(0)) : x{val}, y{val}
     {
     }
 
-    constexpr Vector2(T x, T y) noexcept : x{x}, y{y}
+    constexpr Vector2(T x, T y) : x{x}, y{y}
     {
     }
 
-    constexpr Vector2<T>& operator+=(const Vector2<T>& other) noexcept
+    constexpr Vector2<T>& operator+=(const Vector2<T>& other)
     {
         x += other.x;
         y += other.y;
@@ -22,32 +22,32 @@ public:
         return *this;
     }
 
-    constexpr Vector2<T> operator+(const Vector2<T>& other) const noexcept
+    constexpr Vector2<T> operator+(const Vector2<T>& other) const
     {
         return {this->x + other.x, this->y + other.y};
     }
 
-    constexpr Vector2<T> operator-() const noexcept
+    constexpr Vector2<T> operator-() const
     {
         return {-x, -y};
     }
 
-    constexpr Vector2<T> operator*(const Vector2<T>& other) const noexcept
+    constexpr Vector2<T> operator*(const Vector2<T>& other) const
     {
         return {x * other.x, y * other.y};
     }
 
-    constexpr Vector2<T> operator/(const T& factor) const noexcept
+    constexpr Vector2<T> operator/(const T& factor) const
     {
         return {x / factor, y / factor};
     }
 
-    [[nodiscard]] T length() const noexcept
+    [[nodiscard]] T length() const
     {
         return std::sqrt(x * x + y * y);
     }
 
-    [[nodiscard]] Vector2<T> normalize() const noexcept
+    [[nodiscard]] Vector2<T> normalize() const
     {
         const auto len = length();
 
@@ -63,19 +63,19 @@ template <typename T>
 class Vector3
 {
 public:
-    constexpr Vector3(T val = static_cast<T>(0)) noexcept : x{val}, y{val}, z{val}
+    constexpr Vector3(T val = static_cast<T>(0)) : x{val}, y{val}, z{val}
     {
     }
 
-    constexpr Vector3(T x, T y, T z) noexcept : x{x}, y{y}, z{z}
+    constexpr Vector3(T x, T y, T z) : x{x}, y{y}, z{z}
     {
     }
 
-    explicit constexpr Vector3(const Vector2<T>& vector) noexcept : x{vector.x}, y{vector.y}, z{static_cast<T>(0)}
+    explicit constexpr Vector3(const Vector2<T>& vector) : x{vector.x}, y{vector.y}, z{static_cast<T>(0)}
     {
     }
 
-    constexpr Vector3<T>& operator=(const Vector2<T>& other) noexcept
+    constexpr Vector3<T>& operator=(const Vector2<T>& other)
     {
         x = other.x;
         y = other.y;
@@ -84,7 +84,7 @@ public:
         return *this;
     }
 
-    constexpr Vector3<T>& operator+=(const Vector3<T>& other) noexcept
+    constexpr Vector3<T>& operator+=(const Vector3<T>& other)
     {
         x += other.x;
         y += other.y;
@@ -93,7 +93,7 @@ public:
         return *this;
     }
 
-    constexpr Vector3<T> operator+(const Vector3<T>& other) const noexcept
+    constexpr Vector3<T> operator+(const Vector3<T>& other) const
     {
         Vector3<T> result{};
 
@@ -104,7 +104,7 @@ public:
         return result;
     }
 
-    constexpr Vector3<T> operator-(const Vector3<T>& other) const noexcept
+    constexpr Vector3<T> operator-(const Vector3<T>& other) const
     {
         Vector3<T> result{};
 
@@ -115,17 +115,17 @@ public:
         return result;
     }
 
-    constexpr Vector3<T> operator-() const noexcept
+    constexpr Vector3<T> operator-() const
     {
         return Vector3<T>{-x, -y, -z};
     }
 
-    [[nodiscard]] T length() const noexcept
+    [[nodiscard]] T length() const
     {
         return std::sqrt(x * x + y * y + z * z);
     }
 
-    [[nodiscard]] Vector3<T> normalize() const noexcept
+    [[nodiscard]] Vector3<T> normalize() const
     {
         const auto len = length();
 
@@ -138,7 +138,7 @@ public:
 using Vector3f = Vector3<float>;
 
 template <typename T>
-constexpr Vector3<T> cross(const Vector3<T>& lhs, const Vector3<T>& rhs) noexcept
+constexpr Vector3<T> cross(const Vector3<T>& lhs, const Vector3<T>& rhs)
 {
     Vector3<T> result{};
 
@@ -150,7 +150,7 @@ constexpr Vector3<T> cross(const Vector3<T>& lhs, const Vector3<T>& rhs) noexcep
 }
 
 template<typename T>
-constexpr Vector3<T> dot(const Vector3<T>& lhs, const Vector3<T>& rhs) noexcept 
+constexpr Vector3<T> dot(const Vector3<T>& lhs, const Vector3<T>& rhs) 
 {
     return {lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z};
 }

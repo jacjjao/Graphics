@@ -16,18 +16,18 @@ m_color{Color::White}
     m_vao[0].color = m_vao[1].color = m_color;
 }
 
-void Line::setLineWidth(const float line_width) noexcept
+void Line::setLineWidth(const float line_width)
 {
     m_line_width = line_width;
 }
 
-void Line::setColor(const Color color) noexcept
+void Line::setColor(const Color color)
 {
     m_color        = color;
     m_vao[0].color = m_vao[1].color = m_color;
 }
 
-void Line::draw() noexcept
+void Line::draw()
 {
     glCheck(glLineWidth(m_line_width));
     m_vao.draw(PrimitiveType::Lines);

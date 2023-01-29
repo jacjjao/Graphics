@@ -8,7 +8,7 @@
 class Shape : public Transformable
 {
 public:
-    explicit Shape(size_t size) noexcept;
+    explicit Shape(size_t size);
     virtual ~Shape() = default;
 
     Shape(const Shape&)            = delete;
@@ -16,19 +16,19 @@ public:
 
     virtual void update() = 0;
 
-    void applyTexture(Texture* texture) noexcept;
+    void applyTexture(Texture* texture);
 
-    [[nodiscard]] bool hasTexture() const noexcept;
+    [[nodiscard]] bool hasTexture() const;
 
-    void setColor(Color color) noexcept;
+    void setColor(Color color);
 
-    [[nodiscard]] Color getColor() const noexcept;
+    [[nodiscard]] Color getColor() const;
 
-    void setTextureRect(Rect rect) noexcept;
+    void setTextureRect(Rect rect);
 
-    [[nodiscard]] Rect getTextureRect() const noexcept;
+    [[nodiscard]] Rect getTextureRect() const;
 
-    bool isCreated() const noexcept;
+    bool isCreated() const;
 
 protected:
     VertexArray m_vao;

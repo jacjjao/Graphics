@@ -7,58 +7,50 @@ set(
 	CMAKE_CXX_EXTENSIONS NO
 )
 
-add_executable(${PROJECT_NAME}  
-	"src/glCheck.cpp"
-	"src/ShaderProgram.cpp"
-	"src/VertexArray.cpp"
-	"src/VertexBuffer.cpp"
-	"src/Rectangle2D.cpp"
-	"src/Clock.cpp"
-	"src/ElementBuffer.cpp"
-	"src/FileSystem.cpp"
-	"src/Circle2D.cpp"
-	"src/Shape.cpp"
-	"src/Transformable.cpp"
-	"src/Texture.cpp"
-	"src/Camera.cpp"
-	"src/Line.cpp"
-	"src/Color.cpp"
-	"src/TextRenderer.cpp"
-	"src/Math.cpp"
-	"src/Renderer.cpp"
-	"demo/main.cpp"
-	#"demo/mario/main.cpp"
-)
-
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	add_compile_definitions(DEBUG=1)
-else()
-	add_compile_definitions(DEBUG=0)
 endif()
 
 set(ROOT_DIR "${CMAKE_SOURCE_DIR}")
 configure_file("${PROJECT_SOURCE_DIR}/configuration/root_directory.h.in" 
 			   "${PROJECT_SOURCE_DIR}/configuration/root_directory.h")
 
+file (GLOB_RECURSE LibFiles "src/*.cpp")
+
 add_library(glad "dependencies/glad/src/glad.c")
 
 find_package(glfw3 CONFIG REQUIRED)
 
+add_library(MyGraphicsLib 
+STATIC 
+	${LibFiles}
+)
+
+add_executable(${PROJECT_NAME}  
+	"demo/main.cpp"
+)
+
 target_precompile_headers(${PROJECT_NAME} 
-	PRIVATE
-		"include/pch.hpp"
+PRIVATE
+	"include/pch.hpp"
 )
 
 target_link_libraries(${PROJECT_NAME} 
-	PRIVATE
-		glfw
-		glad
-		${CMAKE_SOURCE_DIR}/dependencies/freetype/freetype.lib
+PUBLIC 
+	MyGraphicsLib
+	glfw
+	glad
+	${CMAKE_SOURCE_DIR}/dependencies/freetype/freetype.lib
+)
+
+target_include_directories(MyGraphicsLib
+PRIVATE
+	"dependencies/glad/include"
+	"dependencies/stb_image"
+	"dependencies/freetype/include"
 )
 
 target_include_directories(${PROJECT_NAME}
-	PRIVATE
-		"dependencies/glad/include"
-		"dependencies/stb_image"
-		"dependencies/freetype/include"
+PRIVATE
+	"dependencies/glad/include"
 )

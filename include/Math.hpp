@@ -2,7 +2,7 @@
 
 #include "Matrix.hpp"
 
-float radians(float degrees) noexcept;
+float radians(float degrees);
 
 Matrix4 ortho(
 	float left,
@@ -10,4 +10,4 @@ Matrix4 ortho(
 	float bottom, 
 	float top, 
 	float zNear, 
-	float zFar) noexcept;
+	float zFar);

@@ -3,41 +3,39 @@
 #include "../include/Math.hpp"
 
 
-Transformable::Transformable() noexcept :
-should_update{false},
-m_theta{0.0F},
-m_scale{1.0F, 1.0F},
-m_position{0.0F, 0.0F, 0.0F},
+Transformable::Transformable() :
+m_scale{1.0F},
+m_position{0.0F},
 m_model{Matrix4::makeIdentity()}
 {
 }
 
-void Transformable::translate(const Vector3f vector) noexcept
+void Transformable::translate(const Vector3f vector)
 {
     m_position += vector;
     should_update = true;
 }
 
-void Transformable::scale(const Vector2f factor) noexcept
+void Transformable::scale(const Vector2f factor)
 {
-    m_scale        = factor;
+    m_scale       = factor;
     should_update = true;
 }
 
-void Transformable::rotate(const float degree) noexcept
+void Transformable::rotate(const float degree)
 {
     m_theta += degree;
     should_update = true;
 }
 
-const Matrix4& Transformable::getTransformMatrix() noexcept
+const Matrix4& Transformable::getTransformMatrix()
 {
     if (should_update)
     {
-        const auto theta = radians(m_theta);
-        const auto sine  = std::sin(theta);
-        const auto cosine  = std::cos(theta);
-        const auto [x, y, _]  = m_position;
+        const auto theta     = radians(m_theta);
+        const auto sine      = std::sin(theta);
+        const auto cosine    = std::cos(theta);
+        const auto [x, y, _] = m_position;
 
         m_model[0][0] = m_scale.x * cosine;
         m_model[0][1] = -m_scale.y * sine;
@@ -53,13 +51,13 @@ const Matrix4& Transformable::getTransformMatrix() noexcept
     return m_model;
 }
 
-void Transformable::setPosition(const Vector3f position) noexcept
+void Transformable::setPosition(const Vector3f position)
 {
     m_position = position;
     should_update = true;
 }
 
-Vector3f Transformable::getPosition() const noexcept
+Vector3f Transformable::getPosition() const
 {
     return m_position;
 }

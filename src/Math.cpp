@@ -1,7 +1,7 @@
 #include "../include/pch.hpp"
 #include "../include/Math.hpp"
 
-float radians(const float degrees) noexcept
+float radians(const float degrees)
 {
     return degrees * static_cast<float>(0.01745329251994329576923690768489); // copy from glm::radians
 }
@@ -12,7 +12,7 @@ Matrix4 ortho(
     const float bottom, 
     const float top, 
     const float zNear, 
-    const float zFar) noexcept
+    const float zFar)
 {
     // stolen from glm::ortho
     auto result = Matrix4::makeIdentity();

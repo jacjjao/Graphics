@@ -11,11 +11,10 @@ size_t Renderer2D::quad_count = 0;
 
 void Renderer2D::Init()
 {
-    detail::QuadData data{
+    quad_data = std::make_unique<detail::QuadData>(detail::QuadData{
         VertexArray{max_vertices_num, VertexBuffer::Usage::StreamDraw},
         ElementBuffer{max_quad_num * 6}
-    };
-    quad_data = std::make_unique<detail::QuadData>(std::move(data));
+    });
 
     std::vector<uint32_t> indices(max_quad_num * 6);
     uint32_t              offset = 0;

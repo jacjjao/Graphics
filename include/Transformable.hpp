@@ -6,22 +6,23 @@
 class Transformable
 {
 public:
-    Transformable() noexcept;
-    virtual ~Transformable() noexcept = default;
+    Transformable();
+    virtual ~Transformable() = default;
 
-    void translate(Vector3f vector) noexcept;
-    void scale(Vector2f factor) noexcept;
-    void rotate(float degree) noexcept;
+    void translate(Vector3f vector);
+    void scale(Vector2f factor);
+    void rotate(float degree);
 
-    const Matrix4& getTransformMatrix() noexcept;
+    const Matrix4& getTransformMatrix();
 
-    void setPosition(Vector3f position) noexcept;
+    void setPosition(Vector3f position);
 
-    [[nodiscard]] Vector3f getPosition() const noexcept;
+    [[nodiscard]] Vector3f getPosition() const;
 
 private:
-    bool     should_update;
-    float    m_theta;
+    bool should_update = false;
+    float m_theta = 0.0F;
+
     Vector2f m_scale;
 
     Vector3f m_position;

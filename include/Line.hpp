@@ -7,10 +7,10 @@ class Line
 public:
     Line(Vector2f start_position, Vector2f end_position);
 
-    void setLineWidth(float line_width) noexcept;
-    void setColor(Color color) noexcept;
+    void setLineWidth(float line_width);
+    void setColor(Color color);
 
-    void draw() noexcept;
+    void draw();
 
     Line(const Line&)            = delete;
     Line& operator=(const Line&) = delete;

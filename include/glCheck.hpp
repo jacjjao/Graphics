@@ -11,4 +11,4 @@
 #define glCheck(expr) expr
 #endif
 
-void glCheckError(const char* file, unsigned line, const char* function) noexcept;
+void glCheckError(const char* file, unsigned line, const char* function);

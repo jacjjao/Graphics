@@ -10,7 +10,7 @@ Camera::Camera(
     const float top, 
     const float zNear, 
     const float zFar
-) noexcept :
+) :
 m_view{Matrix4::makeIdentity()},
 should_update{true},
 dtheta{0.0F},
@@ -20,13 +20,13 @@ m_position{0.0F}
     m_proj = ortho(left, right, bottom, top, zNear, zFar);
 }
 
-void Camera::use() noexcept
+void Camera::use()
 {
     DefaultShaderProgram::instance().setMat4("view", getViewMatrix());
     DefaultShaderProgram::instance().setMat4("proj", getProjMatrix());
 }
 
-void Camera::move(const Vector3f vector) noexcept
+void Camera::move(const Vector3f vector)
 { 
     const auto theta = radians(-dtheta);
     const auto ccos  = std::cos(theta);
@@ -41,25 +41,25 @@ void Camera::move(const Vector3f vector) noexcept
     should_update = true;
 }
 
-void Camera::moveTo(const Vector3f position) noexcept
+void Camera::moveTo(const Vector3f position)
 {
     m_position    = position;
     should_update = true;
 }
 
-void Camera::rotate(const float degree) noexcept
+void Camera::rotate(const float degree)
 {
     dtheta += degree;
     should_update = true;
 }
 
-void Camera::scale(const Vector2f scale) noexcept
+void Camera::scale(const Vector2f scale)
 {
     dscale        = scale;
     should_update = true;
 }
 
-void Camera::update() noexcept
+void Camera::update()
 {
     const auto [x, y, _] = m_position;
     const auto theta     = radians(dtheta);
@@ -78,12 +78,12 @@ void Camera::update() noexcept
     should_update = false;
 }
 
-Vector3f Camera::getPosition() const noexcept
+Vector3f Camera::getPosition() const
 {
     return m_position;
 }
 
-const Matrix4& Camera::getViewMatrix() noexcept
+const Matrix4& Camera::getViewMatrix()
 {
     if (should_update)
     {
@@ -92,7 +92,7 @@ const Matrix4& Camera::getViewMatrix() noexcept
     return m_view;
 }
 
-const Matrix4& Camera::getProjMatrix() const noexcept
+const Matrix4& Camera::getProjMatrix() const
 {
     return m_proj;
 }
