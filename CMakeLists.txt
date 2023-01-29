@@ -19,12 +19,13 @@ file (GLOB_RECURSE LibFiles "src/*.cpp")
 
 add_library(glad "dependencies/glad/src/glad.c")
 
-find_package(glfw3 CONFIG REQUIRED)
-
 add_library(MyGraphicsLib 
 STATIC 
 	${LibFiles}
 )
+
+add_subdirectory("submodules/freetype")
+add_subdirectory("submodules/glfw")
 
 add_executable(${PROJECT_NAME}  
 	"demo/main.cpp"
@@ -40,14 +41,15 @@ PUBLIC
 	MyGraphicsLib
 	glfw
 	glad
-	${CMAKE_SOURCE_DIR}/dependencies/freetype/freetype.lib
+	freetype
 )
 
 target_include_directories(MyGraphicsLib
 PRIVATE
+	glfw
 	"dependencies/glad/include"
 	"dependencies/stb_image"
-	"dependencies/freetype/include"
+	"submodules/freetype/include"
 )
 
 target_include_directories(${PROJECT_NAME}
