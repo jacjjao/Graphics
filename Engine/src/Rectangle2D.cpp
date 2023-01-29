@@ -1,4 +1,4 @@
-#include "../include/pch.hpp"
+#include "pch.hpp"
 #include "../include/Rectangle2D.hpp"
 #include "../include/ShaderProgram.hpp"
 

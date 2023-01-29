@@ -7,52 +7,19 @@ set(
 	CMAKE_CXX_EXTENSIONS NO
 )
 
+set(CMAKE_VERBOSE_MAKEFILE ON)
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-	add_compile_definitions(DEBUG=1)
+	add_compile_definitions(EG_DEBUG)
 endif()
 
-set(ROOT_DIR "${CMAKE_SOURCE_DIR}")
-configure_file("${PROJECT_SOURCE_DIR}/configuration/root_directory.h.in" 
-			   "${PROJECT_SOURCE_DIR}/configuration/root_directory.h")
-
-file (GLOB_RECURSE LibFiles "src/*.cpp")
-
-add_library(glad "dependencies/glad/src/glad.c")
-
-add_library(MyGraphicsLib 
-STATIC 
-	${LibFiles}
-)
-
-add_subdirectory("submodules/freetype")
-add_subdirectory("submodules/glfw")
+add_subdirectory("Engine")
 
 add_executable(${PROJECT_NAME}  
-	"demo/main.cpp"
-)
-
-target_precompile_headers(${PROJECT_NAME} 
-PRIVATE
-	"include/pch.hpp"
+	"Sandbox/main.cpp"
 )
 
 target_link_libraries(${PROJECT_NAME} 
-PUBLIC 
+PRIVATE 
 	MyGraphicsLib
-	glfw
-	glad
-	freetype
-)
-
-target_include_directories(MyGraphicsLib
-PRIVATE
-	glfw
-	"dependencies/glad/include"
-	"dependencies/stb_image"
-	"submodules/freetype/include"
-)
-
-target_include_directories(${PROJECT_NAME}
-PRIVATE
-	"dependencies/glad/include"
 )

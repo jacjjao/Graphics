@@ -1,5 +1,5 @@
-#include "../include/pch.hpp"
-#include "../include/Graphics.hpp"
+#include "Graphics.hpp"
+#include "include/Log.hpp"
 
 // third party
 #include <glad/glad.h>
@@ -52,6 +52,7 @@ constexpr Vector3f screenPointToNDC(const Vector3f point) noexcept
 
 int main()
 {
+    
     if (!glfwInit())
     {
         std::cerr << "Failed to initialized GLFW\n";
@@ -60,11 +61,11 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    /*
-#if(DEBUG)
+    
+#ifdef EG_DEBUG
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 #endif
-    */
+    
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", nullptr, nullptr);
     if (window == nullptr)
     {
@@ -75,19 +76,21 @@ int main()
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetScrollCallback(window, scrollCallback);
-
+    glfwSwapInterval(0); // disable vsync
+    
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         std::cerr << "Failed to initialize GLAD\n";
         return -1;
     }
-    /*
-#if(DEBUG)
+    Engine::Log::Init();
+    EG_CORE_WARN("EG_CORE_ERROR\n");
+#ifdef EG_DEBUG
     glEnable(GL_DEBUG_OUTPUT);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
     glDebugMessageCallback(dbg_callback, nullptr);
 #endif
-   */ 
+   
     Texture::Init();
     Renderer2D::Init();
     TextRenderer::initialize(48, SCR_WIDTH, SCR_HEIGHT);
@@ -209,10 +212,11 @@ int main()
 
     glfwTerminate();
 
-#if(DEBUG)
+#ifdef EG_DEBUG
     std::cout << "\nThe context is free ignore the error down below\n\n";
 #endif
-
+    
+    std::cout << "Hello World\n";
     return 0;
 }
 
@@ -263,7 +267,7 @@ void processInput(GLFWwindow* window)
     }
 }
 
-void scrollCallback(GLFWwindow* window, double /* xoffset */, double yoffset)
+void scrollCallback(GLFWwindow* window, double, double yoffset)
 {
     static Vector2f scale{1.0F};
     if (yoffset > 0)
@@ -279,7 +283,7 @@ void scrollCallback(GLFWwindow* window, double /* xoffset */, double yoffset)
     camera->scale(scale);
 }
 
-void framebuffer_size_callback(GLFWwindow* /*unused*/, int width, int height)
+void framebuffer_size_callback(GLFWwindow*, int width, int height)
 {
     glViewport(0, 0, width, height);
 }

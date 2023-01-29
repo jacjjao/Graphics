@@ -1,6 +1,6 @@
 #pragma once
 
-#if (DEBUG)
+#ifdef EG_DEBUG
 #define glCheck(expr)                            \
     do                                           \
     {                                            \

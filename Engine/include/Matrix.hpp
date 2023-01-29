@@ -5,7 +5,7 @@
 #include <initializer_list>
 #include <vector>
 
-#if (DEBUG)
+#ifdef EG_DEBUG
 #define ENABLE_BOUNDS_CHECK
 #include <sstream>
 #endif

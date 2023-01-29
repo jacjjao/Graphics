@@ -1,4 +1,4 @@
-#include "../include/pch.hpp"
+#include "pch.hpp"
 #include "../include/VertexArray.hpp"
 
 #include "../include/ShaderProgram.hpp"
