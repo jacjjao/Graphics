@@ -1,9 +1,0 @@
-[submodule "submodules/freetype"]
-	path = Engine/submodules/freetype
-	url = https://gitlab.freedesktop.org/freetype/freetype.git
-[submodule "submodules/glfw"]
-	path = Engine/submodules/glfw
-	url = https://github.com/glfw/glfw.git
-[submodule "submodules/spdlog"]
-	path = Engine/submodules/spdlog
-	url = https://github.com/gabime/spdlog.git
