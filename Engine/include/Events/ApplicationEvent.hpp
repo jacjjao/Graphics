@@ -14,17 +14,17 @@ namespace Engine
 		{
 		}
 
-		[[nodiscard]] unsigned GetWidth() const noexcept
+		[[nodiscard]] unsigned getWidth() const noexcept
 		{
 			return m_Width;
 		}
 
-		[[nodiscard]] unsigned GetHeight() const noexcept
+		[[nodiscard]] unsigned getHeight() const noexcept
 		{
 			return m_Height;
 		}
 
-		[[nodiscard]] std::string ToString() const override
+		[[nodiscard]] std::string toString() const override
 		{
 			std::stringstream ss{};
 			ss << "WindowResizeEvent: " << m_Width << ", " << m_Height;

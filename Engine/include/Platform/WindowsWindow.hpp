@@ -13,31 +13,31 @@ namespace Engine
 		explicit WindowsWindow(const WindowProps& props);
 		~WindowsWindow() override;
 
-		void OnUpdate() override;
+		void onUpdate() override;
 
-		[[nodiscard]] unsigned GetWidth() const override { return m_Data.Width; }
-		[[nodiscard]] unsigned GetHeight() const override { return m_Data.Height; }
+		[[nodiscard]] unsigned getWidth() const override { return m_data.width; }
+		[[nodiscard]] unsigned getHeight() const override { return m_data.height; }
 
-		void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallBack = callback; }
-		void SetVSync(bool enabled) override;
-		[[nodiscard]] bool IsVSync() const override;
+		void setEventCallback(const EventCallbackFn& callback) override { m_data.eventCallBack = callback; }
+		void setVSync(bool enabled) override;
+		[[nodiscard]] bool isVSync() const override;
 
 	private:
-		virtual void Init(const WindowProps& props);
-		virtual void Shutdown();
+		virtual void init(const WindowProps& props);
+		virtual void shutdown();
 
-		GLFWwindow* m_Window;
+		GLFWwindow* m_window;
 
 		struct WindowData
 		{
-			std::string Title;
-			unsigned Width, Height;
-			bool VSync;
+			std::string title;
+			unsigned width, height;
+			bool vSync;
 
-			EventCallbackFn EventCallBack;
+			EventCallbackFn eventCallBack;
 		};
 
-		WindowData m_Data;
+		WindowData m_data;
 	};
 
 }

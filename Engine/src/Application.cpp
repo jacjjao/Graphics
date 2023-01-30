@@ -1,6 +1,5 @@
 #include "include/Application.hpp"
 #include "include/Log.hpp"
-#include "include/Platform/WindowsWindow.hpp"
 #include <glad/glad.h>
 
 namespace Engine
@@ -18,26 +17,26 @@ namespace Engine
 			glClearColor(1, 0, 1, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			m_window->OnUpdate();
+			m_window->onUpdate();
 		}
 	}
 
 	Application::Application()
 	{
-		m_window = std::make_unique<Engine::WindowsWindow>(Engine::WindowProps{});
-		m_window->SetEventCallback([this](Engine::Event& e) {
+		m_window = Window::create();
+		m_window->setEventCallback([this](Engine::Event& e) {
 			onEvent(e);
 		});
 	}
 
 	void Application::onEvent(Engine::Event& e)
 	{
-		Engine::EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<Engine::WindowCloseEvent>([this](Engine::WindowCloseEvent& e) {
+		EventDispatcher dispatcher(e);
+		dispatcher.dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) {
 			return onWindowClosed(e);
 		});
 
-		//EG_CORE_TRACE("{}", e.ToString());
+		EG_CORE_TRACE("{}", e.toString());
 	}
 
 	bool Application::onWindowClosed(Engine::WindowCloseEvent& e)

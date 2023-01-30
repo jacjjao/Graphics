@@ -8,36 +8,36 @@ namespace Engine
 	class KeyEvent : public Event
 	{
 	public:
-		[[nodiscard]] int GetKeyCode() const { return m_int; }
+		[[nodiscard]] int GetKeyCode() const { return m_keycode; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 	protected:
 		explicit KeyEvent(const int keycode) :
-		m_int(keycode)
+			m_keycode(keycode)
 		{
 		}
 
-		int m_int;
+		int m_keycode;
 	};
 
 	class KeyPressedEvent : public KeyEvent
 	{
 	public:
 		explicit KeyPressedEvent(const int keycode, bool isRepeat = false)
-			: KeyEvent(keycode), m_IsRepeat(isRepeat) {}
+			: KeyEvent(keycode), m_isRepeat(isRepeat) {}
 
-		[[nodiscard]] bool IsRepeat() const { return m_IsRepeat; }
+		[[nodiscard]] bool isRepeat() const { return m_isRepeat; }
 
-		[[nodiscard]] std::string ToString() const override
+		[[nodiscard]] std::string toString() const override
 		{
-			std::stringstream ss;
-			ss << "KeyPressedEvent: " << m_int << " (repeat = " << m_IsRepeat << ")";
+			std::stringstream ss{};
+			ss << "KeyPressedEvent: " << m_keycode << " (repeat = " << m_isRepeat << ")";
 			return ss.str();
 		}
 
 		EVENT_CLASS_TYPE(KeyPressed)
 	private:
-		bool m_IsRepeat;
+		bool m_isRepeat;
 	};
 
 	class KeyReleasedEvent : public KeyEvent
@@ -46,10 +46,10 @@ namespace Engine
 		explicit KeyReleasedEvent(const int keycode)
 			: KeyEvent(keycode) {}
 
-		[[nodiscard]] std::string ToString() const override
+		[[nodiscard]] std::string toString() const override
 		{
-			std::stringstream ss;
-			ss << "KeyReleasedEvent: " << m_int;
+			std::stringstream ss{};
+			ss << "KeyReleasedEvent: " << m_keycode;
 			return ss.str();
 		}
 
@@ -62,10 +62,10 @@ namespace Engine
 		explicit KeyTypedEvent(const int keycode)
 			: KeyEvent(keycode) {}
 
-		[[nodiscard]] std::string ToString() const override
+		[[nodiscard]] std::string toString() const override
 		{
-			std::stringstream ss;
-			ss << "KeyTypedEvent: " << m_int;
+			std::stringstream ss{};
+			ss << "KeyTypedEvent: " << m_keycode;
 			return ss.str();
 		}
 

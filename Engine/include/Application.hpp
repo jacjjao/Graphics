@@ -6,7 +6,6 @@
 
 namespace Engine
 {
-
 	class Application
 	{
 	public:
@@ -21,11 +20,8 @@ namespace Engine
 		explicit Application();
 		bool onWindowClosed(WindowCloseEvent& e);
 
-		static Application* s_instanced;
-
 		std::unique_ptr<Window> m_window;
 
 		bool m_running = true;
 	};
-
 } // namespace Engine

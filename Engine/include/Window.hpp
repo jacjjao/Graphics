@@ -7,19 +7,11 @@
 
 namespace Engine
 {
-	
 	struct WindowProps
 	{
-		std::string Title;
-		unsigned Width;
-		unsigned Height;
-
-		explicit WindowProps(std::string_view title = "Graphics Engine",
-							 unsigned width = 1280,
-							 unsigned height = 720)
-		: Title{ title }, Width{ width }, Height{ height }
-		{
-		}
+		std::string title = "Graphics Engine";
+		unsigned width = 1280;
+		unsigned height = 720;
 	};
 
 	class Window
@@ -34,16 +26,15 @@ namespace Engine
 
 		virtual ~Window() = default;
 
-		virtual void OnUpdate() = 0;
+		virtual void onUpdate() = 0;
 
-		[[nodiscard]] virtual unsigned GetWidth() const = 0;
-		[[nodiscard]] virtual unsigned GetHeight() const = 0;
+		[[nodiscard]] virtual unsigned getWidth() const = 0;
+		[[nodiscard]] virtual unsigned getHeight() const = 0;
 
-		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
-		virtual void SetVSync(bool enabled) = 0;
-		[[nodiscard]] virtual bool IsVSync() const = 0;
+		virtual void setEventCallback(const EventCallbackFn& callback) = 0;
+		virtual void setVSync(bool enabled) = 0;
+		[[nodiscard]] virtual bool isVSync() const = 0;
 
-		static std::unique_ptr<Window> Create(const WindowProps& props = WindowProps{});
+		static std::unique_ptr<Window> create(const WindowProps& props = WindowProps{});
 	};
-
-}
+} // namespace Engine

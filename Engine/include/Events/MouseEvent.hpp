@@ -8,57 +8,57 @@ namespace Engine
 	{
 	public:
 		explicit MouseMovedEvent(const float x, const float y)
-			: m_MouseX(x), m_MouseY(y) {}
+			: m_mouseX(x), m_mouseY(y) {}
 
-		float GetX() const { return m_MouseX; }
-		float GetY() const { return m_MouseY; }
+		float getX() const { return m_mouseX; }
+		float getY() const { return m_mouseY; }
 
-		std::string ToString() const override
+		std::string toString() const override
 		{
-			std::stringstream ss;
-			ss << "MouseMovedEvent: " << m_MouseX << ", " << m_MouseY;
+			std::stringstream ss{};
+			ss << "MouseMovedEvent: " << m_mouseX << ", " << m_mouseY;
 			return ss.str();
 		}
 
 		EVENT_CLASS_TYPE(MouseMoved)
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 	private:
-		float m_MouseX, m_MouseY;
+		float m_mouseX, m_mouseY;
 	};
 
 	class MouseScrolledEvent : public Event
 	{
 	public:
 		explicit MouseScrolledEvent(const float xOffset, const float yOffset)
-			: m_XOffset(xOffset), m_YOffset(yOffset) {}
+			: m_xOffset(xOffset), m_yOffset(yOffset) {}
 
-		[[nodiscard]] float GetXOffset() const { return m_XOffset; }
-		[[nodiscard]] float GetYOffset() const { return m_YOffset; }
+		[[nodiscard]] float getXOffset() const { return m_xOffset; }
+		[[nodiscard]] float getYOffset() const { return m_yOffset; }
 
-		[[nodiscard]] std::string ToString() const override
+		[[nodiscard]] std::string toString() const override
 		{
-			std::stringstream ss;
-			ss << "MouseScrolledEvent: " << GetXOffset() << ", " << GetYOffset();
+			std::stringstream ss{};
+			ss << "MouseScrolledEvent: " << getXOffset() << ", " << getYOffset();
 			return ss.str();
 		}
 
 		EVENT_CLASS_TYPE(MouseScrolled)
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 	private:
-		float m_XOffset, m_YOffset;
+		float m_xOffset, m_yOffset;
 	};
 
 	class MouseButtonEvent : public Event
 	{
 	public:
-		[[nodiscard]] int GetMouseButton() const { return m_Button; }
+		[[nodiscard]] int getMouseButton() const { return m_button; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput | EventCategoryMouseButton)
 	protected:
 		explicit MouseButtonEvent(const int button)
-			: m_Button(button) {}
+			: m_button(button) {}
 
-		int m_Button;
+		int m_button;
 	};
 
 	class MouseButtonPressedEvent : public MouseButtonEvent
@@ -67,10 +67,10 @@ namespace Engine
 		explicit MouseButtonPressedEvent(const int button)
 			: MouseButtonEvent(button) {}
 
-		[[nodiscard]] std::string ToString() const override
+		[[nodiscard]] std::string toString() const override
 		{
-			std::stringstream ss;
-			ss << "MouseButtonPressedEvent: " << m_Button;
+			std::stringstream ss{};
+			ss << "MouseButtonPressedEvent: " << m_button;
 			return ss.str();
 		}
 
@@ -83,10 +83,10 @@ namespace Engine
 		explicit MouseButtonReleasedEvent(const int button)
 			: MouseButtonEvent(button) {}
 
-		[[nodiscard]] std::string ToString() const override
+		[[nodiscard]] std::string toString() const override
 		{
-			std::stringstream ss;
-			ss << "MouseButtonReleasedEvent: " << m_Button;
+			std::stringstream ss{};
+			ss << "MouseButtonReleasedEvent: " << m_button;
 			return ss.str();
 		}
 

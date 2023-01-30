@@ -22,18 +22,19 @@ find_package(freetype CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 
 target_link_libraries(MyGraphicsLib 
-	PUBLIC 
-		glfw
-		glad
+	INTERFACE
 		spdlog::spdlog
+	PRIVATE
+		glad
+		glfw
 		freetype
 )
 
 target_include_directories(MyGraphicsLib
 	PUBLIC	
 		"${PROJECT_SOURCE_DIR}"
-		glad
-		glfw
 	PRIVATE 
 		"dependencies/stb_image"
+		glfw
+		glad
 )
