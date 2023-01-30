@@ -1,19 +1,31 @@
 #pragma once
 
-class Application
+#include "Core/Core.hpp"
+#include "Events/ApplicationEvent.hpp"
+#include "Window.hpp"
+
+namespace Engine
 {
-public:
-	virtual ~Application() = default;
 
-	Application& instance();
+	class Application
+	{
+	public:
+		virtual ~Application() = default;
 
-	void run();
+		static Application& instance();
 
-private:
-	explicit Application();
-	void onWindowClosed();
+		void run();
+		void onEvent(Event& e);
 
-	static Application* s_instanced;
+	private:
+		explicit Application();
+		bool onWindowClosed(WindowCloseEvent& e);
 
-	bool m_running = true;
-};
+		static Application* s_instanced;
+
+		std::unique_ptr<Window> m_window;
+
+		bool m_running = true;
+	};
+
+} // namespace Engine

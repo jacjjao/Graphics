@@ -8,11 +8,6 @@ set(
 	CMAKE_VERBOSE_MAKEFILE ON
 )
 
-#if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-#    add_compile_definitions(EG_DEBUG)
-#	add_compile_definitions(EG_ENABLE_ASSERTS)
-#endif()
-
 add_subdirectory("Engine")
 
 add_executable(${PROJECT_NAME}  

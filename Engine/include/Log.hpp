@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Core.hpp"
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
 #include <memory>
@@ -8,17 +9,19 @@ namespace Engine
 {
 	class Log
 	{
+	private:
+		using logger_ptr = std::shared_ptr<spdlog::logger>;
 	public:
 		static void Init();
 
-		static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
-		static std::shared_ptr<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
+		static logger_ptr& GetCoreLogger() { return s_CoreLogger; }
+		static logger_ptr& GetClientLogger() { return s_ClientLogger; }
 
 	private:
-		static std::shared_ptr<spdlog::logger> s_CoreLogger;
-		static std::shared_ptr<spdlog::logger> s_ClientLogger;
+		static logger_ptr s_CoreLogger;
+		static logger_ptr s_ClientLogger;
 	};
-}
+} // namespace Engine
 
 // Core log macros
 #define EG_CORE_TRACE(...) ::Engine::Log::GetCoreLogger()->trace(__VA_ARGS__)

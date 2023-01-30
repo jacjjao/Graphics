@@ -1,6 +1,7 @@
 #include "Graphics.hpp"
+#include "include/Application.hpp"
 #include "include/Log.hpp"
-
+/*
 // third party
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
@@ -49,10 +50,10 @@ constexpr Vector3f screenPointToNDC(const Vector3f point) noexcept
 
     return result;
 }
-
+*/
 int main()
 {
-    
+    /*
     if (!glfwInit())
     {
         std::cerr << "Failed to initialized GLFW\n";
@@ -215,11 +216,14 @@ int main()
 #ifdef EG_DEBUG
     std::cout << "\nThe context is free ignore the error down below\n\n";
 #endif
-    
-    std::cout << "Hello World\n";
+    */
+    Engine::Log::Init();
+
+    auto& app = Engine::Application::instance();
+    app.run();
     return 0;
 }
-
+/*
 void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -287,3 +291,4 @@ void framebuffer_size_callback(GLFWwindow*, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
+*/

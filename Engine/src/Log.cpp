@@ -5,8 +5,8 @@
 
 namespace Engine
 {
-	std::shared_ptr<spdlog::logger> Log::s_CoreLogger = nullptr;
-	std::shared_ptr<spdlog::logger> Log::s_ClientLogger = nullptr;
+	Log::logger_ptr Log::s_CoreLogger = nullptr;
+	Log::logger_ptr Log::s_ClientLogger = nullptr;
 
 	void Log::Init()
 	{
