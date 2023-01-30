@@ -5,13 +5,13 @@ set(
 	CMAKE_CXX_STANDARD 20
 	CMAKE_CXX_STANDARD_REQUIRED YES
 	CMAKE_CXX_EXTENSIONS NO
+	CMAKE_VERBOSE_MAKEFILE ON
 )
 
-set(CMAKE_VERBOSE_MAKEFILE ON)
-
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-	add_compile_definitions(EG_DEBUG)
-endif()
+#if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+#    add_compile_definitions(EG_DEBUG)
+#	add_compile_definitions(EG_ENABLE_ASSERTS)
+#endif()
 
 add_subdirectory("Engine")
 
