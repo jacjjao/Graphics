@@ -3,6 +3,7 @@
 #include "Core/Core.hpp"
 #include "Events/ApplicationEvent.hpp"
 #include "Window.hpp"
+#include "LayerStack.hpp"
 
 namespace Engine
 {
@@ -16,11 +17,18 @@ namespace Engine
 		void run();
 		void onEvent(Event& e);
 
+		void pushLayer(Layer* layer);
+		void pushOverlay(Layer* overlay);
+
+	protected:
+		Application();
+
 	private:
-		explicit Application();
 		bool onWindowClosed(WindowCloseEvent& e);
 
 		std::unique_ptr<Window> m_window;
+
+		LayerStack m_layerStack;
 
 		bool m_running = true;
 	};

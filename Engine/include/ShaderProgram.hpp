@@ -20,7 +20,7 @@ public:
     explicit ShaderProgram(const std::filesystem::path& vertex_path, const std::filesystem::path& fragment_path);
     ~ShaderProgram();
 
-    void resize(const std::string& vertex_src, const std::string& fragment_src);
+    void create(const std::string& vertex_src, const std::string& fragment_src);
 
     void use();
     static void unuse();

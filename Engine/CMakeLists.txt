@@ -22,7 +22,7 @@ find_package(freetype CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 
 target_link_libraries(MyGraphicsLib 
-	INTERFACE
+	PUBLIC
 		spdlog::spdlog
 	PRIVATE
 		glad

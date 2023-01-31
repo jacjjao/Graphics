@@ -71,7 +71,7 @@ ShaderProgram::ShaderProgram(const std::filesystem::path& vertex_path, const std
         std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ\n" << e.what() << '\n';
     }
 
-    resize(vertex_code, fragment_code);
+    create(vertex_code, fragment_code);
 }
 
 ShaderProgram::~ShaderProgram()
@@ -79,7 +79,7 @@ ShaderProgram::~ShaderProgram()
     destroy();
 }
 
-void ShaderProgram::resize(const std::string& vertex_src, const std::string& fragment_src)
+void ShaderProgram::create(const std::string& vertex_src, const std::string& fragment_src)
 {
     const auto* v_shader_code = vertex_src.data();
     const auto* f_shader_code = fragment_src.data();
@@ -221,7 +221,7 @@ int32_t ShaderProgram::getLocation(const std::string& name)
 DefaultShaderProgram::DefaultShaderProgram() :
 ShaderProgram{}
 {
-    resize(ShaderSrcs::GraphicsRendering::vertex_shader_src, ShaderSrcs::GraphicsRendering::fragment_shader_src);
+    create(ShaderSrcs::GraphicsRendering::vertex_shader_src, ShaderSrcs::GraphicsRendering::fragment_shader_src);
 }
 
 DefaultShaderProgram& DefaultShaderProgram::instance()
@@ -232,7 +232,7 @@ DefaultShaderProgram& DefaultShaderProgram::instance()
 
 TextShaderProgram::TextShaderProgram() : ShaderProgram{}
 {
-    resize(ShaderSrcs::TextRendering::vertex_shader_src, ShaderSrcs::TextRendering::fragment_shader_src);
+    create(ShaderSrcs::TextRendering::vertex_shader_src, ShaderSrcs::TextRendering::fragment_shader_src);
 }
 
 TextShaderProgram& TextShaderProgram::instance()

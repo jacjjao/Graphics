@@ -50,10 +50,10 @@ constexpr Vector3f screenPointToNDC(const Vector3f point) noexcept
 
     return result;
 }
-*/
+
 int main()
 {
-    /*
+    
     if (!glfwInit())
     {
         std::cerr << "Failed to initialized GLFW\n";
@@ -216,14 +216,9 @@ int main()
 #ifdef EG_DEBUG
     std::cout << "\nThe context is free ignore the error down below\n\n";
 #endif
-    */
-    Engine::Log::Init();
-
-    auto& app = Engine::Application::instance();
-    app.run();
     return 0;
 }
-/*
+
 void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -291,4 +286,64 @@ void framebuffer_size_callback(GLFWwindow*, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
+
 */
+
+#include "Graphics.hpp"
+
+constexpr unsigned scr_width = 1280, scr_height = 720;
+
+class TheLayer : public Engine::Layer
+{
+public:
+    TheLayer() : m_cam{ -scr_width / 2, scr_width / 2, -scr_height / 2, scr_height / 2 }, m_vao{3}
+    {
+        m_vao[0].position = { 0.0F, 0.0F, 0.0F };
+        m_vao[1].position = { 100.0F, 0.0F, 0.0F };
+        m_vao[2].position = { 100.0F, 100.0F, 0.0F };
+        m_vao[0].color = m_vao[1].color = m_vao[2].color = Color::Cyan;
+        m_vao.update();
+    }
+
+    void onAttach() override {}
+    void onDetach() override {}
+    void onEvent(Engine::Event&) override 
+    {
+    }
+
+    void onUpdate() override
+    {
+        DefaultShaderProgram::instance().use();
+        m_cam.use();
+        m_vao.draw();
+    }
+
+private:
+    Camera m_cam;
+    VertexArray m_vao;
+};
+
+class SandBox : public Engine::Application
+{
+public:
+    SandBox()
+    {
+        pushLayer(new TheLayer{});
+    }
+
+    ~SandBox()
+    {
+
+    }
+};
+
+int main()
+{
+    Engine::Log::Init();
+
+    auto app = new SandBox{};
+    app->run();
+    delete app;
+
+    return 0;
+}

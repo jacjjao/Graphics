@@ -9,12 +9,4 @@ set(
 )
 
 add_subdirectory("Engine")
-
-add_executable(${PROJECT_NAME}  
-	"Sandbox/main.cpp"
-)
-
-target_link_libraries(${PROJECT_NAME} 
-PRIVATE 
-	MyGraphicsLib
-)
+add_subdirectory("Sandbox")

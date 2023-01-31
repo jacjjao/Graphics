@@ -2,6 +2,8 @@
 #include "include/Log.hpp"
 #include <glad/glad.h>
 
+#include "include/Renderer.hpp"
+
 namespace Engine
 {
 	Application& Application::instance()
@@ -14,8 +16,11 @@ namespace Engine
 	{
 		while (m_running)
 		{
-			glClearColor(1, 0, 1, 1);
+			glClearColor(0, 0, 0, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
+
+			for (const auto& layer : m_layerStack)
+				layer->onUpdate();
 
 			m_window->onUpdate();
 		}
@@ -36,7 +41,23 @@ namespace Engine
 			return onWindowClosed(e);
 		});
 
-		EG_CORE_TRACE("{}", e.toString());
+		for (const auto& layer : m_layerStack | std::views::reverse)
+		{
+			layer->onEvent(e);
+			if (e.handled)
+				break;
+		}
+		//EG_CORE_TRACE("{}", e.toString());
+	}
+
+	void Application::pushLayer(Layer* layer)
+	{
+		m_layerStack.pushLayer(layer);
+	}
+
+	void Application::pushOverlay(Layer* overlay)
+	{
+		m_layerStack.pushOverlay(overlay);
 	}
 
 	bool Application::onWindowClosed(Engine::WindowCloseEvent& e)
