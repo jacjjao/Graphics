@@ -14,9 +14,10 @@ namespace Engine
 	class Application
 	{
 	public:
+		explicit Application();
 		virtual ~Application() = default;
 
-		static Application& instance();
+		static Application& getInstance() { return *s_instance; }
 
 		void run();
 		void onEvent(Event& e);
@@ -24,8 +25,7 @@ namespace Engine
 		void pushLayer(Layer* layer);
 		void pushOverlay(Layer* overlay);
 
-	protected:
-		Application();
+		Window& getWindow() { return *m_window; }
 
 	private:
 		bool onWindowClosed(WindowCloseEvent& e);
@@ -35,5 +35,7 @@ namespace Engine
 		LayerStack m_layerStack;
 
 		bool m_running = true;
+
+		static Application* s_instance;
 	};
 } // namespace Engine

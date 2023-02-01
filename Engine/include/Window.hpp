@@ -35,6 +35,8 @@ namespace Engine
 		virtual void setVSync(bool enabled) = 0;
 		[[nodiscard]] virtual bool isVSync() const = 0;
 
+		[[nodiscard]] virtual void* getNativeWindowHandle() const = 0;
+
 		static std::unique_ptr<Window> create(const WindowProps& props = WindowProps{});
 	};
 } // namespace Engine

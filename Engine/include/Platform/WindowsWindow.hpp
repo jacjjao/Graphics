@@ -21,6 +21,7 @@ namespace Engine
 		void setEventCallback(const EventCallbackFn& callback) override { m_data.eventCallBack = callback; }
 		void setVSync(bool enabled) override;
 		[[nodiscard]] bool isVSync() const override;
+		[[nodiscard]] void* getNativeWindowHandle() const override { return m_window; }
 
 	private:
 		virtual void init(const WindowProps& props);

@@ -1,6 +1,6 @@
 #include "pch.hpp"
-#include "WindowsWindow.hpp"
-#include "include/Log.hpp"
+#include "include/Platform/WindowsWindow.hpp"
+#include "include/Utility/Log.hpp"
 
 #include "include/Events/ApplicationEvent.hpp"
 #include "include/Events/KeyEvent.hpp"

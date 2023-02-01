@@ -1,7 +1,7 @@
 #include "pch.hpp"
 #include "../include/TextRenderer.hpp"
 #include "../include/ShaderProgram.hpp"
-#include "../include/Math.hpp"
+#include "include/Utility/Math.hpp"
 
 #include <iostream>
 

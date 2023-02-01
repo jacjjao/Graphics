@@ -1,6 +1,6 @@
 #include "Graphics.hpp"
 #include "include/Application.hpp"
-#include "include/Log.hpp"
+#include "include/Utility/Log.hpp"
 /*
 // third party
 #include <glad/glad.h>
@@ -304,7 +304,7 @@ public:
         m_shape->setColor(Engine::Color::White);
         m_shape->translate({ 100, 0, 0 });
         m_shape->update();
-    
+        
         Engine::Renderer2D::Init();
 
         int a = 10;
@@ -312,8 +312,11 @@ public:
 
     void onAttach() override {}
     void onDetach() override {}
-    void onEvent(Engine::Event&) override 
+    void onEvent(Engine::Event& e) override 
     {
+        if (e.getEventType() == Engine::EventType::KeyPressed) {
+            EG_TRACE("{}", (char)static_cast<Engine::KeyPressedEvent&>(e).GetKeyCode());
+        }
     }
 
     void onUpdate() override
@@ -355,9 +358,8 @@ int main()
 {
     Engine::Log::Init();
 
-    auto app = new SandBox{};
-    app->run();
-    delete app;
+    SandBox app{};
+    app.run();
 
     return 0;
 }

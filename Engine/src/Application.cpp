@@ -1,14 +1,11 @@
 #include "include/Application.hpp"
-#include "include/Log.hpp"
+#include "include/Utility/Log.hpp"
+#include "include/Input/Input.hpp"
 #include <glad/glad.h>
 
 namespace Engine
 {
-	Application& Application::instance()
-	{
-		static Application app{};
-		return app;
-	}
+	Application* Application::s_instance = nullptr;
 
 	void Application::run()
 	{
@@ -26,6 +23,9 @@ namespace Engine
 
 	Application::Application()
 	{
+		EG_CORE_ASSERT(s_instance == nullptr, "Application is already exist!");
+		s_instance = this;
+
 		m_window = Window::create();
 		m_window->setEventCallback([this](Engine::Event& e) {
 			onEvent(e);
@@ -49,7 +49,6 @@ namespace Engine
 			if (e.handled)
 				break;
 		}
-		//EG_CORE_TRACE("{}", e.toString());
 	}
 
 	void Application::pushLayer(Layer* layer)
