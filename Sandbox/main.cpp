@@ -1,5 +1,6 @@
 #include "Graphics.hpp"
 #include "include/Application.hpp"
+#include "include/Input/Input.hpp"
 #include "include/Utility/Log.hpp"
 /*
 // third party
@@ -289,7 +290,7 @@ void framebuffer_size_callback(GLFWwindow*, int width, int height)
 
 */
 
-#include "Graphics.hpp"
+#include "include/Input/KeyCodes.hpp"
 
 constexpr unsigned scr_width = 1280, scr_height = 720;
 
@@ -306,6 +307,7 @@ public:
         m_shape->update();
         
         Engine::Renderer2D::Init();
+        Engine::TextRenderer::initialize(28);
 
         int a = 10;
     }
@@ -314,9 +316,22 @@ public:
     void onDetach() override {}
     void onEvent(Engine::Event& e) override 
     {
+        /*
         if (e.getEventType() == Engine::EventType::KeyPressed) {
-            EG_TRACE("{}", (char)static_cast<Engine::KeyPressedEvent&>(e).GetKeyCode());
-        }
+            auto keycode = static_cast<Engine::KeyPressedEvent&>(e).GetKeyCode();
+            if (keycode == Engine::Key::W) {
+                m_shape->translate({ 0, speed, 0 });
+            }
+            if (keycode == Engine::Key::S) {
+                m_shape->translate({ 0, -speed, 0 });
+            }
+            if (keycode == Engine::Key::A) {
+                m_shape->translate({ -speed, 0, 0 });
+            }
+            if (keycode == Engine::Key::D) {
+                m_shape->translate({ speed, 0, 0 });
+            }
+        }*/
     }
 
     void onUpdate() override
@@ -326,13 +341,16 @@ public:
         program.setMat4("view", m_cam->getViewMatrix());
         program.setMat4("proj", m_cam->getProjMatrix());
         
-        m_shape->rotate(1.f);
         m_shape->draw();
 
         Engine::Renderer2D::begin(*m_cam);
-        Engine::Renderer2D::drawQuad({ 0, 0 }, { 100, 100 }, Engine::Color::Red);
-        Engine::Renderer2D::drawQuad({ -100, -100 }, { 100, 100 }, Engine::Color::Cyan);
+        Engine::Renderer2D::drawQuad({ -100, 0 }, { 100, 100 }, Engine::Color::Red);
+        Engine::Renderer2D::drawQuad({ 0, 0 }, { 100, 100 }, Engine::Color::Green);
+        Engine::Renderer2D::drawQuad({ -100, -100 }, { 100, 100 }, Engine::Color::Yellow);
+        Engine::Renderer2D::drawQuad({ 0, -100 }, { 100, 100 }, Engine::Color::Blue);
         Engine::Renderer2D::end();
+
+        Engine::TextRenderer::renderText("Hello World!", { -1280 / 2, 720 / 2 }, Engine::Color::Yellow);
     }
 
 private:

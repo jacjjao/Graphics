@@ -1,7 +1,9 @@
 #include "pch.hpp"
-#include "../include/TextRenderer.hpp"
-#include "../include/ShaderProgram.hpp"
+#include "include/TextRenderer.hpp"
+#include "include/ShaderProgram.hpp"
 #include "include/Utility/Math.hpp"
+#include "include/Utility/Log.hpp"
+#include "include/Application.hpp"
 
 #include <iostream>
 
@@ -17,34 +19,38 @@ namespace Engine
     uint32_t TextRenderer::VAO = 0, TextRenderer::VBO = 0;
 
     unsigned TextRenderer::text_size = 0;
-    Vector2f TextRenderer::half_scr_size{};
 
-    void TextRenderer::initialize(const unsigned font_size, const unsigned screen_width, const unsigned screen_height)
+    void TextRenderer::initialize(const unsigned font_size)
     {
         text_size = font_size;
-        half_scr_size.x = static_cast<float>(screen_width / 2);
-        half_scr_size.y = static_cast<float>(screen_height / 2);
+        const float half_width = Application::getInstance().getWindow().getWidth() / 2;
+        const float half_height = Application::getInstance().getWindow().getHeight() / 2;
+
+        auto& shader = TextShaderProgram::instance();
+        shader.use();
+        shader.setMat4("proj", ortho(-half_width, half_width, -half_height, half_height, -1.0f, 1.0f));
+        shader.unuse();
 
         glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
         FT_Library ft;
         if (FT_Init_FreeType(&ft))
         {
-            std::cerr << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+            EG_CORE_ERROR("ERROR::FREETYPE: Could not init FreeType Library");
             return;
         }
 
         const auto font_name = FileSystem::getPath("/asset/fonts/arial.ttf").string();
         if (font_name.empty())
         {
-            std::cerr << "ERROR::FREETYPE: Failed to load font_name" << std::endl;
+            EG_CORE_ERROR("ERROR::FREETYPE: Failed to load font_name");
             return;
         }
 
         FT_Face face;
         if (FT_New_Face(ft, font_name.c_str(), 0, &face))
         {
-            std::cerr << "ERROR::FREETYPE: Failed to load font" << std::endl;
+            EG_CORE_ERROR("ERROR::FREETYPE: Failed to load font");
             return;
         }
 
@@ -65,7 +71,7 @@ namespace Engine
             // Load character glyph
             if (FT_Load_Char(face, c, FT_LOAD_RENDER))
             {
-                std::cerr << "ERROR::FREETYTPE: Failed to load Glyph: " << (int)c << '\n';
+                EG_CORE_ERROR("ERROR::FREETYTPE: Failed to load Glyph: {}", (int)c);
                 continue;
             }
 
@@ -101,8 +107,6 @@ namespace Engine
 
     void TextRenderer::renderText(std::string_view text, Vector2f pos, const Color color, const unsigned font_size)
     {
-        static auto proj = ortho(-half_scr_size.x, half_scr_size.x, -half_scr_size.y, half_scr_size.y, -1.0, 1.0);
-
         glCheck(glEnable(GL_BLEND));
 
         const float scale = static_cast<float>(font_size) / static_cast<float>(text_size);
@@ -111,9 +115,7 @@ namespace Engine
 
         auto& shader = TextShaderProgram::instance();
         shader.use();
-
         shader.setVec4("textColor", color);
-        shader.setMat4("proj", proj);
 
         // iterate through all characters
         for (const char& c : text)
@@ -129,12 +131,12 @@ namespace Engine
 
             // clang-format off
             const float vertices[24] = { xpos,     ypos + h, 0.0f, 0.0f,
-                                        xpos,     ypos,     0.0f, 1.0f,
-                                        xpos + w, ypos,     1.0f, 1.0f,
+                                         xpos,     ypos,     0.0f, 1.0f,
+                                         xpos + w, ypos,     1.0f, 1.0f,
 
-                                        xpos,     ypos + h, 0.0f, 0.0f,
-                                        xpos + w, ypos,     1.0f, 1.0f,
-                                        xpos + w, ypos + h, 1.0f, 0.0f };
+                                         xpos,     ypos + h, 0.0f, 0.0f,
+                                         xpos + w, ypos,     1.0f, 1.0f,
+                                         xpos + w, ypos + h, 1.0f, 0.0f };
             // clang-format on
 
             // render glyph texture over quad

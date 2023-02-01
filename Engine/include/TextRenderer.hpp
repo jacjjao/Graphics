@@ -22,12 +22,12 @@ namespace Engine
     class TextRenderer
     {
     public:
-        static void initialize(unsigned font_size, unsigned screen_width, unsigned screen_height);
+        static void initialize(unsigned font_size);
 
         static void renderText(std::string_view text,
-            Vector2f         pos,
-            Color            color = Color::White,
-            unsigned         font_size = text_size);
+                               Vector2f pos,
+                               Color    color = Color::White,
+                               unsigned font_size = text_size);
 
         static void releaseResources();
 
@@ -35,8 +35,6 @@ namespace Engine
         static std::array<Character, 128> characters;
 
         static uint32_t VAO, VBO;
-
-        static Vector2f half_scr_size;
 
         static unsigned text_size;
     };
