@@ -7,11 +7,11 @@ namespace Engine
 {
 
     Line::Line(const Vector2f start_position, const Vector2f end_position) :
-        Shape{ 2 }, 
-        m_start_pos{ start_position },
-        m_end_pos{ end_position },
-        m_line_width{ 1.0F },
-        m_color{ Color::White }
+    Shape{ 2 }, 
+    m_start_pos{ start_position },
+    m_end_pos{ end_position },
+    m_line_width{ 1.0F },
+    m_color{ Color::White }
     {
         update();
     }

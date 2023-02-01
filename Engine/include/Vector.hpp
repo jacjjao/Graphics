@@ -35,6 +35,11 @@ namespace Engine
             return { -x, -y };
         }
 
+        constexpr Vector2<T> operator-(const Vector2<T>& other) const
+        {
+            return { this->x - other.x, this->y - other.y };
+        }
+
         constexpr Vector2<T> operator*(const Vector2<T>& other) const
         {
             return { x * other.x, y * other.y };
