@@ -3,11 +3,14 @@
 #include "Vector.hpp"
 #include "Color.hpp"
 
-struct Vertex
+namespace Engine
 {
-    Vertex() = default;
 
-    Vector3f position;
-    Color    color;
-    Vector2f tex_coord;
-};
+    struct Vertex
+    {
+        Vector3f position;
+        Color    color;
+        Vector2f tex_coord;
+    };
+
+} // namespace Engine

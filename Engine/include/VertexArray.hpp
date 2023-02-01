@@ -8,65 +8,69 @@
 
 #include <vector>
 
-class VertexArray
+namespace Engine
 {
-public:
-    using value_type = std::vector<Vertex>::value_type;
-    using iterator   = std::vector<Vertex>::iterator;
 
-    explicit VertexArray(size_t size, VertexBuffer::Usage usage = VertexBuffer::Usage::StaticDraw);
-    ~VertexArray();
+    class VertexArray
+    {
+    public:
+        using value_type = std::vector<Vertex>::value_type;
+        using iterator = std::vector<Vertex>::iterator;
 
-    VertexArray(const VertexArray&)                  = delete;
-    VertexArray& operator=(const VertexArray&) const = delete;
+        explicit VertexArray(size_t size, VertexBuffer::Usage usage = VertexBuffer::Usage::StaticDraw);
+        ~VertexArray();
 
-    VertexArray(VertexArray&& other) noexcept;
-    VertexArray& operator=(VertexArray&& other) noexcept;
+        VertexArray(const VertexArray&) = delete;
+        VertexArray& operator=(const VertexArray&) const = delete;
 
-    void destroy();
-    void update();
-    void draw(PrimitiveType primitive_type = PrimitiveType::Triangles,
-              const Matrix4& model_mat = Constants::identity_mat4,
-              float color_alpha = 1.0F, 
-              Texture* texture = nullptr);
-    void drawIndices(int32_t size,
-                     PrimitiveType primitive_type = PrimitiveType::Triangles,
-                     const Matrix4& model_mat = Constants::identity_mat4,
-                     float color_alpha = 1.0F,
-                     Texture* texture = nullptr);
+        VertexArray(VertexArray&& other) noexcept;
+        VertexArray& operator=(VertexArray&& other) noexcept;
 
-    void setElementBuffer(ElementBuffer& ebo);
+        void update();
+        void draw(PrimitiveType primitive_type = PrimitiveType::Triangles,
+            const Matrix4& model_mat = Constants::identity_mat4,
+            float color_alpha = 1.0F,
+            Texture* texture = nullptr);
+        void drawIndices(int32_t size,
+            PrimitiveType primitive_type = PrimitiveType::Triangles,
+            const Matrix4& model_mat = Constants::identity_mat4,
+            float color_alpha = 1.0F,
+            Texture* texture = nullptr);
 
-    void resize(size_t size);
-    void push_back(const value_type& item) { m_vertices.push_back(item); }
-    void pop_back() { m_vertices.pop_back(); }
-    void clear() { m_vertices.clear(); }
+        void setElementBuffer(ElementBuffer& ebo);
 
-    value_type& front() { return m_vertices.front(); }
-    value_type& back() { return m_vertices.back(); }
+        void resize(size_t size);
+        void push_back(const value_type& item) { m_vertices.push_back(item); }
+        void pop_back() { m_vertices.pop_back(); }
+        void clear() { m_vertices.clear(); }
 
-    [[nodiscard]] bool isCreated() const { return m_id > 0; }
-    [[nodiscard]] size_t size() const { return m_vertices.size(); }
+        value_type& front() { return m_vertices.front(); }
+        value_type& back() { return m_vertices.back(); }
 
-    void setUsage(VertexBuffer::Usage usage) { m_vbo.setUsage(usage); }
+        [[nodiscard]] size_t size() const { return m_vertices.size(); }
 
-    [[nodiscard]] iterator begin() { return m_vertices.begin(); }
-    [[nodiscard]] iterator end() { return m_vertices.end(); }
+        void setUsage(VertexBuffer::Usage usage) { m_vbo.setUsage(usage); }
 
-    value_type&       operator[](size_t index) { return m_vertices[index]; }
-    const value_type& operator[](size_t index) const { return m_vertices[index]; }
+        [[nodiscard]] iterator begin() { return m_vertices.begin(); }
+        [[nodiscard]] iterator end() { return m_vertices.end(); }
 
-    static void bind(VertexArray* vao);
-    static void unbind();
+        value_type& operator[](size_t index) { return m_vertices[index]; }
+        const value_type& operator[](size_t index) const { return m_vertices[index]; }
 
-private:
-    void create();
+        static void bind(VertexArray* vao);
+        static void unbind();
 
-    static VertexArray* vao_in_bind;
+    private:
+        void create();
+        void destroy();
 
-    uint32_t m_id;
+        static uint32_t vao_in_bind;
 
-    VertexBuffer m_vbo;
+        uint32_t m_id;
 
-    std::vector<Vertex> m_vertices;
-};
+        VertexBuffer m_vbo;
+
+        std::vector<Vertex> m_vertices;
+    };
+
+} // namespace Engine

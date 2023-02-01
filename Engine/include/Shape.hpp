@@ -5,39 +5,41 @@
 #include "VertexArray.hpp"
 #include "Rect.hpp"
 
-class Shape : public Transformable
+namespace Engine
 {
-public:
-    explicit Shape(size_t size);
-    virtual ~Shape() = default;
 
-    Shape(const Shape&)            = delete;
-    Shape& operator=(const Shape&) = delete;
+    class Shape : public Transformable
+    {
+    public:
+        explicit Shape(size_t size);
+        virtual ~Shape() = default;
 
-    virtual void update() = 0;
+        Shape(const Shape&) = delete;
+        Shape& operator=(const Shape&) = delete;
 
-    void applyTexture(Texture* texture);
+        virtual void update() = 0;
+        virtual void draw() = 0;
 
-    [[nodiscard]] bool hasTexture() const;
+        void applyTexture(Texture* texture);
 
-    void setColor(Color color);
+        [[nodiscard]] bool hasTexture() const;
 
-    [[nodiscard]] Color getColor() const;
+        void setColor(Color color);
 
-    void setTextureRect(Rect rect);
+        [[nodiscard]] Color getColor() const;
 
-    [[nodiscard]] Rect getTextureRect() const;
+        void setTextureRect(Rect rect);
 
-    bool isCreated() const;
+        [[nodiscard]] Rect getTextureRect() const;
 
-protected:
-    VertexArray m_vao;
+    protected:
+        VertexArray m_vao;
 
-    Color m_color;
+        Color m_color;
 
-    Texture* m_texture;
+        Texture* m_texture;
 
-    Rect m_tex_rect;
+        Rect m_tex_rect;
+    };
 
-    bool m_is_created = false;
-};
+} // namespace Engine

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <concepts>
 
 #define BIT(x) (1 << x)
 

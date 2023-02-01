@@ -2,155 +2,160 @@
 
 #include <cmath>
 
-template <typename T>
-class Vector2
+namespace Engine
 {
-public:
-    constexpr Vector2(T val = static_cast<T>(0)) : x{val}, y{val}
+
+    template <typename T>
+    class Vector2
     {
-    }
+    public:
+        constexpr Vector2(T val = static_cast<T>(0)) : x{ val }, y{ val }
+        {
+        }
 
-    constexpr Vector2(T x, T y) : x{x}, y{y}
+        constexpr Vector2(T x, T y) : x{ x }, y{ y }
+        {
+        }
+
+        constexpr Vector2<T>& operator+=(const Vector2<T>& other)
+        {
+            x += other.x;
+            y += other.y;
+
+            return *this;
+        }
+
+        constexpr Vector2<T> operator+(const Vector2<T>& other) const
+        {
+            return { this->x + other.x, this->y + other.y };
+        }
+
+        constexpr Vector2<T> operator-() const
+        {
+            return { -x, -y };
+        }
+
+        constexpr Vector2<T> operator*(const Vector2<T>& other) const
+        {
+            return { x * other.x, y * other.y };
+        }
+
+        constexpr Vector2<T> operator/(const T& factor) const
+        {
+            return { x / factor, y / factor };
+        }
+
+        [[nodiscard]] T length() const
+        {
+            return std::sqrt(x * x + y * y);
+        }
+
+        [[nodiscard]] Vector2<T> normalize() const
+        {
+            const auto len = length();
+
+            return Vector2<T>{x / len, y / len};
+        }
+
+        T x, y;
+    };
+
+    using Vector2f = Vector2<float>;
+
+    template <typename T>
+    class Vector3
     {
-    }
+    public:
+        constexpr Vector3(T val = static_cast<T>(0)) : x{ val }, y{ val }, z{ val }
+        {
+        }
 
-    constexpr Vector2<T>& operator+=(const Vector2<T>& other)
-    {
-        x += other.x;
-        y += other.y;
+        constexpr Vector3(T x, T y, T z) : x{ x }, y{ y }, z{ z }
+        {
+        }
 
-        return *this;
-    }
+        explicit constexpr Vector3(const Vector2<T>& vector) : x{ vector.x }, y{ vector.y }, z{ static_cast<T>(0) }
+        {
+        }
 
-    constexpr Vector2<T> operator+(const Vector2<T>& other) const
-    {
-        return {this->x + other.x, this->y + other.y};
-    }
+        constexpr Vector3<T>& operator=(const Vector2<T>& other)
+        {
+            x = other.x;
+            y = other.y;
+            z = static_cast<T>(0);
 
-    constexpr Vector2<T> operator-() const
-    {
-        return {-x, -y};
-    }
+            return *this;
+        }
 
-    constexpr Vector2<T> operator*(const Vector2<T>& other) const
-    {
-        return {x * other.x, y * other.y};
-    }
+        constexpr Vector3<T>& operator+=(const Vector3<T>& other)
+        {
+            x += other.x;
+            y += other.y;
+            z += other.z;
 
-    constexpr Vector2<T> operator/(const T& factor) const
-    {
-        return {x / factor, y / factor};
-    }
+            return *this;
+        }
 
-    [[nodiscard]] T length() const
-    {
-        return std::sqrt(x * x + y * y);
-    }
+        constexpr Vector3<T> operator+(const Vector3<T>& other) const
+        {
+            Vector3<T> result{};
 
-    [[nodiscard]] Vector2<T> normalize() const
-    {
-        const auto len = length();
+            result.x = this->x + other.x;
+            result.y = this->y + other.y;
+            result.z = this->z + other.z;
 
-        return Vector2<T>{x / len, y / len};
-    }
+            return result;
+        }
 
-    T x, y;
-};
+        constexpr Vector3<T> operator-(const Vector3<T>& other) const
+        {
+            Vector3<T> result{};
 
-using Vector2f = Vector2<float>;
+            result.x = this->x - other.x;
+            result.y = this->y - other.y;
+            result.z = this->z - other.z;
 
-template <typename T>
-class Vector3
-{
-public:
-    constexpr Vector3(T val = static_cast<T>(0)) : x{val}, y{val}, z{val}
-    {
-    }
+            return result;
+        }
 
-    constexpr Vector3(T x, T y, T z) : x{x}, y{y}, z{z}
-    {
-    }
+        constexpr Vector3<T> operator-() const
+        {
+            return Vector3<T>{-x, -y, -z};
+        }
 
-    explicit constexpr Vector3(const Vector2<T>& vector) : x{vector.x}, y{vector.y}, z{static_cast<T>(0)}
-    {
-    }
+        [[nodiscard]] T length() const
+        {
+            return std::sqrt(x * x + y * y + z * z);
+        }
 
-    constexpr Vector3<T>& operator=(const Vector2<T>& other)
-    {
-        x = other.x;
-        y = other.y;
-        z = static_cast<T>(0);
+        [[nodiscard]] Vector3<T> normalize() const
+        {
+            const auto len = length();
 
-        return *this;
-    }
+            return Vector3<T>{x / len, y / len, z / len};
+        }
 
-    constexpr Vector3<T>& operator+=(const Vector3<T>& other)
-    {
-        x += other.x;
-        y += other.y;
-        z += other.z;
+        T x, y, z;
+    };
 
-        return *this;
-    }
+    using Vector3f = Vector3<float>;
 
-    constexpr Vector3<T> operator+(const Vector3<T>& other) const
+    template <typename T>
+    constexpr Vector3<T> cross(const Vector3<T>& lhs, const Vector3<T>& rhs)
     {
         Vector3<T> result{};
 
-        result.x = this->x + other.x;
-        result.y = this->y + other.y;
-        result.z = this->z + other.z;
+        result.x = lhs.y * rhs.z - lhs.z * rhs.y;
+        result.y = lhs.z * rhs.x - lhs.x * rhs.z;
+        result.z = lhs.x * rhs.y - lhs.y * rhs.x;
 
         return result;
     }
 
-    constexpr Vector3<T> operator-(const Vector3<T>& other) const
+    template<typename T>
+    constexpr Vector3<T> dot(const Vector3<T>& lhs, const Vector3<T>& rhs)
     {
-        Vector3<T> result{};
-
-        result.x = this->x - other.x;
-        result.y = this->y - other.y;
-        result.z = this->z - other.z;
-
-        return result;
+        return { lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z };
     }
 
-    constexpr Vector3<T> operator-() const
-    {
-        return Vector3<T>{-x, -y, -z};
-    }
-
-    [[nodiscard]] T length() const
-    {
-        return std::sqrt(x * x + y * y + z * z);
-    }
-
-    [[nodiscard]] Vector3<T> normalize() const
-    {
-        const auto len = length();
-
-        return Vector3<T>{x / len, y / len, z / len};
-    }
-
-    T x, y, z;
-};
-
-using Vector3f = Vector3<float>;
-
-template <typename T>
-constexpr Vector3<T> cross(const Vector3<T>& lhs, const Vector3<T>& rhs)
-{
-    Vector3<T> result{};
-
-    result.x = lhs.y * rhs.z - lhs.z * rhs.y;
-    result.y = lhs.z * rhs.x - lhs.x * rhs.z;
-    result.z = lhs.x * rhs.y - lhs.y * rhs.x;
-
-    return result;
-}
-
-template<typename T>
-constexpr Vector3<T> dot(const Vector3<T>& lhs, const Vector3<T>& rhs) 
-{
-    return {lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z};
-}
+} // namespace Engine

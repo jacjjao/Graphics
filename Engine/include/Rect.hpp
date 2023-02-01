@@ -2,8 +2,13 @@
 
 #include "Vector.hpp"
 
-struct Rect
+namespace Engine
 {
-    Vector2f position;
-    Vector2f size;
-};
+
+    struct Rect
+    {
+        Vector2f position;
+        Vector2f size;
+    };
+
+} // namespace Engine

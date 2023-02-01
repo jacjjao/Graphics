@@ -3,29 +3,34 @@
 #include "Matrix.hpp"
 #include "Vector.hpp"
 
-class Transformable
+namespace Engine
 {
-public:
-    Transformable();
-    virtual ~Transformable() = default;
 
-    void translate(Vector3f vector);
-    void scale(Vector2f factor);
-    void rotate(float degree);
+    class Transformable
+    {
+    public:
+        Transformable();
+        virtual ~Transformable() = default;
 
-    const Matrix4& getTransformMatrix();
+        void translate(Vector3f vector);
+        void scale(Vector2f factor);
+        void rotate(float degree);
 
-    void setPosition(Vector3f position);
+        const Matrix4& getTransformMatrix();
 
-    [[nodiscard]] Vector3f getPosition() const;
+        void setPosition(Vector3f position);
 
-private:
-    bool should_update = false;
-    float m_theta = 0.0F;
+        [[nodiscard]] Vector3f getPosition() const;
 
-    Vector2f m_scale;
+    private:
+        bool should_update = false;
+        float m_theta = 0.0F;
 
-    Vector3f m_position;
+        Vector2f m_scale;
 
-    Matrix4 m_model;
-};
+        Vector3f m_position;
+
+        Matrix4 m_model;
+    };
+
+} // namespace Engine

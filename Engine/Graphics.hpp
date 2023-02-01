@@ -1,6 +1,6 @@
 #pragma once
 
-#include "include/Camera.hpp"
+#include "include/OrthographicCamera.hpp"
 #include "include/Circle2D.hpp"
 #include "include/Clock.hpp"
 #include "include/ElementBuffer.hpp"

@@ -1,37 +1,43 @@
 #pragma once
 
 #include "VertexArray.hpp"
-#include "Camera.hpp"
+#include "OrthographicCamera.hpp"
 #include "ShaderProgram.hpp"
 #include "ElementBuffer.hpp"
 #include <vector>
 #include <memory>
 
-namespace detail 
+
+namespace Engine
 {
-struct QuadData
-{
-    VertexArray vao;
-    ElementBuffer ebo;
-};
-} // detail
 
-class Renderer2D
-{
-public:
-    static constexpr size_t max_quad_num     = 2000;
-    static constexpr size_t max_vertices_num = max_quad_num * 4;
+    namespace detail
+    {
+        struct QuadData
+        {
+            VertexArray vao;
+            ElementBuffer ebo;
+        };
+    } // detail
 
-    static void Init();
+    class Renderer2D
+    {
+    public:
+        static constexpr size_t max_quad_num = 2000;
+        static constexpr size_t max_vertices_num = max_quad_num * 4;
 
-    static void begin(Camera& scene_cam);
-    static void end();
+        static void Init();
 
-    static void drawQuad(Vector2f position, Vector2f size, Color color);
+        static void begin(Engine::OrthographicCamera& scene_cam);
+        static void end();
 
-private:
-    static std::unique_ptr<detail::QuadData> quad_data;
-    static Camera* cam;
+        static void drawQuad(Vector2f position, Vector2f size, Color color);
 
-    static size_t quad_count;
-};
+    private:
+        static std::unique_ptr<detail::QuadData> quad_data;
+        static Engine::OrthographicCamera* cam;
+
+        static size_t quad_count;
+    };
+
+} // namespace Engine

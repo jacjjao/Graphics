@@ -4,37 +4,38 @@
 #include <initializer_list>
 #include <vector>
 
-class ElementBuffer
+namespace Engine
 {
-public:
-    explicit ElementBuffer(size_t size);
-    ~ElementBuffer();
 
-    ElementBuffer(const ElementBuffer&)            = delete;
-    ElementBuffer& operator=(const ElementBuffer&) = delete;
+    class ElementBuffer
+    {
+    public:
+        explicit ElementBuffer(size_t size);
+        ~ElementBuffer();
 
-    ElementBuffer(ElementBuffer&& other) noexcept;
-    ElementBuffer& operator=(ElementBuffer&& other) noexcept;
+        ElementBuffer(const ElementBuffer&) = delete;
+        ElementBuffer& operator=(const ElementBuffer&) = delete;
 
-    ElementBuffer& operator=(std::vector<uint32_t> indices);
-    ElementBuffer& operator=(std::initializer_list<uint32_t> list);
+        ElementBuffer(ElementBuffer&& other) noexcept;
+        ElementBuffer& operator=(ElementBuffer&& other) noexcept;
 
-    void update();
+        ElementBuffer& operator=(std::vector<uint32_t> indices);
+        ElementBuffer& operator=(std::initializer_list<uint32_t> list);
 
-    void destroy();
+        void update();
 
-    [[nodiscard]] size_t size() const;
+        void destroy();
 
-    [[nodiscard]] bool isCreated() const;
+        [[nodiscard]] size_t size() const { return m_indices.size(); }
 
-    static void bind(ElementBuffer* ebo);
-    static void unbind();
+        static void bind(ElementBuffer* ebo);
+        static void unbind();
 
-private:
-    void create();
+    private:
+        static uint32_t ebo_in_bind;
 
-    static ElementBuffer* ebo_in_bind;
+        std::vector<uint32_t> m_indices;
+        uint32_t              m_id;
+    };
 
-    std::vector<uint32_t> m_indices;
-    uint32_t              m_id;
-};
+} // namespace Engine

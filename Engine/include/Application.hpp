@@ -5,6 +5,10 @@
 #include "Window.hpp"
 #include "LayerStack.hpp"
 
+#include "OrthographicCamera.hpp"
+#include "ShaderProgram.hpp"
+#include "Rectangle2D.hpp"
+
 namespace Engine
 {
 	class Application

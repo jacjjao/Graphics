@@ -296,13 +296,18 @@ constexpr unsigned scr_width = 1280, scr_height = 720;
 class TheLayer : public Engine::Layer
 {
 public:
-    TheLayer() : m_cam{ -scr_width / 2, scr_width / 2, -scr_height / 2, scr_height / 2 }, m_vao{3}
+    TheLayer()
     {
-        m_vao[0].position = { 0.0F, 0.0F, 0.0F };
-        m_vao[1].position = { 100.0F, 0.0F, 0.0F };
-        m_vao[2].position = { 100.0F, 100.0F, 0.0F };
-        m_vao[0].color = m_vao[1].color = m_vao[2].color = Color::Cyan;
-        m_vao.update();
+        m_cam = std::make_unique<Engine::OrthographicCamera>((float)-1280 / 2, (float)1280 / 2, (float)-720 / 2, (float)720 / 2);
+        m_shape = std::make_unique<Engine::Line>(Engine::Vector2f{0, 0}, Engine::Vector2f{200, 0});
+
+        m_shape->setColor(Engine::Color::White);
+        m_shape->translate({ 100, 0, 0 });
+        m_shape->update();
+    
+        Engine::Renderer2D::Init();
+
+        int a = 10;
     }
 
     void onAttach() override {}
@@ -312,15 +317,24 @@ public:
     }
 
     void onUpdate() override
-    {
-        DefaultShaderProgram::instance().use();
-        m_cam.use();
-        m_vao.draw();
+    { 
+        static auto& program = Engine::DefaultShaderProgram::instance();
+        program.use();
+        program.setMat4("view", m_cam->getViewMatrix());
+        program.setMat4("proj", m_cam->getProjMatrix());
+        
+        m_shape->rotate(1.f);
+        m_shape->draw();
+
+        Engine::Renderer2D::begin(*m_cam);
+        Engine::Renderer2D::drawQuad({ 0, 0 }, { 100, 100 }, Engine::Color::Red);
+        Engine::Renderer2D::drawQuad({ -100, -100 }, { 100, 100 }, Engine::Color::Cyan);
+        Engine::Renderer2D::end();
     }
 
 private:
-    Camera m_cam;
-    VertexArray m_vao;
+    std::unique_ptr<Engine::OrthographicCamera> m_cam;
+    std::unique_ptr<Engine::Shape> m_shape;
 };
 
 class SandBox : public Engine::Application

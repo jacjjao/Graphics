@@ -2,8 +2,6 @@
 #include "include/Log.hpp"
 #include <glad/glad.h>
 
-#include "include/Renderer.hpp"
-
 namespace Engine
 {
 	Application& Application::instance()
@@ -39,6 +37,10 @@ namespace Engine
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) {
 			return onWindowClosed(e);
+		});
+		dispatcher.dispatch<WindowResizeEvent>([this](WindowResizeEvent& e) {
+			glViewport(0, 0, (GLsizei)e.getWidth(), (GLsizei)e.getHeight());
+			return true;	
 		});
 
 		for (const auto& layer : m_layerStack | std::views::reverse)

@@ -1,27 +1,31 @@
 #pragma once
 
-#include "VertexArray.hpp"
+#include "Shape.hpp"
 
-class Line
+namespace Engine
 {
-public:
-    Line(Vector2f start_position, Vector2f end_position);
 
-    void setLineWidth(float line_width);
-    void setColor(Color color);
+    class Line : public Shape
+    {
+    public:
+        Line(Vector2f start_position, Vector2f end_position);
 
-    void draw();
+        void setLineWidth(float line_width);
+        void setColor(Color color);
 
-    Line(const Line&)            = delete;
-    Line& operator=(const Line&) = delete;
+        void update() override;
+        void draw() override;
 
-private:
+        Line(const Line&) = delete;
+        Line& operator=(const Line&) = delete;
 
-    Vector2f m_start_pos, m_end_pos;
+    private:
 
-    float m_line_width;
+        Vector2f m_start_pos, m_end_pos;
 
-    Color m_color;
+        float m_line_width;
 
-    VertexArray m_vao;
-};
+        Color m_color;
+    };
+
+} // namespace Engine 

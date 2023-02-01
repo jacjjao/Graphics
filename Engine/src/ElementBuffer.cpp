@@ -3,93 +3,85 @@
 
 #include <glad/glad.h>
 
-ElementBuffer* ElementBuffer::ebo_in_bind = nullptr;
-
-ElementBuffer::ElementBuffer(const size_t size) : 
-m_id(0), 
-m_indices(size)
+namespace Engine
 {
-    create();
-}
 
-ElementBuffer::~ElementBuffer()
-{
-    destroy();
-}
+    uint32_t ElementBuffer::ebo_in_bind = 0;
 
-ElementBuffer::ElementBuffer(ElementBuffer&& other) noexcept
-{
-    operator=(std::move(other));
-}
-
-ElementBuffer& ElementBuffer::operator=(ElementBuffer&& other) noexcept
-{
-    m_id      = other.m_id;
-    m_indices = std::move(other.m_indices);
-
-    other.m_id = 0;
-
-    return *this;
-}
-
-ElementBuffer& ElementBuffer::operator=(std::vector<uint32_t> indices)
-{
-    m_indices = std::move(indices);
-    return *this;
-}
-
-ElementBuffer& ElementBuffer::operator=(const std::initializer_list<uint32_t> list)
-{
-    m_indices = list;
-    return *this;
-}
-
-void ElementBuffer::update()
-{
-    glCheck(glNamedBufferSubData(m_id, 0, m_indices.size() * sizeof(uint32_t), m_indices.data()));
-}
-
-void ElementBuffer::destroy()
-{
-    if (isCreated())
+    ElementBuffer::ElementBuffer(const size_t size) :
+        m_id(0),
+        m_indices(size)
     {
-        glCheck(glDeleteBuffers(1, &m_id));
-        m_id = 0;
+        glCheck(glCreateBuffers(1, &m_id));
+
+        const auto size_in_bytes = static_cast<GLsizei>(m_indices.size() * sizeof(uint32_t));
+        glCheck(glNamedBufferData(m_id, size_in_bytes, nullptr, GL_STATIC_DRAW));
     }
-}
 
-size_t ElementBuffer::size() const
-{
-    return m_indices.size();
-}
-
-bool ElementBuffer::isCreated() const
-{
-    return m_id != 0;
-}
-
-void ElementBuffer::bind(ElementBuffer* ebo)
-{
-    if (ebo_in_bind != ebo)
+    ElementBuffer::~ElementBuffer()
     {
-        glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo->m_id));
-        ebo_in_bind = ebo;
+        destroy();
     }
-}
 
-void ElementBuffer::unbind()
-{
-    if (ebo_in_bind != nullptr)
+    ElementBuffer::ElementBuffer(ElementBuffer&& other) noexcept
     {
-        glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
-        ebo_in_bind = nullptr;
+        operator=(std::move(other));
     }
-}
 
-void ElementBuffer::create()
-{
-    glCheck(glCreateBuffers(1, &m_id));
+    ElementBuffer& ElementBuffer::operator=(ElementBuffer&& other) noexcept
+    {
+        destroy();
 
-    const auto size_in_bytes = static_cast<GLsizei>(m_indices.size() * sizeof(uint32_t));
-    glCheck(glNamedBufferData(m_id, size_in_bytes, nullptr, GL_STATIC_DRAW));
-}
+        m_id = other.m_id;
+        m_indices = std::move(other.m_indices);
+
+        other.m_id = 0;
+
+        return *this;
+    }
+
+    ElementBuffer& ElementBuffer::operator=(std::vector<uint32_t> indices)
+    {
+        m_indices = std::move(indices);
+        return *this;
+    }
+
+    ElementBuffer& ElementBuffer::operator=(const std::initializer_list<uint32_t> list)
+    {
+        m_indices = list;
+        return *this;
+    }
+
+    void ElementBuffer::update()
+    {
+        glCheck(glNamedBufferSubData(m_id, 0, m_indices.size() * sizeof(uint32_t), m_indices.data()));
+    }
+
+    void ElementBuffer::destroy()
+    {
+        if (m_id > 0)
+        {
+            glCheck(glDeleteBuffers(1, &m_id));
+            m_id = 0;
+        }
+    }
+
+    void ElementBuffer::bind(ElementBuffer* ebo)
+    {
+        if (ebo_in_bind != ebo->m_id)
+        {
+            glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo->m_id));
+            ebo_in_bind = ebo->m_id;
+        }
+    }
+
+    void ElementBuffer::unbind()
+    {
+        if (ebo_in_bind != 0)
+        {
+            glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+            ebo_in_bind = 0;
+        }
+    }
+
+} // namespace Engine

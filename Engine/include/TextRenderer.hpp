@@ -8,32 +8,37 @@
 #include "Color.hpp"
 #include "Texture.hpp"
 
-struct Character
+namespace Engine
 {
-    Texture      texture; // ID handle of the glyph texture
-    Vector2f     size;      // size of glyph
-    Vector2f     bearing;   // Offset from baseline to left/top of glyph
-    unsigned int advance;   // Horizontal offset to advance to next glyph
-};
 
-class TextRenderer
-{
-public:
-    static void initialize(unsigned font_size, unsigned screen_width, unsigned screen_height);
+    struct Character
+    {
+        Texture      texture; // ID handle of the glyph texture
+        Vector2f     size;      // size of glyph
+        Vector2f     bearing;   // Offset from baseline to left/top of glyph
+        unsigned int advance;   // Horizontal offset to advance to next glyph
+    };
 
-    static void renderText(std::string_view text,
-                           Vector2f         pos,
-                           Color            color = Color::White,
-                           unsigned         font_size  = text_size);
+    class TextRenderer
+    {
+    public:
+        static void initialize(unsigned font_size, unsigned screen_width, unsigned screen_height);
 
-    static void releaseResources();
+        static void renderText(std::string_view text,
+            Vector2f         pos,
+            Color            color = Color::White,
+            unsigned         font_size = text_size);
 
-private:
-    static std::array<Character, 128> characters;
+        static void releaseResources();
 
-    static uint32_t VAO, VBO;
+    private:
+        static std::array<Character, 128> characters;
 
-    static Vector2f half_scr_size;
+        static uint32_t VAO, VBO;
 
-    static unsigned text_size;
-};
+        static Vector2f half_scr_size;
+
+        static unsigned text_size;
+    };
+
+} // namespace Engine

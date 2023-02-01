@@ -3,88 +3,97 @@
 
 #include <glad/glad.h>
 
-std::unique_ptr<detail::QuadData> Renderer2D::quad_data = nullptr;
-
-Camera* Renderer2D::cam = nullptr;
-
-size_t Renderer2D::quad_count = 0;
-
-void Renderer2D::Init()
+namespace Engine
 {
-    quad_data = std::make_unique<detail::QuadData>(detail::QuadData{
-        VertexArray{max_vertices_num, VertexBuffer::Usage::StreamDraw},
-        ElementBuffer{max_quad_num * 6}
-    });
 
-    std::vector<uint32_t> indices(max_quad_num * 6);
-    uint32_t              offset = 0;
-    for (size_t i = 0; i < max_quad_num * 6; i += 6, offset += 4)
+    std::unique_ptr<detail::QuadData> Renderer2D::quad_data = nullptr;
+
+    Engine::OrthographicCamera* Renderer2D::cam = nullptr;
+
+    size_t Renderer2D::quad_count = 0;
+
+    void Renderer2D::Init()
     {
-        indices[i + 0] = offset + 0;
-        indices[i + 1] = offset + 1;
-        indices[i + 2] = offset + 2;
+        quad_data = std::make_unique<detail::QuadData>(detail::QuadData{
+            VertexArray{max_vertices_num, VertexBuffer::Usage::StreamDraw},
+            ElementBuffer{max_quad_num * 6}
+            });
 
-        indices[i + 3] = offset + 0;
-        indices[i + 4] = offset + 3;
-        indices[i + 5] = offset + 2;
+        std::vector<uint32_t> indices(max_quad_num * 6);
+        uint32_t              offset = 0;
+        for (size_t i = 0; i < max_quad_num * 6; i += 6, offset += 4)
+        {
+            indices[i + 0] = offset + 0;
+            indices[i + 1] = offset + 1;
+            indices[i + 2] = offset + 2;
+
+            indices[i + 3] = offset + 0;
+            indices[i + 4] = offset + 3;
+            indices[i + 5] = offset + 2;
+        }
+
+        quad_data->ebo = std::move(indices);
+        quad_data->ebo.update();
+        quad_data->vao.setElementBuffer(quad_data->ebo);
     }
 
-    quad_data->ebo = std::move(indices);
-    quad_data->ebo.update();
-    quad_data->vao.setElementBuffer(quad_data->ebo);
-}
-
-void Renderer2D::begin(Camera& scene_cam)
-{
-    cam = &scene_cam;
-    cam->use();
-}
-
-void Renderer2D::end()
-{
-    if (quad_count)
+    void Renderer2D::begin(Engine::OrthographicCamera& scene_cam)
     {
-        quad_data->vao.update();
-        quad_data->vao.drawIndices(
-            quad_count * 6,
-            PrimitiveType::Triangles
-        );
-        quad_count = 0;
-    }
-}
+        cam = &scene_cam;
 
-void Renderer2D::drawQuad(Vector2f position, Vector2f size, Color color)
-{
-    if (quad_data->vao.size() >= max_vertices_num)
-    {
-        end();
-        begin(*cam);
+        auto& program = DefaultShaderProgram::instance();
+        program.use();
+        program.setMat4("view", cam->getViewMatrix());
+        program.setMat4("proj", cam->getProjMatrix());
     }
 
-    Vertex bottom_left;
-    bottom_left.position = position;
-    bottom_left.tex_coord = {0.0F, 0.0F};
-    bottom_left.color    = color;
+    void Renderer2D::end()
+    {
+        if (quad_count)
+        {
+            quad_data->vao.update();
+            quad_data->vao.drawIndices(
+                quad_count * 6,
+                PrimitiveType::Triangles
+            );
+            quad_count = 0;
+        }
+    }
 
-    Vertex bottom_right;
-    bottom_right.position = {position.x + size.x, position.y};
-    bottom_right.tex_coord = {1.0F, 0.0F};
-    bottom_right.color     = color;
+    void Renderer2D::drawQuad(Vector2f position, Vector2f size, Color color)
+    {
+        if (quad_data->vao.size() >= max_vertices_num)
+        {
+            end();
+            begin(*cam);
+        }
 
-    Vertex top_right;
-    top_right.position    = {position.x + size.x, position.y + size.y};
-    top_right.tex_coord = {1.0F, 1.0F};
-    top_right.color       = color;
+        Vertex bottom_left;
+        bottom_left.position = position;
+        bottom_left.tex_coord = { 0.0F, 0.0F };
+        bottom_left.color = color;
 
-    Vertex top_left;
-    top_left.position      = {position.x, position.y + size.y};
-    top_left.tex_coord = {0.0F, 1.0F};
-    top_left.color         = color;
+        Vertex bottom_right;
+        bottom_right.position = { position.x + size.x, position.y };
+        bottom_right.tex_coord = { 1.0F, 0.0F };
+        bottom_right.color = color;
 
-    quad_data->vao[quad_count * 4 + 0] = bottom_left;
-    quad_data->vao[quad_count * 4 + 1] = bottom_right;
-    quad_data->vao[quad_count * 4 + 2] = top_right;
-    quad_data->vao[quad_count * 4 + 3] = top_left;
+        Vertex top_right;
+        top_right.position = { position.x + size.x, position.y + size.y };
+        top_right.tex_coord = { 1.0F, 1.0F };
+        top_right.color = color;
 
-    quad_count++;
-}
+        Vertex top_left;
+        top_left.position = { position.x, position.y + size.y };
+        top_left.tex_coord = { 0.0F, 1.0F };
+        top_left.color = color;
+
+        quad_data->vao[quad_count * 4 + 0] = bottom_left;
+        quad_data->vao[quad_count * 4 + 1] = bottom_right;
+        quad_data->vao[quad_count * 4 + 2] = top_right;
+        quad_data->vao[quad_count * 4 + 3] = top_left;
+
+        quad_count++;
+    }
+
+} // namespace Engine

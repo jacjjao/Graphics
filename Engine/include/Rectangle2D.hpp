@@ -3,25 +3,31 @@
 #include "ElementBuffer.hpp"
 #include "Shape.hpp"
 
-class Rectangle2D : public Shape
+namespace Engine
 {
-public:
-    explicit Rectangle2D(Vector2f size);
-    ~Rectangle2D() override = default;
 
-    Rectangle2D(const Rectangle2D&)            = delete;
-    Rectangle2D& operator=(const Rectangle2D&) = delete;
+    class Rectangle2D : public Shape
+    {
+    public:
+        explicit Rectangle2D(float width, float height);
+        ~Rectangle2D() override = default;
 
-    void draw();
-    void update() override;
+        Rectangle2D(const Rectangle2D&) = delete;
+        Rectangle2D& operator=(const Rectangle2D&) = delete;
 
-    void setWidth(float width);
-    void setHeight(float height);
+        void draw() override;
+        void update() override;
 
-private:
-    void create();
+        void setWidth(float width) { m_width = width; }
+        void setHeight(float height) { m_height = height; }
 
-    Vector2f m_size;
+        float getWidth() const { return m_width; }
+        float getHeight() const { return m_height; }
 
-    ElementBuffer m_ebo;
-};
+    private:
+        float m_width, m_height;
+
+        ElementBuffer m_ebo;
+    };
+
+} // namespace Engine
