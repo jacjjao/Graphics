@@ -1,7 +1,3 @@
-#include "Graphics.hpp"
-#include "include/Application.hpp"
-#include "include/Input/Input.hpp"
-#include "include/Utility/Log.hpp"
 /*
 // third party
 #include <glad/glad.h>
@@ -290,7 +286,7 @@ void framebuffer_size_callback(GLFWwindow*, int width, int height)
 
 */
 
-#include "include/Input/KeyCodes.hpp"
+#include "Graphics.hpp"
 
 constexpr unsigned scr_width = 1280, scr_height = 720;
 
