@@ -18,6 +18,98 @@ namespace Engine
 		EG_CORE_ERROR("GLFW Error: ({}): {}", error, description);
 	}
 
+	static void APIENTRY GLDebugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* msg, const void* data)
+	{
+		static std::string _source;
+		static std::string _type;
+
+		switch (source) {
+		case GL_DEBUG_SOURCE_API:
+			_source = "API";
+			break;
+
+		case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
+			_source = "WINDOW SYSTEM";
+			break;
+
+		case GL_DEBUG_SOURCE_SHADER_COMPILER:
+			_source = "SHADER COMPILER";
+			break;
+
+		case GL_DEBUG_SOURCE_THIRD_PARTY:
+			_source = "THIRD PARTY";
+			break;
+
+		case GL_DEBUG_SOURCE_APPLICATION:
+			_source = "APPLICATION";
+			break;
+
+		case GL_DEBUG_SOURCE_OTHER:
+			_source = "UNKNOWN";
+			break;
+
+		default:
+			_source = "UNKNOWN";
+			break;
+		}
+
+		switch (type) {
+		case GL_DEBUG_TYPE_ERROR:
+			_type = "ERROR";
+			break;
+
+		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+			_type = "DEPRECATED BEHAVIOR";
+			break;
+
+		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+			_type = "UDEFINED BEHAVIOR";
+			break;
+
+		case GL_DEBUG_TYPE_PORTABILITY:
+			_type = "PORTABILITY";
+			break;
+
+		case GL_DEBUG_TYPE_PERFORMANCE:
+			_type = "PERFORMANCE";
+			break;
+
+		case GL_DEBUG_TYPE_OTHER:
+			_type = "OTHER";
+			break;
+
+		case GL_DEBUG_TYPE_MARKER:
+			_type = "MARKER";
+			break;
+
+		default:
+			_type = "UNKNOWN";
+			break;
+		}
+
+		switch (severity) {
+		case GL_DEBUG_SEVERITY_HIGH:
+			EG_CORE_ERROR("{}: {} of {} severity, rasied from {}: {}", id, _type, "HIGH", _source, msg);
+			break;
+
+		case GL_DEBUG_SEVERITY_MEDIUM:
+			EG_CORE_WARN("{}: {} of {} severity, rasied from {}: {}", id, _type, "MEDIUM", _source, msg);
+			break;
+
+		case GL_DEBUG_SEVERITY_LOW:
+			EG_CORE_TRACE("{}: {} of {} severity, rasied from {}: {}", id, _type, "LOW", _source, msg);
+			break;
+
+		case GL_DEBUG_SEVERITY_NOTIFICATION:
+			EG_CORE_INFO("{}: {} of {} severity, rasied from {}: {}", id, _type, "INFO", _source, msg);
+			break;
+
+		default:
+			EG_CORE_ERROR("{}: {} of {} severity, rasied from {}: {}", id, _type, "FATAL", _source, msg);
+			break;
+		}
+	}
+
 	std::unique_ptr<Window> Window::create(const WindowProps& props)
 	{
 		return std::make_unique<WindowsWindow>(props);
@@ -52,13 +144,19 @@ namespace Engine
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		
+
 		m_window = glfwCreateWindow((int)props.width, (int)props.height, m_data.title.c_str(), nullptr, nullptr);
 		glfwMakeContextCurrent(m_window);
 		auto status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		EG_CORE_ASSERT(status, "Failed to initialized Glad!");
 		glfwSetWindowUserPointer(m_window, &m_data);
 		setVSync(true);
+
+#ifdef EG_ENABLE_DEBUG_OUTPUT
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(GLDebugMessageCallback, nullptr);
+#endif
 
 		// Set GLFW callbacks
 		glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, const int width, const int height) {

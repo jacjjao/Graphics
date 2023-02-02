@@ -10,6 +10,7 @@ target_compile_definitions(MyGraphicsLib
 PUBLIC 
 	$<$<CONFIG:Debug>:EG_DEBUG>
 	$<$<CONFIG:Debug>:EG_ENABLE_ASSERTS>
+	$<$<CONFIG:Debug>:EG_ENABLE_DEBUG_OUTPUT>
 )
 
 target_precompile_headers(MyGraphicsLib

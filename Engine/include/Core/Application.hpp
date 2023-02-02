@@ -26,7 +26,6 @@ namespace Engine
 		void pushOverlay(Layer* overlay);
 
 		Window& getWindow() { return *m_window; }
-
 	private:
 		bool onWindowClosed(WindowCloseEvent& e);
 

@@ -304,8 +304,6 @@ public:
         
         Engine::Renderer2D::Init();
         Engine::TextRenderer::initialize(28);
-
-        int a = 10;
     }
 
     void onAttach() override {}
@@ -347,11 +345,20 @@ public:
         Engine::Renderer2D::end();
 
         Engine::TextRenderer::renderText("Hello World!", { -1280 / 2, 720 / 2 }, Engine::Color::Yellow);
+        
+        static int fps_counter = 0;
+        fps_counter++;
+        if (m_fps_clock.getElapsedTime().asSeconds() >= 1.0) {
+            EG_TRACE("FPS: {}", fps_counter);
+            m_fps_clock.restart();
+            fps_counter = 0;
+        }
     }
 
 private:
     std::unique_ptr<Engine::OrthographicCamera> m_cam;
     std::unique_ptr<Engine::Shape> m_shape;
+    Engine::Clock m_fps_clock;
 };
 
 class SandBox : public Engine::Application
