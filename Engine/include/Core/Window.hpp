@@ -10,8 +10,8 @@ namespace Engine
 	struct WindowProps
 	{
 		std::string title = "Graphics Engine";
-		unsigned width = 1280;
-		unsigned height = 720;
+		unsigned width = 2000;
+		unsigned height = 1200;
 	};
 
 	class Window

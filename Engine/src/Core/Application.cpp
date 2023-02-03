@@ -11,7 +11,7 @@ namespace Engine
 	{
 		while (m_running)
 		{
-			glClearColor(0, 0, 0, 1);
+			glClearColor(m_clear_color.r, m_clear_color.g, m_clear_color.b, m_clear_color.a);
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			for (const auto& layer : m_layerStack)
@@ -61,9 +61,18 @@ namespace Engine
 		m_layerStack.pushOverlay(overlay);
 	}
 
-	bool Application::onWindowClosed(Engine::WindowCloseEvent& e)
+	bool Application::onWindowClosed(WindowCloseEvent& e)
 	{
 		m_running = false;
 		return true;
 	}
+
+	void Application::setClearColor(const Color color)
+	{
+		m_clear_color.r = float(color.r) / 255.0f;
+		m_clear_color.g = float(color.g) / 255.0f;
+		m_clear_color.b = float(color.b) / 255.0f;
+		m_clear_color.a = float(color.a);
+	}
+
 } // namespace Engine

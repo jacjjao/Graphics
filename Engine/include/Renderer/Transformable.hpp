@@ -12,6 +12,9 @@ namespace Engine
         Transformable();
         virtual ~Transformable() = default;
 
+        Transformable(Transformable&&) = default;
+        Transformable& operator=(Transformable&&) = default;
+
         void translate(Vector3f vector);
         void scale(Vector2f factor);
         void rotate(float degree);

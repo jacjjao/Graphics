@@ -26,6 +26,9 @@ namespace Engine
 		void pushOverlay(Layer* overlay);
 
 		Window& getWindow() { return *m_window; }
+
+		void setClearColor(const Engine::Color color);
+
 	private:
 		bool onWindowClosed(WindowCloseEvent& e);
 
@@ -36,5 +39,10 @@ namespace Engine
 		bool m_running = true;
 
 		static Application* s_instance;
+
+		struct
+		{
+			float r, g, b, a;
+		} m_clear_color;
 	};
 } // namespace Engine

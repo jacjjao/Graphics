@@ -18,9 +18,7 @@ namespace Engine
         void setRadius(float radius);
         void setRadius(Vector2f radius);
 
-        Circle2D(const Circle2D&) = delete;
-        Circle2D& operator=(const Circle2D&) = delete;
-
+        Circle2D(Circle2D&&) = default;
     private:
         Vector2f m_radius;
     };

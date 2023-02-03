@@ -14,8 +14,8 @@ namespace Engine
         explicit Shape(size_t size);
         virtual ~Shape() = default;
 
-        Shape(const Shape&) = delete;
-        Shape& operator=(const Shape&) = delete;
+        Shape(Shape&&) = default;
+        Shape& operator=(Shape&&) = default;
 
         virtual void update() = 0;
         virtual void draw() = 0;

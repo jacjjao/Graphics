@@ -13,12 +13,14 @@ namespace Engine
         Shape{ point_count + 2 },
         m_radius{ radius }
     {
+        update();
     }
 
     Circle2D::Circle2D(const Vector2f radius, const size_t point_count) :
         Shape{ point_count + 2 },
         m_radius{ radius }
     {
+        update();
     }
 
     void Circle2D::draw()

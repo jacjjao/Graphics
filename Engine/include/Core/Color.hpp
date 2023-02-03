@@ -35,8 +35,9 @@ namespace Engine
         static const Color Green;
         static const Color Black;
         static const Color White;
+        static const Color Grey;
 
-        uint8_t r = 0, g = 0, b = 0, a = 0;
+        uint8_t r = 255, g = 255, b = 255, a = 255;
     };
 
 } // namespace Engine

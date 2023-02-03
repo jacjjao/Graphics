@@ -1,4 +1,6 @@
 /*
+#include "Graphics.hpp"
+using namespace Engine;
 // third party
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
@@ -8,6 +10,7 @@
 #include <cmath>
 #include <memory>
 #include <numbers>
+#include <include/Core/FileSystem.hpp>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -23,7 +26,7 @@ constexpr unsigned SCR_HEIGHT = 1200;
 std::unique_ptr<Rectangle2D> rect{};
 std::unique_ptr<Circle2D>    circle{};
 std::unique_ptr<Texture>     texture{};
-std::unique_ptr<Camera>      camera{};
+std::unique_ptr<OrthographicCamera>      camera{};
 
 constexpr auto scr_half_width  = static_cast<float>(SCR_WIDTH / 2);
 constexpr auto scr_half_height = static_cast<float>(SCR_HEIGHT / 2);
@@ -90,11 +93,9 @@ int main()
 #endif
    
     Texture::Init();
-    Renderer2D::Init();
-    TextRenderer::initialize(48, SCR_WIDTH, SCR_HEIGHT);
 
     {
-        camera = std::make_unique<Camera>(-scr_half_width, scr_half_width, -scr_half_height, scr_half_height);
+        camera = std::make_unique<OrthographicCamera>(-scr_half_width, scr_half_width, -scr_half_height, scr_half_height);
 
         auto& shaderProgram = DefaultShaderProgram::instance();
         
@@ -104,8 +105,8 @@ int main()
         uint32_t data = 0xffffffff;
         texture3.createFromData(&data, 1, 1);
 
-        rect = std::make_unique<Rectangle2D>(Vector2f{100, 100});
-        rect->setPosition(screenPointToNDC(Vector3f{300, 1000, 0.0F}));
+        rect = std::make_unique<Rectangle2D>(100, 100);
+        rect->setPosition({1000, 0, 0.0F});
         rect->applyTexture(&texture3);
 
 
@@ -127,7 +128,6 @@ int main()
         vao.setUsage(VertexBuffer::Usage::StreamDraw);
 
         circle->scale({2.0F});
-        rect->scale({2.0F});
         
         Line line{screenPointToNDC({100.0F, 100.0F}), screenPointToNDC({500.0F, 100.0F})};
         line.setLineWidth(10.0F);
@@ -179,23 +179,14 @@ int main()
 
             shaderProgram.use();
             
-            camera->use();
+            shaderProgram.setMat4("view", camera->getViewMatrix());
+            shaderProgram.setMat4("proj", camera->getProjMatrix());
             rect->draw();
             circle->draw();
             vao.draw();
             line.draw();
             constexpr auto text_pos = screenPointToNDC({0, 0});
             constexpr auto text_color = Color::fromHex(0x11F311FF);
-
-            Renderer2D::begin(*camera);
-            Renderer2D::drawQuad({ 100, 100 }, { 100, 100 }, Color::Red);
-            Renderer2D::drawQuad({ -100, 100 }, { 100, 100 }, Color::Blue);
-            Renderer2D::end();
-            
-            TextRenderer::renderText("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-                                     text_pos,
-                                     text_color,
-                                     48);
                                      
             glfwSwapBuffers(window);
 
@@ -283,49 +274,61 @@ void framebuffer_size_callback(GLFWwindow*, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
-
 */
 
 #include "Graphics.hpp"
+#include "include/Input/Input.hpp"
+#include "include/Physics/VerletObject.hpp"
+#include "include/Physics/Solver.hpp"
 
-constexpr unsigned scr_width = 1280, scr_height = 720;
+Engine::Vector2f screenPointToGL(const Engine::Vector2f vec, const float scr_width, const float scr_height)
+{
+    const auto half_scr_width = scr_width / 2.0f;
+    const auto half_scr_height = scr_height / 2.0f;
+    return {
+        vec.x - half_scr_width,
+        half_scr_height - vec.y
+    };
+}
 
 class TheLayer : public Engine::Layer
 {
 public:
     TheLayer()
     {
-        m_cam = std::make_unique<Engine::OrthographicCamera>((float)-1280 / 2, (float)1280 / 2, (float)-720 / 2, (float)720 / 2);
-        m_shape = std::make_unique<Engine::Line>(Engine::Vector2f{0, 0}, Engine::Vector2f{200, 0});
+        const auto width = (float)Engine::Application::getInstance().getWindow().getWidth();
+        const auto height = (float)Engine::Application::getInstance().getWindow().getHeight();
 
-        m_shape->setColor(Engine::Color::White);
-        m_shape->translate({ 100, 0, 0 });
-        m_shape->update();
-        
-        Engine::Renderer2D::Init();
-        Engine::TextRenderer::initialize(28);
+        m_cam = std::make_unique<Engine::OrthographicCamera>((float)-width / 2, (float)width / 2, (float)-height / 2, (float)height / 2);
+        m_constraint_circle = std::make_unique<Engine::Circle2D>(500, 64);
+        m_constraint_circle->setColor(Engine::Color::Black);
+        m_constraint_circle->update();
+
+        m_solver.addObject(Engine::VerletObject{{300, 100}});
+        m_circles.emplace_back(50.0f);
     }
 
     void onAttach() override {}
     void onDetach() override {}
     void onEvent(Engine::Event& e) override 
     {
-        /*
         if (e.getEventType() == Engine::EventType::KeyPressed) {
-            auto keycode = static_cast<Engine::KeyPressedEvent&>(e).GetKeyCode();
-            if (keycode == Engine::Key::W) {
-                m_shape->translate({ 0, speed, 0 });
+            const auto keycode = static_cast<Engine::KeyPressedEvent&>(e).GetKeyCode();
+            if (keycode == Engine::Key::Escape) {
+                Engine::WindowCloseEvent close_signal{};
+                Engine::Application::getInstance().onEvent(close_signal);
             }
-            if (keycode == Engine::Key::S) {
-                m_shape->translate({ 0, -speed, 0 });
-            }
-            if (keycode == Engine::Key::A) {
-                m_shape->translate({ -speed, 0, 0 });
-            }
-            if (keycode == Engine::Key::D) {
-                m_shape->translate({ speed, 0, 0 });
-            }
-        }*/
+        }
+        if (e.getEventType() == Engine::EventType::MouseButtonPressed) {
+            const auto [x, y] = Engine::Input::getMousePosition();
+            const auto pos = screenPointToGL(
+                { x, y }, 
+                Engine::Application::getInstance().getWindow().getWidth(), 
+                Engine::Application::getInstance().getWindow().getHeight()
+            );
+            m_solver.addObject(Engine::VerletObject{pos});
+            m_circles.emplace_back(50.0f);
+        }
     }
 
     void onUpdate() override
@@ -334,31 +337,26 @@ public:
         program.use();
         program.setMat4("view", m_cam->getViewMatrix());
         program.setMat4("proj", m_cam->getProjMatrix());
-        
-        m_shape->draw();
 
-        Engine::Renderer2D::begin(*m_cam);
-        Engine::Renderer2D::drawQuad({ -100, 0 }, { 100, 100 }, Engine::Color::Red);
-        Engine::Renderer2D::drawQuad({ 0, 0 }, { 100, 100 }, Engine::Color::Green);
-        Engine::Renderer2D::drawQuad({ -100, -100 }, { 100, 100 }, Engine::Color::Yellow);
-        Engine::Renderer2D::drawQuad({ 0, -100 }, { 100, 100 }, Engine::Color::Blue);
-        Engine::Renderer2D::end();
+        const auto dt = m_timer.getElapsedTime().asSeconds();
+        m_solver.update((float)dt);
+        m_timer.restart();
+        const auto& objs = m_solver.getObjects();
 
-        Engine::TextRenderer::renderText("Hello World!", { -1280 / 2, 720 / 2 }, Engine::Color::Yellow);
-        
-        static int fps_counter = 0;
-        fps_counter++;
-        if (m_fps_clock.getElapsedTime().asSeconds() >= 1.0) {
-            EG_TRACE("FPS: {}", fps_counter);
-            m_fps_clock.restart();
-            fps_counter = 0;
+        // draw
+        m_constraint_circle->draw();
+        for (int i = 0; i < objs.size(); i++) {
+            m_circles[i].setPosition(Engine::Vector3f{ objs[i].getPosition() });
+            m_circles[i].draw();
         }
     }
 
 private:
     std::unique_ptr<Engine::OrthographicCamera> m_cam;
-    std::unique_ptr<Engine::Shape> m_shape;
-    Engine::Clock m_fps_clock;
+    std::unique_ptr<Engine::Circle2D> m_constraint_circle;
+    Engine::Clock m_timer;
+    Engine::Solver m_solver;
+    std::vector<Engine::Circle2D> m_circles;
 };
 
 class SandBox : public Engine::Application
@@ -366,6 +364,7 @@ class SandBox : public Engine::Application
 public:
     SandBox()
     {
+        setClearColor(Engine::Color::Grey);
         pushLayer(new TheLayer{});
     }
 
