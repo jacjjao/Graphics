@@ -12,13 +12,9 @@ namespace Engine
 	public:
 		void update(const float dt)
 		{
-			constexpr int step = 10;
-			const float dtt = dt / float(step);
-			for (int i = 0; i < step; i++) {
-				applyGravity();
-				applyConstraint();
-				updateObjects(dtt);
-			}
+			applyGravity();
+			applyConstraint();
+			updateObjects(dt);
 		}
 
 		void addObject(VerletObject obj)
