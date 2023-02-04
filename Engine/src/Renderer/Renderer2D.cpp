@@ -68,22 +68,22 @@ namespace Engine
             begin(*cam);
         }
 
-        Vertex bottom_left;
+        Vertex2D bottom_left;
         bottom_left.position = position;
         bottom_left.tex_coord = { 0.0F, 0.0F };
         bottom_left.color = color;
 
-        Vertex bottom_right;
+        Vertex2D bottom_right;
         bottom_right.position = { position.x + size.x, position.y };
         bottom_right.tex_coord = { 1.0F, 0.0F };
         bottom_right.color = color;
 
-        Vertex top_right;
+        Vertex2D top_right;
         top_right.position = { position.x + size.x, position.y + size.y };
         top_right.tex_coord = { 1.0F, 1.0F };
         top_right.color = color;
 
-        Vertex top_left;
+        Vertex2D top_left;
         top_left.position = { position.x, position.y + size.y };
         top_left.tex_coord = { 0.0F, 1.0F };
         top_left.color = color;

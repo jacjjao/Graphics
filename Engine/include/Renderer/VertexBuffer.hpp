@@ -28,7 +28,7 @@ namespace Engine
         VertexBuffer& operator=(VertexBuffer&& other) noexcept;
 
         void destroy();
-        void updateData(std::span<Vertex> vertices);
+        void updateData(std::span<Vertex2D> vertices);
         void resize(size_t size);
 
         [[nodiscard]] size_t size() const { return m_size; }

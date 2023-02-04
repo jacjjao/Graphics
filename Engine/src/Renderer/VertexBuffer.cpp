@@ -15,7 +15,7 @@ namespace Engine
         m_capacity{ size }
     {
         glCheck(glCreateBuffers(1, &m_id));
-        glCheck(glNamedBufferData(m_id, m_size * sizeof(Vertex), nullptr, static_cast<GLenum>(m_usage)));
+        glCheck(glNamedBufferData(m_id, m_size * sizeof(Vertex2D), nullptr, static_cast<GLenum>(m_usage)));
     }
 
     VertexBuffer::~VertexBuffer()
@@ -55,9 +55,9 @@ namespace Engine
         }
     }
 
-    void VertexBuffer::updateData(const std::span<Vertex> vertices)
+    void VertexBuffer::updateData(const std::span<Vertex2D> vertices)
     {
-        glCheck(glNamedBufferSubData(m_id, 0, vertices.size() * sizeof(Vertex), vertices.data()));
+        glCheck(glNamedBufferSubData(m_id, 0, vertices.size() * sizeof(Vertex2D), vertices.data()));
     }
 
     void VertexBuffer::resize(const size_t size)
@@ -68,7 +68,7 @@ namespace Engine
             return;
         }
 
-        glCheck(glNamedBufferData(m_id, m_size * sizeof(Vertex), nullptr, static_cast<GLenum>(m_usage)));
+        glCheck(glNamedBufferData(m_id, m_size * sizeof(Vertex2D), nullptr, static_cast<GLenum>(m_usage)));
     }
 
     void VertexBuffer::bind(VertexBuffer* vbo)

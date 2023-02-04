@@ -6,9 +6,9 @@
 namespace Engine
 {
 
-    struct Vertex
+    struct Vertex2D
     {
-        Vector3f position;
+        Vector2f position;
         Color    color;
         Vector2f tex_coord;
     };

@@ -33,6 +33,7 @@ namespace Engine
         void setI32(const std::string& name, int32_t value);
         void setFloat(const std::string& name, float value);
         void setBool(const std::string& name, bool value);
+        void setMat3(const std::string& name, const Matrix3& matrix);
         void setMat4(const std::string& name, const Matrix4& matrix);
         void setVec3(const std::string& name, Vector3f vec);
         void setVec4(const std::string& name, Color color);
@@ -82,7 +83,7 @@ namespace Engine
             inline const std::string vertex_shader_src = R"(
                 #version 460 core
 
-                layout (location = 0) in vec3 in_pos;
+                layout (location = 0) in vec2 in_pos;
                 layout (location = 1) in vec4 in_color; 
                 layout (location = 2) in vec2 in_tex_coord;
                 
@@ -95,7 +96,7 @@ namespace Engine
                 
                 void main()
                 {
-                	gl_Position = proj * view * model * vec4(in_pos, 1.0);
+                	gl_Position = proj * view * model * vec4(in_pos, 0.0, 1.0);
                 	frag_color = in_color;
                 	tex_coord = in_tex_coord;
                 }

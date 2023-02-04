@@ -15,15 +15,15 @@ namespace Engine
         Transformable(Transformable&&) = default;
         Transformable& operator=(Transformable&&) = default;
 
-        void translate(Vector3f vector);
+        void translate(Vector2f vector);
         void scale(Vector2f factor);
         void rotate(float degree);
 
         const Matrix4& getTransformMatrix();
 
-        void setPosition(Vector3f position);
+        void setPosition(Vector2f position);
 
-        [[nodiscard]] Vector3f getPosition() const;
+        [[nodiscard]] Vector2f getPosition() const;
 
     private:
         bool should_update = false;
@@ -31,7 +31,7 @@ namespace Engine
 
         Vector2f m_scale;
 
-        Vector3f m_position;
+        Vector2f m_position;
 
         Matrix4 m_model;
     };

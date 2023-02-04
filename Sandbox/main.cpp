@@ -346,7 +346,7 @@ public:
         // draw
         m_constraint_circle->draw();
         for (int i = 0; i < objs.size(); i++) {
-            m_circles[i].setPosition(Engine::Vector3f{ objs[i].getPosition() });
+            m_circles[i].setPosition(objs[i].getPosition());
             m_circles[i].draw();
         }
     }

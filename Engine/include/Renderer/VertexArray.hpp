@@ -14,8 +14,9 @@ namespace Engine
     class VertexArray
     {
     public:
-        using value_type = std::vector<Vertex>::value_type;
-        using iterator = std::vector<Vertex>::iterator;
+        using container = std::vector<Vertex2D>;
+        using value_type = container::value_type;
+        using iterator = container::iterator;
 
         explicit VertexArray(size_t size, VertexBuffer::Usage usage = VertexBuffer::Usage::StaticDraw);
         ~VertexArray();
@@ -28,14 +29,14 @@ namespace Engine
 
         void update();
         void draw(PrimitiveType primitive_type = PrimitiveType::Triangles,
-            const Matrix4& model_mat = Constants::identity_mat4,
-            float color_alpha = 1.0F,
-            Texture* texture = nullptr);
+                  const Matrix4& model_mat = Constants::identity_mat4,
+                  float color_alpha = 1.0F,
+                  Texture* texture = nullptr);
         void drawIndices(int32_t size,
-            PrimitiveType primitive_type = PrimitiveType::Triangles,
-            const Matrix4& model_mat = Constants::identity_mat4,
-            float color_alpha = 1.0F,
-            Texture* texture = nullptr);
+                         PrimitiveType primitive_type = PrimitiveType::Triangles,
+                         const Matrix4& model_mat = Constants::identity_mat4,
+                         float color_alpha = 1.0F,
+                         Texture* texture = nullptr);
 
         void setElementBuffer(ElementBuffer& ebo);
 
@@ -70,7 +71,7 @@ namespace Engine
 
         VertexBuffer m_vbo;
 
-        std::vector<Vertex> m_vertices;
+        container m_vertices;
     };
 
 } // namespace Engine

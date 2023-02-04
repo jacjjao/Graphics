@@ -154,12 +154,18 @@ namespace Engine
         glCheck(glUniform1i(loc, value));
     }
 
+    void ShaderProgram::setMat3(const std::string& name, const Matrix3& matrix)
+    {
+        const auto loc = getLocation(name);
+        glUniformMatrix3fv(loc, 1, GL_TRUE, matrix.data());
+    }
+    
     void ShaderProgram::setMat4(const std::string& name, const Matrix4& matrix)
     {
         const auto loc = getLocation(name);
         glCheck(glUniformMatrix4fv(loc, 1, GL_TRUE, matrix.data()));
     }
-
+    
     void ShaderProgram::setVec3(const std::string& name, const Vector3f vec)
     {
         const auto loc = getLocation(name);
@@ -189,26 +195,22 @@ namespace Engine
 
     int32_t ShaderProgram::getLocation(const std::string& name)
     {
-        const auto it = locations.find(name);
-
-        GLint loc = 0;
-
-        const bool is_found = (it != locations.end());
-        if (!is_found)
+        const auto it       = locations.find(name);
+        const auto is_found = (it != locations.end());
+        if (is_found)
         {
-            glCheck(loc = glGetUniformLocation(m_id, name.c_str()));
-            if (loc != -1)
-            {
-                locations[name] = loc;
-            }
-            else
-            {
-                EG_CORE_ERROR("Cannot found uniform {}", name);
-            }
+            return it->second;
+        }
+
+        const auto loc            = glGetUniformLocation(m_id, name.c_str());
+        const auto uniform_exists = (loc != -1);
+        if (uniform_exists)
+        {
+            locations[name] = loc;
         }
         else
         {
-            loc = it->second;
+            EG_CORE_ERROR("Cannot found uniform {}", name);
         }
         return loc;
     }

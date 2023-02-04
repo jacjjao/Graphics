@@ -42,7 +42,7 @@ namespace Engine
         const auto tex_center = m_tex_rect.position + m_tex_rect.size / 2.0F;
         const auto half_tex_size = m_tex_rect.size / 2.0F;
 
-        m_vao[0].position = Vector3f{ 0.0F, 0.0F, 0.0F };
+        m_vao[0].position = { 0.0F, 0.0F };
         m_vao[0].color = m_color;
         m_vao[0].tex_coord = tex_center;
         for (size_t i = 1; i < m_vao.size() - 1; i++)

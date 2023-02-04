@@ -65,9 +65,9 @@ namespace Engine
     }
 
     void VertexArray::draw(const PrimitiveType primitive_type,
-        const Matrix4& model_mat,
-        const float         color_alpha,
-        Texture* texture)
+                           const Matrix4& model_mat,
+                           const float color_alpha,
+                           Texture* texture)
     {
         auto& program = DefaultShaderProgram::instance();
 
@@ -84,10 +84,10 @@ namespace Engine
     }
 
     void VertexArray::drawIndices(const int32_t size,
-        const PrimitiveType primitive_type,
-        const Matrix4& model_mat,
-        const float color_alpha,
-        Texture* texture)
+                                  const PrimitiveType primitive_type,
+                                  const Matrix4& model_mat,
+                                  const float color_alpha,
+                                  Texture* texture)
     {
         auto& program = DefaultShaderProgram::instance();
 
@@ -142,14 +142,14 @@ namespace Engine
         VertexArray::bind(this);
         VertexBuffer::bind(&m_vbo);
 
-        constexpr auto stride = static_cast<GLsizei>(sizeof(Vertex));
+        constexpr auto stride = static_cast<GLsizei>(sizeof(Vertex2D));
         glCheck(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0));
         glCheck(glEnableVertexAttribArray(0));
 
-        glCheck(glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, stride, (void*)(sizeof(Vertex::position))));
+        glCheck(glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, stride, (void*)(sizeof(Vertex2D::position))));
         glCheck(glEnableVertexAttribArray(1));
 
-        glCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)(sizeof(Vertex::position) + sizeof(Vertex::color))));
+        glCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)(sizeof(Vertex2D::position) + sizeof(Vertex2D::color))));
         glCheck(glEnableVertexAttribArray(2));
 
         VertexArray::unbind();

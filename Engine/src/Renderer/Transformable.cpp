@@ -13,7 +13,7 @@ namespace Engine
     {
     }
 
-    void Transformable::translate(const Vector3f vector)
+    void Transformable::translate(const Vector2f vector)
     {
         m_position += vector;
         should_update = true;
@@ -38,7 +38,7 @@ namespace Engine
             const auto theta = radians(m_theta);
             const auto sine = std::sin(theta);
             const auto cosine = std::cos(theta);
-            const auto [x, y, _] = m_position;
+            const auto [x, y] = m_position;
 
             m_model[0][0] = m_scale.x * cosine;
             m_model[0][1] = -m_scale.y * sine;
@@ -54,13 +54,13 @@ namespace Engine
         return m_model;
     }
 
-    void Transformable::setPosition(const Vector3f position)
+    void Transformable::setPosition(const Vector2f position)
     {
         m_position = position;
         should_update = true;
     }
 
-    Vector3f Transformable::getPosition() const
+    Vector2f Transformable::getPosition() const
     {
         return m_position;
     }
