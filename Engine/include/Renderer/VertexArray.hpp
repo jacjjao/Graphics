@@ -13,11 +13,13 @@ namespace Engine
 
     class VertexArray
     {
-    public:
-        using container = std::vector<Vertex2D>;
-        using value_type = container::value_type;
-        using iterator = container::iterator;
+    private:
+        using element_type = Vertex2D;
+        using container    = std::vector<Vertex2D>;
+        using value_type   = container::value_type;
+        using iterator     = container::iterator;
 
+    public:
         explicit VertexArray(size_t size, VertexBuffer::Usage usage = VertexBuffer::Usage::StaticDraw);
         ~VertexArray();
 
@@ -40,7 +42,7 @@ namespace Engine
 
         void setElementBuffer(ElementBuffer& ebo);
 
-        void resize(size_t size);
+        void resize(size_t size) { m_vertices.resize(size); }
         void push_back(const value_type& item) { m_vertices.push_back(item); }
         void pop_back() { m_vertices.pop_back(); }
         void clear() { m_vertices.clear(); }
