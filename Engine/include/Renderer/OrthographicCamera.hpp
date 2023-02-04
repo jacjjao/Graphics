@@ -16,9 +16,12 @@ namespace Engine
         void rotate(float degree);
         void scale(Vector2f scale);
 
-        [[nodiscard]] Vector3f getPosition() const { return m_position; }
-        [[nodiscard]] const Matrix4& getViewMatrix();
-        [[nodiscard]] const Matrix4& getProjMatrix() const { return m_proj; }
+        [[nodiscard]] 
+        Vector3f getPosition() const { return m_position; }
+        [[nodiscard]] 
+        const Matrix4& getViewMatrix();
+        [[nodiscard]] 
+        const Matrix4& getProjMatrix() const { return m_proj; }
 
         OrthographicCamera(const OrthographicCamera&) = delete;
         OrthographicCamera& operator=(const OrthographicCamera&) = delete;
