@@ -28,7 +28,8 @@ namespace Engine
         void use();
         static void unuse();
 
-        [[nodiscard]] uint32_t getID() const;
+        [[nodiscard]] 
+        uint32_t getID() const { return m_id; }
 
         void setI32(const std::string& name, int32_t value);
         void setFloat(const std::string& name, float value);

@@ -35,10 +35,10 @@ namespace Engine
     {
         int32_t success = 0;
         char    info_log[512] = {};
-        glCheck(glGetShaderiv(shader, GL_COMPILE_STATUS, &success));
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
         if (!success)
         {
-            glCheck(glGetShaderInfoLog(shader, 512, nullptr, info_log));
+            glGetShaderInfoLog(shader, 512, nullptr, info_log);
             EG_CORE_ERROR("Shader compile error!\n{}", info_log);
             return FAILED;
         }
@@ -49,10 +49,10 @@ namespace Engine
     {
         int32_t success = 0;
         char    info_log[512] = {};
-        glCheck(glGetProgramiv(program, GL_LINK_STATUS, &success));
+        glGetProgramiv(program, GL_LINK_STATUS, &success);
         if (!success)
         {
-            glCheck(glGetProgramInfoLog(program, 512, nullptr, info_log));
+            glGetProgramInfoLog(program, 512, nullptr, info_log);
             EG_CORE_ERROR("Shader program link error!\n{}", info_log);
             return FAILED;
         }
@@ -83,41 +83,41 @@ namespace Engine
         const auto* f_shader_code = fragment_src.data();
 
         GLuint vertex = 0;
-        glCheck(vertex = glCreateShader(GL_VERTEX_SHADER));
-        glCheck(glShaderSource(vertex, 1, &v_shader_code, nullptr));
-        glCheck(glCompileShader(vertex));
+        vertex = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(vertex, 1, &v_shader_code, nullptr);
+        glCompileShader(vertex);
         if (checkShaderCompileStatus(vertex))
         {
             EG_CORE_INFO("Vertex shader has been successfully compiled");
         }
 
         GLuint fragment = 0;
-        glCheck(fragment = glCreateShader(GL_FRAGMENT_SHADER));
-        glCheck(glShaderSource(fragment, 1, &f_shader_code, nullptr));
-        glCheck(glCompileShader(fragment));
+        fragment = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(fragment, 1, &f_shader_code, nullptr);
+        glCompileShader(fragment);
         if (checkShaderCompileStatus(fragment))
         {
             EG_CORE_INFO("Fragment shader has been successfully compiled");
         }
 
-        glCheck(m_id = glCreateProgram());
-        glCheck(glAttachShader(m_id, vertex));
-        glCheck(glAttachShader(m_id, fragment));
-        glCheck(glLinkProgram(m_id));
+        m_id = glCreateProgram();
+        glAttachShader(m_id, vertex);
+        glAttachShader(m_id, fragment);
+        glLinkProgram(m_id);
         if (checkProgramLinkStatus(m_id))
         {
             EG_CORE_INFO("Shaders have been successfully linked to the program");
         }
 
-        glCheck(glDeleteShader(vertex));
-        glCheck(glDeleteShader(fragment));
+        glDeleteShader(vertex);
+        glDeleteShader(fragment);
     }
 
     void ShaderProgram::use()
     {
         if (program_in_use != m_id)
         {
-            glCheck(glUseProgram(m_id));
+            glUseProgram(m_id);
             program_in_use = m_id;
         }
     }
@@ -126,32 +126,27 @@ namespace Engine
     {
         if (program_in_use != 0)
         {
-            glCheck(glUseProgram(0));
+            glUseProgram(0);
             program_in_use = 0;
         }
-    }
-
-    uint32_t ShaderProgram::getID() const
-    {
-        return m_id;
     }
 
     void ShaderProgram::setI32(const std::string& name, const int32_t value)
     {
         const auto loc = getLocation(name);
-        glCheck(glUniform1i(loc, value));
+        glUniform1i(loc, value);
     }
 
     void ShaderProgram::setFloat(const std::string& name, const float value)
     {
         const auto loc = getLocation(name);
-        glCheck(glUniform1f(loc, value));
+        glUniform1f(loc, value);
     }
 
     void ShaderProgram::setBool(const std::string& name, const bool value)
     {
         const auto loc = getLocation(name);
-        glCheck(glUniform1i(loc, value));
+        glUniform1i(loc, value);
     }
 
     void ShaderProgram::setMat3(const std::string& name, const Matrix3& matrix)
@@ -163,13 +158,13 @@ namespace Engine
     void ShaderProgram::setMat4(const std::string& name, const Matrix4& matrix)
     {
         const auto loc = getLocation(name);
-        glCheck(glUniformMatrix4fv(loc, 1, GL_TRUE, matrix.data()));
+        glUniformMatrix4fv(loc, 1, GL_TRUE, matrix.data());
     }
     
     void ShaderProgram::setVec3(const std::string& name, const Vector3f vec)
     {
         const auto loc = getLocation(name);
-        glCheck(glUniform3f(loc, vec.x, vec.y, vec.z));
+        glUniform3f(loc, vec.x, vec.y, vec.z);
     }
 
     void ShaderProgram::setVec4(const std::string& name, const Color color)
@@ -181,14 +176,14 @@ namespace Engine
         const auto b = static_cast<float>(color.b) / 255.0F;
         const auto a = static_cast<float>(color.a) / 255.0F;
 
-        glCheck(glUniform4f(loc, r, g, b, a));
+        glUniform4f(loc, r, g, b, a);
     }
 
     void ShaderProgram::destroy()
     {
         if (m_id > 0)
         {
-            glCheck(glDeleteProgram(m_id));
+            glDeleteProgram(m_id);
             m_id = 0;
         }
     }
