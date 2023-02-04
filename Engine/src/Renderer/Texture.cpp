@@ -8,17 +8,6 @@
 
 namespace Engine
 {
-
-    TexConstructParams::TexConstructParams() :
-        wrap_s{ Wrapping::Repeat },
-        wrap_t{ Wrapping::Repeat },
-        min_filter{ Filtering::Linear },
-        mag_filter{ Filtering::Linear },
-        format{ Format::RGB },
-        use_mipmap{ false }
-    {
-    }
-
     std::array<Texture*, 32> Texture::textures_in_bind{};
 
     void Texture::Init()
@@ -84,18 +73,19 @@ namespace Engine
     void Texture::createFromData(const void* data, const int32_t width, const int32_t height, const TexConstructParams& parameters)
     {
         // create texture
-        glCheck(glGenTextures(1, &m_id));
+        glGenTextures(1, &m_id);
         bind(this);
 
-        glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, static_cast<GLenum>(parameters.wrap_s)));
-        glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, static_cast<GLenum>(parameters.wrap_t)));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, static_cast<GLenum>(parameters.wrap_s));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, static_cast<GLenum>(parameters.wrap_t));
 
-        glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, static_cast<GLenum>(parameters.min_filter)));
-        glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<GLenum>(parameters.mag_filter)));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, static_cast<GLenum>(parameters.min_filter));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<GLenum>(parameters.mag_filter));
 
         m_size.x = static_cast<float>(width);
         m_size.y = static_cast<float>(height);
-        glCheck(glTexImage2D(GL_TEXTURE_2D,
+        glTexImage2D(
+            GL_TEXTURE_2D,
             0,
             static_cast<GLenum>(parameters.format),
             width,
@@ -103,24 +93,28 @@ namespace Engine
             0,
             static_cast<GLenum>(parameters.format),
             GL_UNSIGNED_BYTE,
-            data));
+            data
+        );
 
         if (parameters.use_mipmap)
         {
-            glCheck(glGenerateMipmap(GL_TEXTURE_2D));
+            glGenerateMipmap(GL_TEXTURE_2D);
         }
 
         unbind();
     }
 
-    Texture::Texture(Texture&& other) : m_id{ other.m_id }, m_size{ other.m_size }
+    Texture::Texture(Texture&& other) noexcept :
+        m_id{ other.m_id }, m_size{ other.m_size }
     {
         other.m_id = 0;
     }
 
-    Texture& Texture::operator=(Texture&& other)
+    Texture& Texture::operator=(Texture&& other) noexcept
     {
-        m_id = other.m_id;
+        destroy();
+
+        m_id   = other.m_id;
         m_size = other.m_size;
 
         other.m_id = 0;
@@ -132,29 +126,9 @@ namespace Engine
     {
         if (m_id != 0)
         {
-            glCheck(glDeleteTextures(1, &m_id));
+            glDeleteTextures(1, &m_id);
             m_id = 0;
         }
-    }
-
-    Vector2f Texture::getSize() const
-    {
-        return m_size;
-    }
-
-    float Texture::getWidth() const
-    {
-        return m_size.x;
-    }
-
-    float Texture::getHeight() const
-    {
-        return m_size.y;
-    }
-
-    size_t Texture::getUnit() const
-    {
-        return which_unit;
     }
 
     void Texture::bind(Texture* texture, const size_t unit_index)
@@ -162,8 +136,8 @@ namespace Engine
         if (textures_in_bind[unit_index] != texture)
         {
             texture->which_unit = unit_index;
-            glCheck(glActiveTexture(GL_TEXTURE0 + unit_index));
-            glCheck(glBindTexture(GL_TEXTURE_2D, texture->m_id));
+            glActiveTexture(GL_TEXTURE0 + unit_index);
+            glBindTexture(GL_TEXTURE_2D, texture->m_id);
             textures_in_bind[unit_index] = texture;
         }
     }
@@ -172,8 +146,8 @@ namespace Engine
     {
         if (textures_in_bind[unit_index] != nullptr)
         {
-            glCheck(glActiveTexture(GL_TEXTURE0 + unit_index));
-            glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+            glActiveTexture(GL_TEXTURE0 + unit_index);
+            glBindTexture(GL_TEXTURE_2D, 0);
             textures_in_bind[unit_index] = nullptr;
         }
     }

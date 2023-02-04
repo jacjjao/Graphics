@@ -13,8 +13,6 @@ namespace Engine
     class TexConstructParams
     {
     public:
-        TexConstructParams();
-
         enum class Wrapping : uint32_t
         {
             Repeat = 0x2901,
@@ -39,10 +37,10 @@ namespace Engine
             RGBA = 0x1908,
         };
 
-        Wrapping  wrap_s, wrap_t;
-        Filtering min_filter, mag_filter;
-        Format format;
-        bool use_mipmap;
+        Wrapping  wrap_s = Wrapping::Repeat, wrap_t = Wrapping::Repeat;
+        Filtering min_filter = Filtering::Linear, mag_filter = Filtering::Linear;
+        Format format = Format::RGB;
+        bool use_mipmap = false;
     };
 
     class Texture
@@ -58,17 +56,22 @@ namespace Engine
         Texture(const Texture&) = delete;
         Texture& operator=(const Texture&) = delete;
 
-        Texture(Texture&& other);
-        Texture& operator=(Texture&& other);
+        Texture(Texture&& other) noexcept;
+        Texture& operator=(Texture&& other) noexcept;
 
         void destroy();
 
-        [[nodiscard]] Vector2f getSize() const;
+        [[nodiscard]] 
+        Vector2f getSize() const { return m_size; }
 
-        [[nodiscard]] float getWidth() const;
-        [[nodiscard]] float getHeight() const;
+        [[nodiscard]] 
+        float getWidth() const { return m_size.x; }
 
-        [[nodiscard]] size_t getUnit() const;
+        [[nodiscard]] 
+        float getHeight() const { return m_size.y; }
+
+        [[nodiscard]] 
+        size_t getUnit() const { return which_unit; }
 
         static void bind(Texture* texture, size_t unit_index = 0);
         static void unbind(size_t unit_index = 0);
