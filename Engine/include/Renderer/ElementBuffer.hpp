@@ -26,7 +26,8 @@ namespace Engine
 
         void destroy();
 
-        [[nodiscard]] size_t size() const { return m_indices.size(); }
+        [[nodiscard]] 
+        size_t size() const { return m_indices.size(); }
 
         static void bind(ElementBuffer* ebo);
         static void unbind();

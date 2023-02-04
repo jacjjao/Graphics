@@ -12,10 +12,10 @@ namespace Engine
         m_id(0),
         m_indices(size)
     {
-        glCheck(glCreateBuffers(1, &m_id));
+        glCreateBuffers(1, &m_id);
 
         const auto size_in_bytes = static_cast<GLsizei>(m_indices.size() * sizeof(uint32_t));
-        glCheck(glNamedBufferData(m_id, size_in_bytes, nullptr, GL_STATIC_DRAW));
+        glNamedBufferData(m_id, size_in_bytes, nullptr, GL_STATIC_DRAW);
     }
 
     ElementBuffer::~ElementBuffer()
@@ -54,14 +54,14 @@ namespace Engine
 
     void ElementBuffer::update()
     {
-        glCheck(glNamedBufferSubData(m_id, 0, m_indices.size() * sizeof(uint32_t), m_indices.data()));
+        glNamedBufferSubData(m_id, 0, m_indices.size() * sizeof(uint32_t), m_indices.data());
     }
 
     void ElementBuffer::destroy()
     {
         if (m_id > 0)
         {
-            glCheck(glDeleteBuffers(1, &m_id));
+            glDeleteBuffers(1, &m_id);
             m_id = 0;
         }
     }
@@ -70,7 +70,7 @@ namespace Engine
     {
         if (ebo_in_bind != ebo->m_id)
         {
-            glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo->m_id));
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo->m_id);
             ebo_in_bind = ebo->m_id;
         }
     }
@@ -79,7 +79,7 @@ namespace Engine
     {
         if (ebo_in_bind != 0)
         {
-            glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
             ebo_in_bind = 0;
         }
     }
