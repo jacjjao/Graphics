@@ -21,7 +21,9 @@ namespace Engine
         void setWidth(float width) { m_width = width; }
         void setHeight(float height) { m_height = height; }
 
+        [[nodiscard]]
         float getWidth() const { return m_width; }
+        [[nodiscard]]
         float getHeight() const { return m_height; }
 
     private:
