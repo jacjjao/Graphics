@@ -135,7 +135,7 @@ namespace Engine
     {
         if (vao_in_bind != 0)
         {
-            glBindVertexArray(0));
+            glBindVertexArray(0);
             vao_in_bind = 0;
         }
     }
