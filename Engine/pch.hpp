@@ -19,6 +19,4 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "include/Core/glCheck.hpp"
-#include "include/Core/FileSystem.hpp"
 #include "include/Core/Clock.hpp"
