@@ -60,9 +60,4 @@ namespace Engine
         should_update = true;
     }
 
-    Vector2f Transformable::getPosition() const
-    {
-        return m_position;
-    }
-
 } // namespace Engine

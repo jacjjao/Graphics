@@ -23,7 +23,8 @@ namespace Engine
 
         void setPosition(Vector2f position);
 
-        [[nodiscard]] Vector2f getPosition() const;
+        [[nodiscard]] 
+        Vector2f getPosition() const { return m_position; }
 
     private:
         bool should_update = false;
