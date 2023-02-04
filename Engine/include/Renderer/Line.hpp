@@ -10,8 +10,8 @@ namespace Engine
     public:
         Line(Vector2f start_position, Vector2f end_position);
 
-        void setLineWidth(float line_width);
-        void setColor(Color color);
+        void setLineWidth(float line_width) { m_line_width = line_width; }
+        void setColor(Color color) { m_color = color; }
 
         void update() override;
         void draw() override;
