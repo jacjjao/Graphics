@@ -77,11 +77,16 @@ namespace Engine
         if (texture != nullptr)
         {
             program.setI32("unit_index", texture->getUnit());
+            Texture::bind(texture);
         }
 
         VertexArray::bind(this);
         glDrawArrays(static_cast<GLenum>(primitive_type), 0, static_cast<GLsizei>(m_vertices.size()));
         VertexArray::unbind();
+        if (texture != nullptr)
+        {
+            Texture::unbind();
+        }
     }
 
     void VertexArray::drawIndices(const int32_t size,
@@ -97,11 +102,16 @@ namespace Engine
         if (texture != nullptr)
         {
             program.setI32("unit_index", texture->getUnit());
+            Texture::bind(texture);
         }
 
         VertexArray::bind(this);
         glDrawElements(static_cast<GLenum>(primitive_type), size, GL_UNSIGNED_INT, 0);
         VertexArray::unbind();
+        if (texture != nullptr)
+        {
+            Texture::unbind();
+        }
     }
 
     void VertexArray::setElementBuffer(ElementBuffer& ebo)
