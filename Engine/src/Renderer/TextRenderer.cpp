@@ -5,6 +5,8 @@
 #include "include/Core/Log.hpp"
 #include "include/Core/Application.hpp"
 
+#include "include/Core/FileSystem.hpp"
+
 #include <iostream>
 
 #include <glad/glad.h>
@@ -31,7 +33,7 @@ namespace Engine
         shader.setMat4("proj", ortho(-half_width, half_width, -half_height, half_height, -1.0f, 1.0f));
         shader.unuse();
 
-        glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         FT_Library ft;
         if (FT_Init_FreeType(&ft))
@@ -58,7 +60,7 @@ namespace Engine
         FT_Set_Pixel_Sizes(face, 0, font_size);
 
         // disable byte-alignment restriction
-        glCheck(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
         TexConstructParams parameters{};
         parameters.wrap_s = parameters.wrap_t = TexConstructParams::Wrapping::ClampToEdge;
@@ -94,20 +96,23 @@ namespace Engine
         FT_Done_Face(face);
         FT_Done_FreeType(ft);
 
-        glCheck(glGenVertexArrays(1, &VAO));
-        glCheck(glGenBuffers(1, &VBO));
-        glCheck(glBindVertexArray(VAO));
-        glCheck(glBindBuffer(GL_ARRAY_BUFFER, VBO));
-        glCheck(glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, nullptr, GL_DYNAMIC_DRAW));
-        glCheck(glEnableVertexAttribArray(0));
-        glCheck(glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0));
-        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-        glCheck(glBindVertexArray(0));
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, nullptr, GL_DYNAMIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+
+        VertexBuffer::unbind();
+        VertexArray::unbind();
     }
 
     void TextRenderer::renderText(std::string_view text, Vector2f pos, const Color color, const unsigned font_size)
     {
-        glCheck(glEnable(GL_BLEND));
+        glEnable(GL_BLEND);
 
         const float scale = static_cast<float>(font_size) / static_cast<float>(text_size);
 
@@ -142,21 +147,22 @@ namespace Engine
             // render glyph texture over quad
             Texture::bind(&ch.texture);
             // update content of VBO memory
-            glCheck(glBindBuffer(GL_ARRAY_BUFFER, VBO));
-            glCheck(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices)); // be sure to use glBufferSubData and not glBufferData
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // be sure to use glBufferSubData and not glBufferData
 
-            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
             // render quad
-            glCheck(glBindVertexArray(VAO));
-            glCheck(glDrawArrays(GL_TRIANGLES, 0, 6));
+            glBindVertexArray(VAO);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
             // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
             // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
             pos.x += (ch.advance >> 6) * scale;
         }
-        glCheck(glBindVertexArray(0));
+        glBindVertexArray(0);
+        VertexArray::unbind();
         Texture::unbind();
 
-        glCheck(glDisable(GL_BLEND));
+        glDisable(GL_BLEND);
     }
 
     void TextRenderer::releaseResources()
