@@ -50,12 +50,15 @@ namespace Engine
         value_type& front() { return m_vertices.front(); }
         value_type& back() { return m_vertices.back(); }
 
-        [[nodiscard]] size_t size() const { return m_vertices.size(); }
+        [[nodiscard]] 
+        size_t size() const { return m_vertices.size(); }
 
         void setUsage(VertexBuffer::Usage usage) { m_vbo.setUsage(usage); }
 
-        [[nodiscard]] iterator begin() { return m_vertices.begin(); }
-        [[nodiscard]] iterator end() { return m_vertices.end(); }
+        [[nodiscard]] 
+        iterator begin() { return m_vertices.begin(); } 
+        [[nodiscard]] 
+        iterator end() { return m_vertices.end(); }
 
         value_type& operator[](size_t index) { return m_vertices[index]; }
         const value_type& operator[](size_t index) const { return m_vertices[index]; }

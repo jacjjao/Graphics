@@ -34,8 +34,10 @@ namespace Engine
         void updateData(std::span<element_type> vertices);
         void reallocate(size_t size);
 
-        [[nodiscard]] size_t size() const { return m_size; }
-        [[nodiscard]] size_t getCapacity() const { return m_capacity; }
+        [[nodiscard]] 
+        size_t size() const { return m_size; }
+        [[nodiscard]] 
+        size_t getCapacity() const { return m_capacity; }
 
         void setUsage(Usage usage) { m_usage = usage; }
 
