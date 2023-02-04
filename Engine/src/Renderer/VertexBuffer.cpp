@@ -14,8 +14,8 @@ namespace Engine
         m_size{ size },
         m_capacity{ size }
     {
-        glCheck(glCreateBuffers(1, &m_id));
-        glCheck(glNamedBufferData(m_id, m_size * sizeof(Vertex2D), nullptr, static_cast<GLenum>(m_usage)));
+        glCreateBuffers(1, &m_id);
+        glNamedBufferData(m_id, m_size * sizeof(element_type), nullptr, static_cast<GLenum>(m_usage));
     }
 
     VertexBuffer::~VertexBuffer()
@@ -25,9 +25,10 @@ namespace Engine
 
     VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept
     {
-        m_id = other.m_id;
-        m_size = other.m_size;
+        m_id       = other.m_id;
+        m_size     = other.m_size;
         m_capacity = other.m_capacity;
+        m_usage    = other.m_usage;
 
         other.m_id = other.m_size = other.m_capacity = 0;
     }
@@ -36,9 +37,10 @@ namespace Engine
     {
         destroy();
 
-        m_id = other.m_id;
-        m_size = other.m_size;
+        m_id       = other.m_id;
+        m_size     = other.m_size;
         m_capacity = other.m_capacity;
+        m_usage    = other.m_usage;
 
         other.m_id = other.m_size = other.m_capacity = 0;
 
@@ -49,33 +51,35 @@ namespace Engine
     {
         if (m_id > 0)
         {
-            glCheck(glDeleteBuffers(1, &m_id));
+            glDeleteBuffers(1, &m_id);
             m_id = 0;
             m_size = 0;
         }
     }
 
-    void VertexBuffer::updateData(const std::span<Vertex2D> vertices)
+    void VertexBuffer::updateData(const std::span<element_type> vertices)
     {
-        glCheck(glNamedBufferSubData(m_id, 0, vertices.size() * sizeof(Vertex2D), vertices.data()));
+        glNamedBufferSubData(m_id, 0, vertices.size() * sizeof(element_type), vertices.data());
     }
 
-    void VertexBuffer::resize(const size_t size)
+    void VertexBuffer::reallocate(const size_t size)
     {
-        m_size = size;
         if (size <= m_capacity)
         {
+            m_size = size;
             return;
         }
-
-        glCheck(glNamedBufferData(m_id, m_size * sizeof(Vertex2D), nullptr, static_cast<GLenum>(m_usage)));
+        destroy(); 
+        m_size = size;
+        glCreateBuffers(1, &m_id);
+        glNamedBufferData(m_id, m_size * sizeof(element_type), nullptr, static_cast<GLenum>(m_usage));
     }
 
     void VertexBuffer::bind(VertexBuffer* vbo)
     {
         if (vbo_in_bind != vbo->m_id)
         {
-            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vbo->m_id));
+            glBindBuffer(GL_ARRAY_BUFFER, vbo->m_id);
             vbo_in_bind = vbo->m_id;
         }
     }
@@ -84,7 +88,7 @@ namespace Engine
     {
         if (vbo_in_bind > 0)
         {
-            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
             vbo_in_bind = 0;
         }
     }

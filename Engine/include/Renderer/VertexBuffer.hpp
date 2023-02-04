@@ -10,6 +10,9 @@ namespace Engine
 
     class VertexBuffer
     {
+    private:
+        using element_type = Vertex2D;
+
     public:
         enum class Usage : uint32_t
         {
@@ -28,8 +31,8 @@ namespace Engine
         VertexBuffer& operator=(VertexBuffer&& other) noexcept;
 
         void destroy();
-        void updateData(std::span<Vertex2D> vertices);
-        void resize(size_t size);
+        void updateData(std::span<element_type> vertices);
+        void reallocate(size_t size);
 
         [[nodiscard]] size_t size() const { return m_size; }
         [[nodiscard]] size_t getCapacity() const { return m_capacity; }
