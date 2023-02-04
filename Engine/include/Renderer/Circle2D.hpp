@@ -15,8 +15,8 @@ namespace Engine
         void draw() override;
         void update() override;
 
-        void setRadius(float radius);
-        void setRadius(Vector2f radius);
+        void setRadius(float radius) { m_radius.x = m_radius.y = radius; }
+        void setRadius(Vector2f radius) { m_radius = radius; }
 
         Circle2D(Circle2D&&) = default;
     private:

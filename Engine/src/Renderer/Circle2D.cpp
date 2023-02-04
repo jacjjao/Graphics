@@ -74,14 +74,4 @@ namespace Engine
         m_vao.update();
     }
 
-    void Circle2D::setRadius(const float radius)
-    {
-        m_radius.x = m_radius.y = radius;
-    }
-
-    void Circle2D::setRadius(const Vector2f radius)
-    {
-        m_radius = radius;
-    }
-
 } // namespace Engine
