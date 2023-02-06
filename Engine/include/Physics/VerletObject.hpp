@@ -9,7 +9,9 @@ namespace Engine
 	{
 	public:	
 		VerletObject() = default;
-		VerletObject(Vector2f pos) : 
+
+		explicit VerletObject(const Vector2f pos, const float radius) : 
+		m_radius{radius},
 		old_pos{pos},
 		current_pos{pos},
 		acceleration{}
@@ -47,8 +49,20 @@ namespace Engine
 			current_pos = pos;
 		}
 
+		void setVelocity(const Vector2f velocity, const float dt)
+		{
+			old_pos = current_pos - velocity * dt;
+		}
+
+		[[nodiscard]]
+		float getRadius() const
+		{
+			return m_radius;
+		}
+
 	private:
 		Vector2f old_pos, current_pos, acceleration;
+		float m_radius;
 	};
 
 } // namespace Engine

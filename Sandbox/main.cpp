@@ -291,21 +291,25 @@ Engine::Vector2f screenPointToGL(const Engine::Vector2f vec, const float scr_wid
     };
 }
 
+constexpr float obj_radius = 25.0f;
+constexpr unsigned fps = 170; 
+constexpr float constraint_radius = 500.0f;
+int obj_cnt = 0;
+
 class TheLayer : public Engine::Layer
 {
 public:
-    TheLayer()
+    TheLayer() : m_solver{ fps, constraint_radius }
     {
         const auto width = (float)Engine::Application::getInstance().getWindow().getWidth();
         const auto height = (float)Engine::Application::getInstance().getWindow().getHeight();
-
         m_cam = std::make_unique<Engine::OrthographicCamera>((float)-width / 2, (float)width / 2, (float)-height / 2, (float)height / 2);
+
         m_constraint_circle = std::make_unique<Engine::Circle2D>(500, 64);
         m_constraint_circle->setColor(Engine::Color::Black);
         m_constraint_circle->update();
 
-        m_solver.addObject(Engine::VerletObject{{300, 100}});
-        m_circles.emplace_back(50.0f);
+        srand(time(nullptr));
     }
 
     void onAttach() override {}
@@ -320,14 +324,16 @@ public:
             }
         }
         if (e.getEventType() == Engine::EventType::MouseButtonPressed) {
-            const auto [x, y] = Engine::Input::getMousePosition();
-            const auto pos = screenPointToGL(
-                { x, y }, 
-                Engine::Application::getInstance().getWindow().getWidth(), 
-                Engine::Application::getInstance().getWindow().getHeight()
-            );
-            m_solver.addObject(Engine::VerletObject{pos});
-            m_circles.emplace_back(50.0f);
+            if (Engine::Input::isMouseButtonPressed(Engine::Mouse::ButtonLeft)) {
+                const auto [x, y] = Engine::Input::getMousePosition();
+                const auto pos = screenPointToGL(
+                    { x, y },
+                    Engine::Application::getInstance().getWindow().getWidth(),
+                    Engine::Application::getInstance().getWindow().getHeight()
+                );
+                m_solver.addObject(Engine::VerletObject{ pos, obj_radius });
+                m_circles.emplace_back(obj_radius);
+            }
         }
     }
 
@@ -339,9 +345,26 @@ public:
         program.setMat4("proj", m_cam->getProjMatrix());
 
         const auto dt = m_timer.getElapsedTime().asSeconds();
-        m_solver.update((float)dt);
+        m_solver.update();
         m_timer.restart();
         const auto& objs = m_solver.getObjects();
+
+        /*
+        static Engine::Clock clock{};
+        if (obj_cnt < 100 && clock.getElapsedTime().asMilliseconds() > 50) {
+            clock.restart();
+
+            const float offset = rand() % 31 - 10;
+            Engine::VerletObject obj{ {0, 450}, obj_radius + offset };
+            const float radius = rand();
+            static constexpr float speed = 2000.0f;
+            obj.setVelocity({ speed * std::cos(radius), -speed}, m_solver.getStepDt());
+            m_solver.addObject(obj);
+
+            m_circles.emplace_back(obj_radius + offset);
+            obj_cnt++;
+        }
+        */
 
         // draw
         m_constraint_circle->draw();
