@@ -12,7 +12,7 @@ namespace Engine
 
 		explicit VerletObject(const Vector2f pos, const float radius) : 
 		m_radius{radius},
-		old_pos{pos},
+		last_pos{pos},
 		current_pos{pos},
 		acceleration{}
 		{
@@ -20,9 +20,9 @@ namespace Engine
 
 		void update(const float dt)
 		{
-			const Vector2f displacement = current_pos - old_pos;
+			const Vector2f displacement = current_pos - last_pos;
 
-			old_pos		= current_pos;
+			last_pos	= current_pos;
 			current_pos = current_pos + displacement + acceleration * (dt * dt) * 0.5f;
 
 			acceleration = {};
@@ -51,7 +51,7 @@ namespace Engine
 
 		void setVelocity(const Vector2f velocity, const float dt)
 		{
-			old_pos = current_pos - velocity * dt;
+			last_pos = current_pos - velocity * dt;
 		}
 
 		[[nodiscard]]
@@ -61,7 +61,7 @@ namespace Engine
 		}
 
 	private:
-		Vector2f old_pos, current_pos, acceleration;
+		Vector2f last_pos, current_pos, acceleration;
 		float m_radius;
 	};
 

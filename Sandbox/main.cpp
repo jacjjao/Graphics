@@ -278,8 +278,8 @@ void framebuffer_size_callback(GLFWwindow*, int width, int height)
 
 #include "Graphics.hpp"
 #include "include/Input/Input.hpp"
-#include "include/Physics/VerletObject.hpp"
-#include "include/Physics/Solver.hpp"
+#include "include/Physics/RigidBody.hpp"
+#include "include/Physics/World.hpp"
 
 Engine::Vector2f screenPointToGL(const Engine::Vector2f vec, const float scr_width, const float scr_height)
 {
@@ -291,25 +291,20 @@ Engine::Vector2f screenPointToGL(const Engine::Vector2f vec, const float scr_wid
     };
 }
 
-constexpr float obj_radius = 25.0f;
-constexpr unsigned fps = 170; 
-constexpr float constraint_radius = 500.0f;
-int obj_cnt = 0;
-
 class TheLayer : public Engine::Layer
 {
 public:
-    TheLayer() : m_solver{ fps, constraint_radius }
+    TheLayer()
     {
         const auto width = (float)Engine::Application::getInstance().getWindow().getWidth();
         const auto height = (float)Engine::Application::getInstance().getWindow().getHeight();
         m_cam = std::make_unique<Engine::OrthographicCamera>((float)-width / 2, (float)width / 2, (float)-height / 2, (float)height / 2);
 
-        m_constraint_circle = std::make_unique<Engine::Circle2D>(500, 64);
-        m_constraint_circle->setColor(Engine::Color::Black);
-        m_constraint_circle->update();
-
-        srand(time(nullptr));
+        m_rects.emplace_back(100.f, 100.f);
+        m_world.setGravity({ 0, -1000 });
+        Engine::RigidBody body{};
+        body.setCentroidPosition({ 0, 400 });
+        m_world.addBody(body);
     }
 
     void onAttach() override {}
@@ -323,18 +318,6 @@ public:
                 Engine::Application::getInstance().onEvent(close_signal);
             }
         }
-        if (e.getEventType() == Engine::EventType::MouseButtonPressed) {
-            if (Engine::Input::isMouseButtonPressed(Engine::Mouse::ButtonLeft)) {
-                const auto [x, y] = Engine::Input::getMousePosition();
-                const auto pos = screenPointToGL(
-                    { x, y },
-                    Engine::Application::getInstance().getWindow().getWidth(),
-                    Engine::Application::getInstance().getWindow().getHeight()
-                );
-                m_solver.addObject(Engine::VerletObject{ pos, obj_radius });
-                m_circles.emplace_back(obj_radius);
-            }
-        }
     }
 
     void onUpdate() override
@@ -344,42 +327,23 @@ public:
         program.setMat4("view", m_cam->getViewMatrix());
         program.setMat4("proj", m_cam->getProjMatrix());
 
-        const auto dt = m_timer.getElapsedTime().asSeconds();
-        m_solver.update();
-        m_timer.restart();
-        const auto& objs = m_solver.getObjects();
-
-        /*
-        static Engine::Clock clock{};
-        if (obj_cnt < 100 && clock.getElapsedTime().asMilliseconds() > 50) {
-            clock.restart();
-
-            const float offset = rand() % 31 - 10;
-            Engine::VerletObject obj{ {0, 450}, obj_radius + offset };
-            const float radius = rand();
-            static constexpr float speed = 2000.0f;
-            obj.setVelocity({ speed * std::cos(radius), -speed}, m_solver.getStepDt());
-            m_solver.addObject(obj);
-
-            m_circles.emplace_back(obj_radius + offset);
-            obj_cnt++;
-        }
-        */
+        static Engine::Clock clock;
+        m_world.update(clock.getElapsedTime().asSeconds());
+        clock.restart();
 
         // draw
-        m_constraint_circle->draw();
-        for (int i = 0; i < objs.size(); i++) {
-            m_circles[i].setPosition(objs[i].getPosition());
-            m_circles[i].draw();
+        const auto& bodies = m_world.getBodies();
+        for (int i = 0; i < bodies.size(); i++) {
+            m_rects[i].setPosition(bodies[i].getCentroidPosition());
+            m_rects[i].draw();
         }
     }
 
 private:
     std::unique_ptr<Engine::OrthographicCamera> m_cam;
-    std::unique_ptr<Engine::Circle2D> m_constraint_circle;
     Engine::Clock m_timer;
-    Engine::Solver m_solver;
-    std::vector<Engine::Circle2D> m_circles;
+    std::vector<Engine::Rectangle2D> m_rects;
+    Engine::World m_world;
 };
 
 class SandBox : public Engine::Application

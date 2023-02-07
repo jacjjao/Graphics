@@ -15,6 +15,9 @@ namespace Engine
         Rectangle2D(const Rectangle2D&) = delete;
         Rectangle2D& operator=(const Rectangle2D&) = delete;
 
+        Rectangle2D(Rectangle2D&&) noexcept = default;
+        Rectangle2D& operator=(Rectangle2D&&) noexcept = default;
+
         void draw() override;
         void update() override;
 
