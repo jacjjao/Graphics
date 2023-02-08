@@ -12,9 +12,6 @@ namespace Engine
         explicit Rectangle2D(float width, float height);
         ~Rectangle2D() override = default;
 
-        Rectangle2D(const Rectangle2D&) = delete;
-        Rectangle2D& operator=(const Rectangle2D&) = delete;
-
         Rectangle2D(Rectangle2D&&) noexcept = default;
         Rectangle2D& operator=(Rectangle2D&&) noexcept = default;
 
@@ -29,6 +26,8 @@ namespace Engine
         [[nodiscard]]
         float getHeight() const { return m_height; }
 
+        [[nodiscard]]
+        size_t getPointCount() const override { return 4; }
     private:
         float m_width, m_height;
 

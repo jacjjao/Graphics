@@ -15,4 +15,12 @@ namespace Engine
     {
     }
 
+    Vector2f Shape::getPoint(const size_t index)
+    {
+        const auto pos = m_vao[index].position;
+        Matrix<float, 4, 1> mat = { pos.x, pos.y, 0, 1 };
+        const auto result = getTransformMatrix() * mat;
+        return Vector2f{ result[0][0], result[1][0] };
+    }
+
 } // namespace Engine

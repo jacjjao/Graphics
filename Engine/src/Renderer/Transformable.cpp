@@ -38,15 +38,14 @@ namespace Engine
             const auto theta = radians(m_theta);
             const auto sine = std::sin(theta);
             const auto cosine = std::cos(theta);
-            const auto [x, y] = m_position;
 
             m_model[0][0] = m_scale.x * cosine;
             m_model[0][1] = -m_scale.y * sine;
-            m_model[0][3] = x;
+            m_model[0][3] = -m_scale.x * m_origin.x * cosine + m_scale.y * m_origin.y * sine + m_position.x;
 
             m_model[1][0] = m_scale.x * sine;
             m_model[1][1] = m_scale.y * cosine;
-            m_model[1][3] = y;
+            m_model[1][3] = -m_scale.x * m_origin.x * sine - m_scale.y * m_origin.y * cosine + m_position.y;
 
             should_update = false;
         }

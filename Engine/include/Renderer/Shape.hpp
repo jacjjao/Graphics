@@ -20,6 +20,9 @@ namespace Engine
         virtual void update() = 0;
         virtual void draw() = 0;
 
+        virtual size_t getPointCount() const = 0;
+        virtual Vector2f getPoint(size_t index);
+
         void applyTexture(Texture* texture) { m_texture = texture; }
 
         [[nodiscard]] 

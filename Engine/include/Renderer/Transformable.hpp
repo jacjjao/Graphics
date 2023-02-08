@@ -26,13 +26,16 @@ namespace Engine
         [[nodiscard]] 
         Vector2f getPosition() const { return m_position; }
 
+    protected:
+        void setOrigin(const Vector2f origin) { m_origin = origin; }
+
     private:
         bool should_update = false;
         float m_theta = 0.0F;
 
         Vector2f m_scale;
 
-        Vector2f m_position;
+        Vector2f m_position, m_origin;
 
         Matrix4 m_model;
     };

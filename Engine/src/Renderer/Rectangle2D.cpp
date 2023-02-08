@@ -32,14 +32,17 @@ namespace Engine
 
     void Rectangle2D::update()
     {
-        // update position
+        // update size
         const auto half_width = m_width / 2.0f;
         const auto half_height = m_height / 2.0f;
+        const auto [x, y] = getPosition();
 
-        const Vector2f top_right_pos{ half_width, half_height };
-        const Vector2f bottom_right_pos{ half_width, -half_height };
-        const Vector2f bottom_left_pos{ -half_width, -half_height };
-        const Vector2f top_left_pos{ -half_width, half_height };
+        setOrigin({ x, y });
+
+        const Vector2f top_right_pos{ x + half_width, y + half_height };
+        const Vector2f bottom_right_pos{ x + half_width, y - half_height };
+        const Vector2f bottom_left_pos{ x - half_width, y - half_height };
+        const Vector2f top_left_pos{ x - half_width, y + half_height };
 
         m_vao[0].position = top_right_pos;
         m_vao[1].position = bottom_right_pos;

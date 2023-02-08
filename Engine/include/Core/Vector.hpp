@@ -40,9 +40,9 @@ namespace Engine
             return { this->x - other.x, this->y - other.y };
         }
 
-        constexpr Vector2<T> operator*(const Vector2<T>& other) const
+        constexpr T operator*(const Vector2<T>& other) const
         {
-            return { x * other.x, y * other.y };
+            return x * other.x + y * other.y;
         }
 
         constexpr Vector2<T> operator/(const T& factor) const
@@ -50,12 +50,14 @@ namespace Engine
             return { x / factor, y / factor };
         }
 
-        [[nodiscard]] T length() const
+        [[nodiscard]] 
+        T length() const
         {
             return std::sqrt(x * x + y * y);
         }
 
-        [[nodiscard]] Vector2<T> normalize() const
+        [[nodiscard]] 
+        Vector2<T> normalize() const
         {
             const auto len = length();
 
@@ -128,39 +130,39 @@ namespace Engine
             return Vector3<T>{-x, -y, -z};
         }
 
-        [[nodiscard]] T length() const
+        [[nodiscard]] 
+        T length() const
         {
             return std::sqrt(x * x + y * y + z * z);
         }
 
-        [[nodiscard]] Vector3<T> normalize() const
+        [[nodiscard]] 
+        Vector3<T> normalize() const
         {
             const auto len = length();
 
             return Vector3<T>{x / len, y / len, z / len};
         }
 
+        static constexpr Vector3<T> cross(const Vector3<T>& lhs, const Vector3<T>& rhs)
+        {
+            Vector3<T> result{};
+
+            result.x = lhs.y * rhs.z - lhs.z * rhs.y;
+            result.y = lhs.z * rhs.x - lhs.x * rhs.z;
+            result.z = lhs.x * rhs.y - lhs.y * rhs.x;
+
+            return result;
+        }
+
+        static constexpr Vector3<T> dot(const Vector3<T>& lhs, const Vector3<T>& rhs)
+        {
+            return { lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z };
+        }
+
         T x, y, z;
     };
 
     using Vector3f = Vector3<float>;
-
-    template <typename T>
-    constexpr Vector3<T> cross(const Vector3<T>& lhs, const Vector3<T>& rhs)
-    {
-        Vector3<T> result{};
-
-        result.x = lhs.y * rhs.z - lhs.z * rhs.y;
-        result.y = lhs.z * rhs.x - lhs.x * rhs.z;
-        result.z = lhs.x * rhs.y - lhs.y * rhs.x;
-
-        return result;
-    }
-
-    template<typename T>
-    constexpr Vector3<T> dot(const Vector3<T>& lhs, const Vector3<T>& rhs)
-    {
-        return { lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z };
-    }
 
 } // namespace Engine

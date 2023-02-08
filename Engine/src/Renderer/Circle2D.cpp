@@ -16,13 +16,6 @@ namespace Engine
         update();
     }
 
-    Circle2D::Circle2D(const Vector2f radius, const size_t point_count) :
-        Shape{ point_count + 2 },
-        m_radius{ radius }
-    {
-        update();
-    }
-
     void Circle2D::draw()
     {
         m_vao.draw(
@@ -37,27 +30,27 @@ namespace Engine
     {
         constexpr auto pi = std::numbers::pi_v<float>;
 
-        const auto f_point_count = static_cast<float>(m_vao.size() - 2);
+        const auto f_point_count = static_cast<float>(getPointCount());
         const auto slice = 2.0F * pi / f_point_count;
         const auto tex_center = m_tex_rect.position + m_tex_rect.size / 2.0F;
         const auto half_tex_size = m_tex_rect.size / 2.0F;
+        const auto center = getPosition();
 
-        m_vao[0].position = { 0.0F, 0.0F };
+        setOrigin(center);
+
+        m_vao[0].position = center;
         m_vao[0].color = m_color;
         m_vao[0].tex_coord = tex_center;
         for (size_t i = 1; i < m_vao.size() - 1; i++)
         {
-            const auto theta = slice * static_cast<float>(i - 1);
+            const auto theta = slice * static_cast<float>(i - 1) + (pi / 2.0f); // start from 90 degree
             const auto ssin = std::sin(theta);
             const auto ccos = std::cos(theta);
 
-            constexpr auto aspect = 2000.0F / 1200.0F;
-
-            Vector2f position{};
-            position.x = m_radius.x * ccos;
-            position.y = m_radius.y * ssin;
-
-            m_vao[i].position = position;
+            m_vao[i].position = {
+                center.x + m_radius * ccos,
+                center.y + m_radius * ssin
+            };
             m_vao[i].color = m_color;
             if (hasTexture())
             {
@@ -72,6 +65,11 @@ namespace Engine
         m_vao.back() = m_vao[1];
 
         m_vao.update();
+    }
+
+    Vector2f Circle2D::getPoint(const size_t index)
+    {
+        return Shape::getPoint(index + 1);
     }
 
 } // namespace Engine
