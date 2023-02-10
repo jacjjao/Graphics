@@ -19,11 +19,19 @@ namespace Engine
 		[[nodiscard]]
 		Vector2f getVelocity() const { return m_velocity; }
 
-		void update(const float dt)
+		void updateVelocity(const float dt)
 		{
-			m_centroid_pos = m_centroid_pos + m_velocity * dt;
-			m_velocity	   = m_velocity + m_acceleration * dt;
 			m_acceleration = m_force / m_mass;
+			m_velocity = m_velocity + m_acceleration * dt;
+
+			m_force = {};
+		}
+
+		void updatePosition(const float dt)
+		{
+			m_acceleration = m_force / m_mass;
+			m_velocity = m_velocity + m_acceleration * dt;
+			m_centroid_pos = m_centroid_pos + m_velocity * dt + m_acceleration * (dt * dt);
 
 			m_force = {};
 		}
@@ -31,6 +39,18 @@ namespace Engine
 		void applyForce(const Vector2f force)
 		{
 			m_force += force;
+		}
+
+		[[nodiscard]]
+		Vector2f getForce() const
+		{
+			return m_force;
+		}
+
+		[[nodiscard]]
+		Vector2f getAcceleration() const
+		{
+			return m_acceleration;
 		}
 
 	private:

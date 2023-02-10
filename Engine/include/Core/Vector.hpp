@@ -45,6 +45,11 @@ namespace Engine
             return x * other.x + y * other.y;
         }
 
+        constexpr Vector2<T> operator*(const T scalar) const
+        {
+            return { x * scalar, y * scalar };
+        }
+
         constexpr Vector2<T> operator/(const T& factor) const
         {
             return { x / factor, y / factor };

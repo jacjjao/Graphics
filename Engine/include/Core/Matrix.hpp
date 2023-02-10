@@ -252,6 +252,11 @@ namespace Engine
             return mat;
         }
 
+        static Matrix<T, Width, Height> transpose(const Matrix<T, Height, Width>& mat)
+        {
+
+        }
+
 
     private:
         std::vector<T> items_;

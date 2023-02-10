@@ -16,11 +16,6 @@ namespace Engine
 
 		void update(const float dt)
 		{
-			for (auto& body : m_bodies) {
-				body.applyForce(m_gravity * body.getMass()); 
-				applyConstraint(body, dt);
-				body.update(dt);
-			}
 		}
 
 		void addBody(const RigidBody rd)
