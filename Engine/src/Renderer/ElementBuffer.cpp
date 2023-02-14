@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 
-namespace Engine
+namespace eg
 {
 
     uint32_t ElementBuffer::ebo_in_bind = 0;
@@ -84,4 +84,4 @@ namespace Engine
         }
     }
 
-} // namespace Engine
+} // namespace eg

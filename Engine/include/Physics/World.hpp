@@ -6,7 +6,7 @@
 #include <memory>
 #include <vector>
 
-namespace Engine
+namespace eg
 {
 
 	class World
@@ -31,18 +31,10 @@ namespace Engine
 	private:
 		void applyConstraint(RigidBody& body, const float dt)
 		{
-			auto pos = body.getCentroidPosition();
-			const auto velocity = body.getVelocity();
-			if (pos.y < -600 + 50) {
-				pos.y = -600 + 50;
-				body.setVelocity({});
-				body.applyForce(-m_gravity);
-			}
-			body.setCentroidPosition(pos);
 		}
 
 		Vector2f m_gravity;
 		std::vector<RigidBody> m_bodies;
 	};
 
-} // namespace Engine
+} // namespace eg

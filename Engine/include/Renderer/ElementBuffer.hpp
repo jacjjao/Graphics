@@ -4,7 +4,7 @@
 #include <initializer_list>
 #include <vector>
 
-namespace Engine
+namespace eg
 {
 
     class ElementBuffer
@@ -39,4 +39,4 @@ namespace Engine
         uint32_t              m_id;
     };
 
-} // namespace Engine
+} // namespace eg

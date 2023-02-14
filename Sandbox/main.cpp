@@ -3,49 +3,62 @@
 #include "include/Physics/RigidBody.hpp"
 #include "include/Physics/World.hpp"
 #include "include/Physics/Constraint.hpp"
+#include "include/Physics/Utility.hpp"
 
 
-class TheLayer : public Engine::Layer
+class TheLayer : public eg::Layer
 {
 public:
     TheLayer()
     {
-        const auto width = (float)Engine::Application::getInstance().getWindow().getWidth();
-        const auto height = (float)Engine::Application::getInstance().getWindow().getHeight();
-        m_cam = std::make_unique<Engine::OrthographicCamera>((float)-width / 2, (float)width / 2, (float)-height / 2, (float)height / 2);
+        const auto width = (float)eg::Application::getInstance().getWindow().getWidth();
+        const auto height = (float)eg::Application::getInstance().getWindow().getHeight();
+        m_cam = std::make_unique<eg::OrthographicCamera>((float)-width / 2, (float)width / 2, (float)-height / 2, (float)height / 2);
 
-        circle = new Engine::Circle2D(50);
+        circle = new eg::Circle2D(10);
+        circle->setColor(eg::Color::Green);
+        circle->update();
 
-        constraint_circle = new Engine::Circle2D(500, 64);
-        constraint_circle->setColor(Engine::Color::Black);
+        constraint_circle = new eg::Circle2D(500, 64);
+        constraint_circle->setColor(eg::Color::Black);
         constraint_circle->update();
 
-        body.setCentroidPosition({ 300, 300 });
+        body.centroid_pos = { 300.f, 300.f };
+
+        triangle = new eg::Circle2D(100, 4);
+        triangle->setPosition({ 500.0f, 0.0f });
+        triangle->setColor(eg::Color::Blue);
+        triangle->update();
+
+        rect = new eg::Rectangle2D(200, 300);
     }
 
     ~TheLayer()
     {
         delete circle;
         delete constraint_circle;
+
+        delete triangle;
+        delete rect;
     }
 
     void onAttach() override {}
     void onDetach() override {}
-    void onEvent(Engine::Event& e) override 
+    void onEvent(eg::Event& e) override 
     {
-        if (e.getEventType() == Engine::EventType::KeyPressed) 
+        if (e.getEventType() == eg::EventType::KeyPressed) 
         {
-            const auto keycode = static_cast<Engine::KeyPressedEvent&>(e).GetKeyCode();
-            if (keycode == Engine::Key::Escape) 
+            const auto keycode = static_cast<eg::KeyPressedEvent&>(e).GetKeyCode();
+            if (keycode == eg::Key::Escape) 
             {
-                Engine::WindowCloseEvent close_signal{};
-                Engine::Application::getInstance().onEvent(close_signal);
+                eg::WindowCloseEvent close_signal{};
+                eg::Application::getInstance().onEvent(close_signal);
             }
 
-            else if (keycode == Engine::Key::Space)
+            else if (keycode == eg::Key::Space)
             {
-                const auto v = body.getVelocity();
-                body.setVelocity({ v.x, v.y + 1000.f });
+                const auto v = body.linear_velocity;
+                body.linear_velocity += { 0.0f, 1000.f };
             }
         }
     }
@@ -54,37 +67,93 @@ public:
     { 
         proccessInput();
 
-        static auto& program = Engine::DefaultShaderProgram::instance();
+        static auto& program = eg::DefaultShaderProgram::instance();
         program.use();
         program.setMat4("view", m_cam->getViewMatrix());
         program.setMat4("proj", m_cam->getProjMatrix());
 
+        if (auto col_data = isCollide(triangle, rect); col_data.depth != 0.0f)
+        {
+            const auto cp = genContactPoint(*triangle, *rect, col_data.normal);
+            //EG_TRACE("Contact point: ({},{})", cp.x, cp.y);
+            circle->setPosition(cp);
+            circle->update();
+            circle->draw();
+            if (col_data.donor == rect)
+                rect->translate(col_data.normal * col_data.depth);
+            else 
+                rect->translate(-col_data.normal * col_data.depth);
+               
+            //EG_TRACE("Depth: {}, Normal: ({},{})", col_data.depth, col_data.normal.x, col_data.normal.y);
+        }
+
+        triangle->draw();
+        rect->draw();
+        /*
         updateWorld();
         
         constraint_circle->draw();
 
-        circle->setPosition(body.getCentroidPosition());
+        circle->setPosition(body.centroid_pos);
         circle->update();
         circle->draw();
+        */
     }
 
 private:
     void proccessInput()
     {
+        constexpr float speed = 3.0f;
+
+        if (eg::Input::isKeyPressed(eg::Key::W))
+        {
+            triangle->translate({ 0.0f, speed });
+        }
+        if (eg::Input::isKeyPressed(eg::Key::S))
+        {
+            triangle->translate({ 0.0f, -speed });
+        }
+        if (eg::Input::isKeyPressed(eg::Key::A))
+        {
+            triangle->translate({ -speed, 0.0f });
+        }
+        if (eg::Input::isKeyPressed(eg::Key::D))
+        {
+            triangle->translate({ speed, 0.0f });
+        }
+        if (eg::Input::isKeyPressed(eg::Key::E))
+        {
+            triangle->rotate(-1.0f);
+        }
+        if (eg::Input::isKeyPressed(eg::Key::Q))
+        {
+            triangle->rotate(1.0f);
+        }
     }
 
-    bool isCollide(Engine::Shape* s1, Engine::Shape* s2)
+    struct CollisionData
     {
+        eg::Shape* donor;
+        eg::Shape* receptor;
+        eg::Vector2f normal;
+        float depth;
+    };
+
+    CollisionData isCollide(eg::Shape* s1, eg::Shape* s2)
+    {
+        CollisionData result{};
+        result.depth = std::numeric_limits<float>::infinity();
         for (int i = 0; i < 2; i++)
         {
+            const auto pvec = s2->getPosition() - s1->getPosition();
             for (int a = 0; a < s1->getPointCount(); a++)
             {
                 const int b = (a + 1) % s1->getPointCount();
                 const auto pa = s1->getPoint(a);
                 const auto pb = s1->getPoint(b);
-                const Engine::Vector2f axisProj{-(pb.y - pa.y), pb.x - pa.x};
+                const auto axisProj = eg::Vector2f{-(pb.y - pa.y), pb.x - pa.x}.normalize();
 
-                auto min_r1 = std::numeric_limits<float>::infinity();
+                auto min_r1 =  std::numeric_limits<float>::infinity();
                 auto max_r1 = -std::numeric_limits<float>::infinity();
                 for (int p = 0; p < s1->getPointCount(); p++) 
                 {
@@ -93,7 +162,7 @@ private:
                     max_r1 = std::max(max_r1, q);
                 }
 
-                auto min_r2 = std::numeric_limits<float>::infinity();
+                auto min_r2 =  std::numeric_limits<float>::infinity();
                 auto max_r2 = -std::numeric_limits<float>::infinity();
                 for (int p = 0; p < s2->getPointCount(); p++)
                 {
@@ -102,15 +171,48 @@ private:
                     max_r2 = std::max(max_r2, q);
                 }
 
-                if (min_r2 > max_r1 || max_r2 < min_r1)
+                if (eg::certainGreater(min_r2, max_r1) or eg::certainLess(max_r2, min_r1))
                 {
-                    return false;
+                    return {};
+                }
+
+                const float penDepth = std::min(max_r1, max_r2) - std::max(min_r1, min_r2);
+                if (const float x = axisProj * pvec, y = result.normal * pvec;
+                    eg::nearlyEqual(penDepth, result.depth) and eg::certainGreater(x, y))
+                {
+                    result.donor = s2;
+                    result.receptor = s1;
+                    result.normal = axisProj;
+                }
+                else if (eg::certainLess(penDepth, result.depth))
+                {
+                    result.donor = s2;
+                    result.receptor = s1;
+                    result.depth = penDepth;
+                    result.normal = axisProj;
                 }
             }
 
             std::swap(s1, s2);
         }
-        return true;
+        return result;
+    }
+
+    eg::Vector2f genContactPoint(eg::Shape& s1, eg::Shape& s2, eg::Vector2f normal)
+    {
+        float dist = -std::numeric_limits<float>::infinity();
+        eg::Vector2f farthestP{};
+        for (size_t n = s1.getPointCount(), i = 0; i < n; i++)
+        {
+            const auto p = s1.getPoint(i);
+            const auto proj = p * normal;
+            if (proj > dist)
+            {
+                dist = proj;
+                farthestP = p;
+            }
+        }
+        return farthestP;
     }
 
     void updateWorld()
@@ -120,14 +222,14 @@ private:
         constexpr auto dtt = dt / float(step);
         for (int i = 0; i < step; i++)
         {
-            body.applyForce({ 0, -2000 }); // apply gravity
+            body.external_forces = { 0, -2000 }; // apply gravity
             
             body.updateVelocity(dtt);
 
             applyImpulse(dtt);
 
             /*
-            static Engine::Clock timer{};
+            static eg::Clock timer{};
             if (timer.getElapsedTime().asMilliseconds() >= 800)
             {
                 const auto v = body.getVelocity();
@@ -161,22 +263,25 @@ private:
         const float lambda = -(pos.x * v.x + pos.y * v.y) / (pos * pos * dt);
         body.applyForce({ pos.x * lambda, pos.y * lambda });
         */
-        Engine::CircleConstraint constraint{};
+        eg::CircleConstraint constraint{};
         constraint.applyConstraint(body, dt);
     }
 
-    std::unique_ptr<Engine::OrthographicCamera> m_cam;
-    Engine::Circle2D* circle;
-    Engine::Circle2D* constraint_circle;
-    Engine::RigidBody body;
+    std::unique_ptr<eg::OrthographicCamera> m_cam;
+    eg::Circle2D* circle;
+    eg::Circle2D* constraint_circle;
+    eg::RigidBody body;
+
+    eg::Circle2D* triangle;
+    eg::Rectangle2D* rect;
 };
 
-class SandBox : public Engine::Application
+class SandBox : public eg::Application
 {
 public:
     SandBox()
     {
-        setClearColor(Engine::Color::Grey);
+        setClearColor(eg::Color::Grey);
         pushLayer(new TheLayer{});
     }
 
@@ -188,7 +293,7 @@ public:
 
 int main()
 {
-    Engine::Log::Init();
+    eg::Log::Init();
 
     SandBox app{};
     app.run();

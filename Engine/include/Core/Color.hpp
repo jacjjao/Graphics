@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace Engine
+namespace eg
 {
 
     class Color
@@ -40,4 +40,4 @@ namespace Engine
         uint8_t r = 255, g = 255, b = 255, a = 255;
     };
 
-} // namespace Engine
+} // namespace eg

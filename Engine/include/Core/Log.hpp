@@ -5,7 +5,7 @@
 #include <spdlog/fmt/ostr.h>
 #include <memory>
 
-namespace Engine
+namespace eg
 {
 	class Log
 	{
@@ -21,16 +21,16 @@ namespace Engine
 		static logger_ptr s_CoreLogger;
 		static logger_ptr s_ClientLogger;
 	};
-} // namespace Engine
+} // namespace eg
 
 // Core log macros
-#define EG_CORE_TRACE(...) ::Engine::Log::GetCoreLogger()->trace(__VA_ARGS__)
-#define EG_CORE_INFO(...)  ::Engine::Log::GetCoreLogger()->info(__VA_ARGS__)
-#define EG_CORE_WARN(...)  ::Engine::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define EG_CORE_ERROR(...) ::Engine::Log::GetCoreLogger()->error(__VA_ARGS__)
+#define EG_CORE_TRACE(...) ::eg::Log::GetCoreLogger()->trace(__VA_ARGS__)
+#define EG_CORE_INFO(...)  ::eg::Log::GetCoreLogger()->info(__VA_ARGS__)
+#define EG_CORE_WARN(...)  ::eg::Log::GetCoreLogger()->warn(__VA_ARGS__)
+#define EG_CORE_ERROR(...) ::eg::Log::GetCoreLogger()->error(__VA_ARGS__)
 
 // Client log macros
-#define EG_TRACE(...) ::Engine::Log::GetClientLogger()->trace(__VA_ARGS__)
-#define EG_INFO(...)  ::Engine::Log::GetClientLogger()->info(__VA_ARGS__)
-#define EG_WARN(...)  ::Engine::Log::GetClientLogger()->warn(__VA_ARGS__)
-#define EG_ERROR(...) ::Engine::Log::GetClientLogger()->error(__VA_ARGS__)
+#define EG_TRACE(...) ::eg::Log::GetClientLogger()->trace(__VA_ARGS__)
+#define EG_INFO(...)  ::eg::Log::GetClientLogger()->info(__VA_ARGS__)
+#define EG_WARN(...)  ::eg::Log::GetClientLogger()->warn(__VA_ARGS__)
+#define EG_ERROR(...) ::eg::Log::GetClientLogger()->error(__VA_ARGS__)

@@ -3,12 +3,12 @@
 
 #include <glad/glad.h>
 
-namespace Engine
+namespace eg
 {
 
     std::unique_ptr<detail::QuadData> Renderer2D::quad_data = nullptr;
 
-    Engine::OrthographicCamera* Renderer2D::cam = nullptr;
+    eg::OrthographicCamera* Renderer2D::cam = nullptr;
 
     size_t Renderer2D::quad_count = 0;
 
@@ -37,7 +37,7 @@ namespace Engine
         quad_data->vao.setElementBuffer(quad_data->ebo);
     }
 
-    void Renderer2D::begin(Engine::OrthographicCamera& scene_cam)
+    void Renderer2D::begin(eg::OrthographicCamera& scene_cam)
     {
         cam = &scene_cam;
 
@@ -96,4 +96,4 @@ namespace Engine
         quad_count++;
     }
 
-} // namespace Engine
+} // namespace eg

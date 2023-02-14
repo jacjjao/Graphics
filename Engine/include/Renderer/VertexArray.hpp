@@ -8,7 +8,7 @@
 
 #include <vector>
 
-namespace Engine
+namespace eg
 {
 
     class VertexArray
@@ -79,4 +79,4 @@ namespace Engine
         container m_vertices;
     };
 
-} // namespace Engine
+} // namespace eg

@@ -10,7 +10,7 @@
 #include <sstream>
 #endif
 
-namespace Engine
+namespace eg
 {
 
     namespace detail
@@ -272,4 +272,4 @@ namespace Engine
 
     } // namespace Constants
 
-} // namespace Engine
+} // namespace eg

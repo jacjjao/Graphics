@@ -13,7 +13,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-namespace Engine
+namespace eg
 {
 
     std::array<Character, 128> TextRenderer::characters;
@@ -173,4 +173,4 @@ namespace Engine
         }
     }
 
-} // namespace Engine
+} // namespace eg

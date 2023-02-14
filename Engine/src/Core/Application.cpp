@@ -3,7 +3,7 @@
 #include "include/Input/Input.hpp"
 #include <glad/glad.h>
 
-namespace Engine
+namespace eg
 {
 	Application* Application::s_instance = nullptr;
 
@@ -27,12 +27,12 @@ namespace Engine
 		s_instance = this;
 
 		m_window = Window::create();
-		m_window->setEventCallback([this](Engine::Event& e) {
+		m_window->setEventCallback([this](eg::Event& e) {
 			onEvent(e);
 		});
 	}
 
-	void Application::onEvent(Engine::Event& e)
+	void Application::onEvent(eg::Event& e)
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) {
@@ -75,4 +75,4 @@ namespace Engine
 		m_clear_color.a = float(color.a);
 	}
 
-} // namespace Engine
+} // namespace eg

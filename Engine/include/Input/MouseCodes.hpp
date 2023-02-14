@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Engine
+namespace eg
 {
 	using MouseCode = uint16_t;
 
@@ -24,4 +24,4 @@ namespace Engine
 			ButtonMiddle = Button2
 		};
 	} // namespace Mouse
-} // namespace Engine
+} // namespace eg

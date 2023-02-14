@@ -2,7 +2,7 @@
 
 #include "include/Core/Matrix.hpp"
 
-namespace Engine
+namespace eg
 {
 
 	float radians(float degrees);
@@ -15,4 +15,4 @@ namespace Engine
 		float zNear,
 		float zFar);
 
-} // namespace Engine
+} // namespace eg

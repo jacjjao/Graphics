@@ -1,6 +1,6 @@
 #include "include/Core/Color.hpp"
 
-namespace Engine
+namespace eg
 {
 
 	const Color Color::Red{ 255, 0, 0 };
@@ -12,4 +12,4 @@ namespace Engine
 	const Color Color::White{ 255, 255, 255 };
 	const Color Color::Grey{ 128, 128, 128, 255 };
 
-} // namespace Engine
+} // namespace eg

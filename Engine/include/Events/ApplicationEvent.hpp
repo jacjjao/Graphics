@@ -3,7 +3,7 @@
 #include "Event.hpp"
 #include <sstream>
 
-namespace Engine
+namespace eg
 {
 
 	class WindowResizeEvent : public Event

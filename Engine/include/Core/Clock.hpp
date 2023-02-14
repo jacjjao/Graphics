@@ -3,7 +3,7 @@
 #include <chrono>
 #include <cstdint>
 
-namespace Engine
+namespace eg
 {
 
     class Duration
@@ -47,4 +47,4 @@ namespace Engine
         std::chrono::high_resolution_clock::time_point m_now;
     };
 
-} // namespace Engine
+} // namespace eg

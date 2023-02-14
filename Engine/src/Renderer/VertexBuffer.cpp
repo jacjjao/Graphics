@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 
-namespace Engine
+namespace eg
 {
 
     uint32_t VertexBuffer::vbo_in_bind = 0;
@@ -93,4 +93,4 @@ namespace Engine
         }
     }
 
-} // namespace Engine
+} // namespace eg

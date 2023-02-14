@@ -8,7 +8,7 @@
 #include "include/Core/Color.hpp"
 #include "include/Renderer/Texture.hpp"
 
-namespace Engine
+namespace eg
 {
 
     struct Character
@@ -39,4 +39,4 @@ namespace Engine
         static unsigned text_size;
     };
 
-} // namespace Engine
+} // namespace eg

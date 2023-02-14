@@ -6,7 +6,7 @@
 #include <stb_image.h>
 #include <glad/glad.h>
 
-namespace Engine
+namespace eg
 {
     std::array<Texture*, 32> Texture::textures_in_bind{};
 

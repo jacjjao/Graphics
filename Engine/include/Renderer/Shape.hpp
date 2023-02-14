@@ -5,7 +5,7 @@
 #include "VertexArray.hpp"
 #include "include/Core/Rect.hpp"
 
-namespace Engine
+namespace eg
 {
 
     class Shape : public Transformable
@@ -48,4 +48,4 @@ namespace Engine
         Rect m_tex_rect;
     };
 
-} // namespace Engine
+} // namespace eg

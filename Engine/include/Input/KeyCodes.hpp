@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Engine
+namespace eg
 {
 	using KeyCode = uint16_t;
 
@@ -143,4 +143,4 @@ namespace Engine
 			Menu = 348
 		};
 	} // namespace Key
-} // namespace Engine
+} // namespace eg

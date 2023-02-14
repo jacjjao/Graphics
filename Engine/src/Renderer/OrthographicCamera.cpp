@@ -2,7 +2,7 @@
 #include "include/Renderer/OrthographicCamera.hpp"
 #include "include/Core/Math.hpp"
 
-namespace Engine
+namespace eg
 {
 
     OrthographicCamera::OrthographicCamera(
@@ -78,4 +78,4 @@ namespace Engine
         return m_view;
     }
 
-} // namespace Engine
+} // namespace eg

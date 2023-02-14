@@ -10,7 +10,7 @@
 #define SUCCESS true
 #define FAILED false
 
-namespace Engine
+namespace eg
 {
 
     std::string read_shader_code(const std::filesystem::path& path)
@@ -233,4 +233,4 @@ namespace Engine
         return program;
     }
 
-} // namespace Engine
+} // namespace eg

@@ -4,7 +4,7 @@
 
 #include <glad/glad.h>
 
-namespace Engine
+namespace eg
 {
 
     Rectangle2D::Rectangle2D(const float width, const float height) :
@@ -65,4 +65,4 @@ namespace Engine
         m_vao.update();
     }
 
-} // namespace Engine
+} // namespace eg

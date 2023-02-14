@@ -3,7 +3,7 @@
 #include "Vector.hpp"
 #include "Color.hpp"
 
-namespace Engine
+namespace eg
 {
 
     struct Vertex2D
@@ -13,4 +13,4 @@ namespace Engine
         Vector2f tex_coord;
     };
 
-} // namespace Engine
+} // namespace eg

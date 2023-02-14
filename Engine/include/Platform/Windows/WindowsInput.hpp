@@ -2,7 +2,7 @@
 
 #include "include/Input/Input.hpp"
 
-namespace Engine
+namespace eg
 {
 
 	class WindowsInput : public Input
@@ -14,4 +14,4 @@ namespace Engine
 		std::pair<float, float> getMousePositionImpl() override;
 	};
 
-} // namespace Engine
+} // namespace eg

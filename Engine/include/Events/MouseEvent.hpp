@@ -2,7 +2,7 @@
 
 #include "Event.hpp"
 
-namespace Engine
+namespace eg
 {
 	class MouseMovedEvent : public Event
 	{

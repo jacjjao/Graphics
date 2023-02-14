@@ -6,7 +6,7 @@
 #include <vector>
 #include <memory>
 
-namespace Engine
+namespace eg
 {
 	class LayerStack
 	{

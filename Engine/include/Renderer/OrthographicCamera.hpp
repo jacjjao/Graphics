@@ -3,7 +3,7 @@
 #include "include/Core/Vector.hpp"
 #include "include/Core/Matrix.hpp"
 
-namespace Engine
+namespace eg
 {
 
     class OrthographicCamera
@@ -39,4 +39,4 @@ namespace Engine
         float m_degree;
     };
 
-} // namespace Engine
+} // namespace eg

@@ -2,7 +2,7 @@
 
 #include <utility>
 
-namespace Engine
+namespace eg
 {
 	class Input
 	{

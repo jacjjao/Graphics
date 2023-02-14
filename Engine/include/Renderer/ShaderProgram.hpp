@@ -9,7 +9,7 @@
 #include "include/Core/Vector.hpp"
 #include "include/Core/Color.hpp"
 
-namespace Engine
+namespace eg
 {
 
     static std::string read_shader_code(const std::filesystem::path& path);
@@ -192,4 +192,4 @@ namespace Engine
 
     } // namespace ShaderSrcs
 
-} // namespace Engine
+} // namespace eg

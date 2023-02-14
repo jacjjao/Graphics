@@ -4,7 +4,7 @@
 
 #include <GLFW/glfw3.h>
 
-namespace Engine
+namespace eg
 {
 	
 	Input* Input::s_instance = new WindowsInput{};
@@ -30,4 +30,4 @@ namespace Engine
 		return { (float)xPos, (float)yPos };
 	}
 
-} // Engine
+} // eg

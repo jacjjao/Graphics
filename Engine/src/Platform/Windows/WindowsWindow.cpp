@@ -9,7 +9,7 @@
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
 
-namespace Engine
+namespace eg
 {
 	static bool s_GLFWInitialized = false;
 
@@ -260,4 +260,4 @@ namespace Engine
 	{
 		return m_data.vSync;
 	}
-} // namespace Engine
+} // namespace eg

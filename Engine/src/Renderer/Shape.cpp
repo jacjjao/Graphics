@@ -1,7 +1,7 @@
 #include "pch.hpp"
 #include "include/Renderer/Shape.hpp"
 
-namespace Engine
+namespace eg
 {
 
     Shape::Shape(const size_t size) :
@@ -23,4 +23,4 @@ namespace Engine
         return Vector2f{ result[0][0], result[1][0] };
     }
 
-} // namespace Engine
+} // namespace eg

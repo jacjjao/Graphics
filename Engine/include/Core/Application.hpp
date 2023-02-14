@@ -9,7 +9,7 @@
 #include "include/Renderer/ShaderProgram.hpp"
 #include "include/Renderer/Rectangle2D.hpp"
 
-namespace Engine
+namespace eg
 {
 	class Application
 	{
@@ -27,7 +27,7 @@ namespace Engine
 
 		Window& getWindow() { return *m_window; }
 
-		void setClearColor(const Engine::Color color);
+		void setClearColor(const eg::Color color);
 
 	private:
 		bool onWindowClosed(WindowCloseEvent& e);
@@ -45,4 +45,4 @@ namespace Engine
 			float r, g, b, a;
 		} m_clear_color;
 	};
-} // namespace Engine
+} // namespace eg

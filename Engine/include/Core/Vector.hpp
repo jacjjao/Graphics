@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-namespace Engine
+namespace eg
 {
 
     template <typename T>
@@ -170,4 +170,4 @@ namespace Engine
 
     using Vector3f = Vector3<float>;
 
-} // namespace Engine
+} // namespace eg

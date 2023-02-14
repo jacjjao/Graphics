@@ -2,7 +2,7 @@
 
 #include "Shape.hpp"
 
-namespace Engine
+namespace eg
 {
 
     class Line : public Shape
@@ -28,4 +28,4 @@ namespace Engine
         Color m_color;
     };
 
-} // namespace Engine 
+} // namespace eg 

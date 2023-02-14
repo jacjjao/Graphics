@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 
-namespace Engine
+namespace eg
 {
 
     Line::Line(const Vector2f start_position, const Vector2f end_position) :
@@ -38,4 +38,4 @@ namespace Engine
         glLineWidth(1.0f);
     }
 
-} // namespace Engine
+} // namespace eg

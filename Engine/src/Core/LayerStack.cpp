@@ -1,6 +1,6 @@
 #include "include/Core/LayerStack.hpp"
 
-namespace Engine
+namespace eg
 {
 	void LayerStack::pushLayer(Layer* layer)
 	{

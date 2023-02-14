@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include <string>
 
-namespace Engine
+namespace eg
 {
 
     class TexConstructParams

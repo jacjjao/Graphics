@@ -5,11 +5,11 @@
 
 #include <functional>
 
-namespace Engine
+namespace eg
 {
 	struct WindowProps
 	{
-		std::string title = "Graphics Engine";
+		std::string title = "Graphics eg";
 		unsigned width = 2000;
 		unsigned height = 1200;
 	};
@@ -43,4 +43,4 @@ namespace Engine
 
 		static std::unique_ptr<Window> create(const WindowProps& props = WindowProps{});
 	};
-} // namespace Engine
+} // namespace eg

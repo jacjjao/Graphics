@@ -3,7 +3,7 @@
 #include "RigidBody.hpp"
 #include <span>
 
-namespace Engine
+namespace eg
 {
 
 	class Constraint
@@ -11,7 +11,7 @@ namespace Engine
 	public:
 		virtual void applyConstraint(RigidBody& body, const float dt) = 0;
 
-		virtual void applyConstraint(std::span<RigidBody*> bodies, const float dt)
+		void applyConstraint(std::span<RigidBody*> bodies, const float dt)
 		{
 			for (auto& body : bodies) 
 			{
@@ -26,20 +26,17 @@ namespace Engine
 	public:
 		void applyConstraint(RigidBody& body, const float dt) override
 		{
-			const auto pos = body.getCentroidPosition();
+			const auto pos = body.centroid_pos;
 			if (pos.x * pos.x + pos.y * pos.y <= 450.f * 450.f)
 				return;
 
 			const auto J = pos;
-			//const auto vprev = body.getVelocity();
-			//const auto vdelta = body.getAcceleration() * dt;
-			//const auto v = vprev + vdelta
-			const auto v = body.getVelocity();
-			const auto m = body.getMass();
+			const auto v = body.linear_velocity;
+			const auto m = body.mass;
 			const float lambda = -(J * v) / (pos * pos * m * dt);
 			const auto fc = J * lambda;
-			body.applyForce(fc);
+			body.external_forces += fc;
 		}
 	};
 
-} // namespace Engine
+} // namespace eg

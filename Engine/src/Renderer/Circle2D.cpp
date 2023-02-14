@@ -6,7 +6,7 @@
 
 #include <numbers>
 
-namespace Engine
+namespace eg
 {
 
     Circle2D::Circle2D(const float radius, const size_t point_count) :
@@ -72,4 +72,4 @@ namespace Engine
         return Shape::getPoint(index + 1);
     }
 
-} // namespace Engine
+} // namespace eg

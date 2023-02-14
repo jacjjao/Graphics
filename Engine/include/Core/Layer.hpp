@@ -3,7 +3,7 @@
 #include "include/Core/Core.hpp"
 #include "include/Events/Event.hpp"
 
-namespace Engine
+namespace eg
 {
 	class Layer
 	{

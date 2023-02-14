@@ -2,7 +2,7 @@
 
 #include "Shape.hpp"
 
-namespace Engine
+namespace eg
 {
 
     class Circle2D : public Shape
@@ -27,4 +27,4 @@ namespace Engine
         float m_radius;
     };
 
-} // namespace Engine
+} // namespace eg

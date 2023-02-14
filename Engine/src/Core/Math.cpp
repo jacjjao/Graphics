@@ -1,7 +1,7 @@
 #include "pch.hpp"
 #include "include/Core/Math.hpp"
 
-namespace Engine
+namespace eg
 {
 
     float radians(const float degrees)
@@ -30,4 +30,4 @@ namespace Engine
         return result;
     }
 
-} // namespace Engine
+} // namespace eg

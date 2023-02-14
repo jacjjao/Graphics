@@ -3,7 +3,7 @@
 #include "include/Core/Math.hpp"
 
 
-namespace Engine
+namespace eg
 {
 
     Transformable::Transformable() :
@@ -59,4 +59,4 @@ namespace Engine
         should_update = true;
     }
 
-} // namespace Engine
+} // namespace eg

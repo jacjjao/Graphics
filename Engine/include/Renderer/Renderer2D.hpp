@@ -8,7 +8,7 @@
 #include <memory>
 
 
-namespace Engine
+namespace eg
 {
 
     namespace detail
@@ -28,16 +28,16 @@ namespace Engine
 
         static void Init();
 
-        static void begin(Engine::OrthographicCamera& scene_cam);
+        static void begin(eg::OrthographicCamera& scene_cam);
         static void end();
 
         static void drawQuad(Vector2f position, Vector2f size, Color color);
 
     private:
         static std::unique_ptr<detail::QuadData> quad_data;
-        static Engine::OrthographicCamera* cam;
+        static eg::OrthographicCamera* cam;
 
         static size_t quad_count;
     };
 
-} // namespace Engine
+} // namespace eg

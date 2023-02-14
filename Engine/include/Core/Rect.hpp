@@ -2,7 +2,7 @@
 
 #include "Vector.hpp"
 
-namespace Engine
+namespace eg
 {
 
     struct Rect
@@ -11,4 +11,4 @@ namespace Engine
         Vector2f size;
     };
 
-} // namespace Engine
+} // namespace eg

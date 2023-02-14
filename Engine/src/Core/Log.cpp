@@ -3,7 +3,7 @@
 
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-namespace Engine
+namespace eg
 {
 	Log::logger_ptr Log::s_CoreLogger = nullptr;
 	Log::logger_ptr Log::s_ClientLogger = nullptr;
@@ -11,7 +11,7 @@ namespace Engine
 	void Log::Init()
 	{
 		spdlog::set_pattern("%^[%T] %n: %v%$");
-		s_CoreLogger = spdlog::stdout_color_mt("Engine");
+		s_CoreLogger = spdlog::stdout_color_mt("eg");
 		s_CoreLogger->set_level(spdlog::level::trace);
 
 		s_ClientLogger = spdlog::stdout_color_mt("APP");

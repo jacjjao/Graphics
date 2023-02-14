@@ -3,7 +3,7 @@
 #include "include/Core/Matrix.hpp"
 #include "include/Core/Vector.hpp"
 
-namespace Engine
+namespace eg
 {
 
     class Transformable
@@ -40,4 +40,4 @@ namespace Engine
         Matrix4 m_model;
     };
 
-} // namespace Engine
+} // namespace eg

@@ -3,7 +3,7 @@
 #include "ElementBuffer.hpp"
 #include "Shape.hpp"
 
-namespace Engine
+namespace eg
 {
 
     class Rectangle2D : public Shape
@@ -34,4 +34,4 @@ namespace Engine
         ElementBuffer m_ebo;
     };
 
-} // namespace Engine
+} // namespace eg

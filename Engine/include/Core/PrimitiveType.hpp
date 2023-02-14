@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace Engine
+namespace eg
 {
 
     enum class PrimitiveType : uint32_t
@@ -16,4 +16,4 @@ namespace Engine
         TriangleFan = 0x0006
     };
 
-} // namespace Engine
+} // namespace eg

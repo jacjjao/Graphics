@@ -5,7 +5,7 @@
 
 #include "include/Core/Vertex.hpp"
 
-namespace Engine
+namespace eg
 {
 
     class VertexBuffer
@@ -55,4 +55,4 @@ namespace Engine
         size_t m_capacity;
     };
 
-} // namespace Engine
+} // namespace eg

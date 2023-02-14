@@ -6,7 +6,7 @@
 
 #include <glad/glad.h>
 
-namespace Engine
+namespace eg
 {
 
     uint32_t VertexArray::vao_in_bind = 0;
@@ -161,4 +161,4 @@ namespace Engine
         VertexBuffer::unbind();
     }
 
-} // namespace Engine
+} // namespace eg
