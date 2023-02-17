@@ -43,7 +43,7 @@ namespace eg
         m_vao[0].tex_coord = tex_center;
         for (size_t i = 1; i < m_vao.size() - 1; i++)
         {
-            const auto theta = slice * static_cast<float>(i - 1) + (pi / 2.0f); // start from 90 degree
+            const auto theta = -slice * static_cast<float>(i - 1) + (pi / 2.0f); // start from 90 degree, clockwise
             const auto ssin = std::sin(theta);
             const auto ccos = std::cos(theta);
 

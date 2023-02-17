@@ -20,7 +20,7 @@ namespace eg
 		{
 			acceleration = external_forces / mass;
 			linear_velocity = linear_velocity + acceleration * dt;
-			centroid_pos = centroid_pos + linear_velocity * dt + acceleration * (dt * dt);
+			centroid_pos = centroid_pos + linear_velocity * dt;
 
 			external_forces = {};
 		}

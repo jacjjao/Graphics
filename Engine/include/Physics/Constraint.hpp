@@ -10,18 +10,9 @@ namespace eg
 	{
 	public:
 		virtual void applyConstraint(RigidBody& body, const float dt) = 0;
-
-		void applyConstraint(std::span<RigidBody*> bodies, const float dt)
-		{
-			for (auto& body : bodies) 
-			{
-				applyConstraint(*body, dt);
-			}
-		}
-		
 	};
 
-	class CircleConstraint : Constraint
+	class CircleConstraint : public Constraint
 	{
 	public:
 		void applyConstraint(RigidBody& body, const float dt) override
@@ -37,6 +28,25 @@ namespace eg
 			const auto fc = J * lambda;
 			body.external_forces += fc;
 		}
+	};
+
+	class FloorConstraint : public Constraint
+	{
+	public:
+		void applyConstraint(RigidBody& body, const float dt) override
+		{
+			const auto pos = body.centroid_pos;
+			if (pos.y - obj_half_height >= floor_h)
+				return;
+
+			constexpr auto bau_term = 0.4f; // baumgarte term
+			const auto bias = -(pos.y - obj_half_height - floor_h) * bau_term / dt;
+			const eg::Vector2f fc{ 0.0f, (bias - body.linear_velocity.y) * body.mass / dt };
+			body.external_forces += fc;
+		}
+
+		float floor_h = 0.0f;
+		float obj_half_height = 0.0f;
 	};
 
 } // namespace eg

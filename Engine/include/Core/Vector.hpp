@@ -17,6 +17,11 @@ namespace eg
         {
         }
 
+        constexpr bool operator==(const Vector2<T>& other) const
+        {
+            return (x == other.x) and (y == other.y);
+        }
+
         constexpr Vector2<T>& operator+=(const Vector2<T>& other)
         {
             x += other.x;
@@ -59,6 +64,12 @@ namespace eg
         T length() const
         {
             return std::sqrt(x * x + y * y);
+        }
+
+        [[nodiscard]]
+        T lengthSquared() const
+        {
+            return x* x + y * y;
         }
 
         [[nodiscard]] 

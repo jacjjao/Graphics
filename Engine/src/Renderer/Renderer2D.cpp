@@ -68,23 +68,25 @@ namespace eg
             begin(*cam);
         }
 
+        const auto half_size = size / 2.0f;
+
         Vertex2D bottom_left;
-        bottom_left.position = position;
+        bottom_left.position = position - half_size;
         bottom_left.tex_coord = { 0.0F, 0.0F };
         bottom_left.color = color;
 
         Vertex2D bottom_right;
-        bottom_right.position = { position.x + size.x, position.y };
+        bottom_right.position = { position.x + half_size.x, position.y - half_size.y };
         bottom_right.tex_coord = { 1.0F, 0.0F };
         bottom_right.color = color;
 
         Vertex2D top_right;
-        top_right.position = { position.x + size.x, position.y + size.y };
+        top_right.position = { position.x + half_size.x, position.y + half_size.y };
         top_right.tex_coord = { 1.0F, 1.0F };
         top_right.color = color;
 
         Vertex2D top_left;
-        top_left.position = { position.x, position.y + size.y };
+        top_left.position = { position.x - half_size.x, position.y + half_size.y };
         top_left.tex_coord = { 0.0F, 1.0F };
         top_left.color = color;
 
