@@ -73,34 +73,16 @@ public:
     }
 
     void onUpdate() override
-    { 
-        proccessInput();
-
+    {
         static auto& program = eg::DefaultShaderProgram::instance();
         program.use();
         program.setMat4("view", m_cam->getViewMatrix());
         program.setMat4("proj", m_cam->getProjMatrix());
-        
-        for (int i = 0; i < rects.size(); i++)
-        {
-            for (int j = i + 1; j < rects.size(); j++)
-            {
-                if (const auto col_data = eg::physics::isCollide(&rects[i], &rects[j]); col_data.depth != 0.0f)
-                {
-                    const auto sig_face = eg::physics::findSignificantFace(*col_data.receptor, col_data.normal);
-
-                    // const auto pp = eg::physics::findPentratePoint(col_data, sig_face);
-
-                    eg::physics::resolveCollision(bodies[i], bodies[j], (&rects[i] == col_data.receptor) ? col_data.normal : -col_data.normal, col_data.depth);
-                }
-            }
-        }
-        
+     
         updateWorld();
 
         for (int i = 0; i < rects.size(); i++)
         {
-            rects[i].setPosition(bodies[i].centroid_pos);
             rects[i].update();
             rects[i].draw();
         }
@@ -114,6 +96,8 @@ public:
             clock.restart();
         }
         fps++;
+
+        proccessInput();
     }
 
 
@@ -124,59 +108,88 @@ private:
 
         if (eg::Input::isKeyPressed(eg::Key::W))
         {
-            // triangle->translate({ 0.0f, speed });
+            bodies.front().linear_velocity += { 0.0f, speed };
         }
         if (eg::Input::isKeyPressed(eg::Key::S))
         {
-            // triangle->translate({ 0.0f, -speed });
+            bodies.front().linear_velocity += { 0.0f, -speed };
         }
         if (eg::Input::isKeyPressed(eg::Key::A))
         {
-            // triangle->translate({ -speed, 0.0f });
+            bodies.front().linear_velocity += { -speed, 0.0f };
         }
         if (eg::Input::isKeyPressed(eg::Key::D))
         {
-            // triangle->translate({ speed, 0.0f });
+            bodies.front().linear_velocity += { speed, 0.0f };
+        }
+        if (eg::Input::isKeyPressed(eg::Key::Space))
+        {
+            bodies.front().linear_velocity = { 0.0f, 0.0f };
         }
         if (eg::Input::isKeyPressed(eg::Key::E))
         {
-            // triangle->rotate(-1.0f);
         }
         if (eg::Input::isKeyPressed(eg::Key::Q))
         {
-            // triangle->rotate(1.0f);
+        }
+    }
+
+    void precompute()
+    {
+        polys.resize(rects.size());
+        for (size_t i = 0; i < rects.size(); i++)
+        {
+            polys[i].poly = &rects[i];
+            polys[i].vertices.clear();
+            polys[i].vertices.reserve(rects[i].getPointCount());            
+            for (size_t j = 0; j < rects[i].getPointCount(); j++)
+            {
+                polys[i].vertices.push_back(rects[i].getPoint(j));
+            }
         }
     }
 
     void updateWorld()
     {
-        constexpr int step = 10;
+        constexpr int step = 8;
         constexpr auto dt = 1.0f / 170.0f;
         constexpr auto dtt = dt / float(step);
+
         for (int i = 0; i < step; i++)
         {
-            for (auto& body : bodies)
+            precompute();
+            for (int i = 0; i < rects.size(); i++)
             {
-                body.external_forces = { 0, -2000 }; // apply gravity
+                for (int j = i + 1; j < rects.size(); j++)
+                {
+                    if (const auto result = eg::physics::isCollide(polys[i], polys[j]); result.has_value())
+                    {
+                        const auto& col_data = result.value();
+                        // const auto sig_face = eg::physics::findSignificantFace(col_data.receptor->vertices, col_data.normal);
+                        // const auto pp = eg::physics::findPentratePoint(col_data, sig_face);
 
-                body.updateVelocity(dtt);
-
-                applyConstraint(body, dtt);
-
-                body.updatePosition(dtt);
+                        auto& receptor = (col_data.receptor->poly == polys[i].poly) ? bodies[i] : bodies[j];
+                        auto& donor = (col_data.donor->poly == polys[i].poly) ? bodies[i] : bodies[j];
+                        eg::physics::resolveCollision(receptor, donor, col_data.normal, col_data.depth, dtt);
+                    }
+                }
             }
-        }
+
+            for (size_t i = 0; i < bodies.size(); i++)
+            {
+                bodies[i].external_forces = { 0, -2000 }; // apply gravity
+
+                applyConstraint(bodies[i], dtt);
+
+                bodies[i].updatePosition(dtt);
+
+                rects[i].setPosition(bodies[i].centroid_pos);
+            }
+        }                   
     }
 
     void applyConstraint(eg::RigidBody& body, const float dt) const
     {
-        /*
-        if (body.centroid_pos.y - 50.f >= -600.f)
-            return;
-        const auto beta = -(body.centroid_pos.y - 50.f + 600.f) * 0.4f / dt;
-        const eg::Vector2f fc{ 0.0f, (beta - body.linear_velocity.y) * body.mass / dt };
-        body.external_forces += fc;
-        */
         eg::FloorConstraint constraint{};
         constraint.floor_h = -600.f;
         constraint.obj_half_height = rect_height / 2.0f;
@@ -189,6 +202,7 @@ private:
 
     std::vector<eg::RigidBody> bodies;
     std::vector<eg::Rectangle2D> rects;
+    std::vector<eg::physics::Polygon> polys;
 };
 
 class SandBox : public eg::Application

@@ -5,84 +5,91 @@ namespace eg
     namespace physics
     {
 
+        struct Polygon
+        {
+            eg::Shape* poly;
+            std::vector<eg::Vector2f> vertices;
+        };
+
         struct CollisionData
         {
-            eg::Shape* donor;
-            eg::Shape* receptor;
+            Polygon* donor;
+            Polygon* receptor;
             eg::Vector2f normal;
             float depth;
         };
 
-        CollisionData isCollide(eg::Shape* s1, eg::Shape* s2)
+        std::optional<CollisionData> isCollide(Polygon& s1, Polygon& s2)
         {
             CollisionData result{};
-            result.depth = std::numeric_limits<float>::infinity();
+            result.depth =  std::numeric_limits<float>::infinity();
+            auto max_dot = -std::numeric_limits<float>::infinity();
             for (int i = 0; i < 2; i++)
             {
-                const auto pvec = s2->getPosition() - s1->getPosition();
-                float max_dot = -std::numeric_limits<float>::infinity();
-                for (int a = 0; a < s1->getPointCount(); a++)
+                const auto pvec = s2.poly->getPosition() - s1.poly->getPosition();
+                for (size_t a = 0; a < s1.vertices.size(); a++)
                 {
-                    const int b = (a + 1) % s1->getPointCount();
-                    const auto pa = s1->getPoint(a);
-                    const auto pb = s1->getPoint(b);
+                    const size_t b = (a + 1) % s1.vertices.size();
+                    const auto pa = s1.vertices[a];
+                    const auto pb = s1.vertices[b];
                     const auto axisProj = eg::Vector2f{ -(pb.y - pa.y), pb.x - pa.x }.normalize();
 
-                    auto min_r1 = std::numeric_limits<float>::infinity();
+                    auto min_r1 =  std::numeric_limits<float>::infinity();
                     auto max_r1 = -std::numeric_limits<float>::infinity();
-                    for (int p = 0; p < s1->getPointCount(); p++)
+                    for (const auto p : s1.vertices)
                     {
-                        const auto q = s1->getPoint(p) * axisProj;
+                        const auto q = p * axisProj;
                         min_r1 = std::min(min_r1, q);
                         max_r1 = std::max(max_r1, q);
                     }
 
-                    auto min_r2 = std::numeric_limits<float>::infinity();
+                    auto min_r2 =  std::numeric_limits<float>::infinity();
                     auto max_r2 = -std::numeric_limits<float>::infinity();
-                    for (int p = 0; p < s2->getPointCount(); p++)
+                    for (const auto p : s2.vertices)
                     {
-                        const auto q = s2->getPoint(p) * axisProj;
+                        const auto q = p * axisProj;
                         min_r2 = std::min(min_r2, q);
                         max_r2 = std::max(max_r2, q);
                     }
 
                     if (min_r2 > max_r1 or max_r2 < min_r1)
                     {
-                        return {};
+                        return std::nullopt;
                     }
 
-                    const float penDepth = std::min(max_r1, max_r2) - std::max(min_r1, min_r2);
-                    if (eg::nearlyEqual(penDepth, result.depth) and axisProj * pvec > max_dot)
+                    const auto penDepth = std::min(max_r1, max_r2) - std::max(min_r1, min_r2);
+                    const auto axisDot  = axisProj * pvec;
+                    if (eg::nearlyEqual(penDepth, result.depth) and axisDot > max_dot)
                     {
-                        result.donor = s2;
-                        result.receptor = s1;
-                        result.depth = std::min(penDepth, result.depth);
-                        result.normal = axisProj;
+                        result.donor    = &s2;
+                        result.receptor = &s1;
+                        result.depth    = std::min(penDepth, result.depth);
+                        result.normal   = axisProj;
+
                         max_dot = axisProj * pvec;
                     }
                     else if (penDepth < result.depth)
                     {
-                        result.donor = s2;
-                        result.receptor = s1;
-                        result.depth = penDepth;
-                        result.normal = axisProj;
+                        result.donor    = &s2;
+                        result.receptor = &s1;
+                        result.depth    = penDepth;
+                        result.normal   = axisProj;
+
                         max_dot = axisProj * pvec;
                     }
                 }
-
                 std::swap(s1, s2);
             }
             return result;
         }
 
-        std::pair<eg::Vector2f, eg::Vector2f> findSignificantFace(eg::Shape& sp, eg::Vector2f normal)
+        std::pair<eg::Vector2f, eg::Vector2f> findSignificantFace(std::span<eg::Vector2f> vertices, eg::Vector2f normal)
         {
             size_t farthestPidx = 0;
             float dist = -std::numeric_limits<float>::infinity();
-            for (size_t n = sp.getPointCount(), i = 0; i < n; i++)
+            for (size_t i = 0; i < vertices.size(); i++)
             {
-                const auto p = sp.getPoint(i);
-                const auto proj = p * normal;
+                const auto proj = vertices[i] * normal;
                 if (proj > dist)
                 {
                     dist = proj;
@@ -91,15 +98,15 @@ namespace eg
             }
 
             eg::Vector2f sigFace{};
-            const auto farthestP = sp.getPoint(farthestPidx);
+            const auto farthestP = vertices[farthestPidx];
             float minSlope = std::numeric_limits<float>::infinity();
-            for (size_t n = sp.getPointCount(), i = 0; i < n; i++)
+            for (size_t i = 0; i < vertices.size(); i++)
             {
                 if (i == farthestPidx)
                 {
                     continue;
                 }
-                const auto face = sp.getPoint(i) - farthestP;
+                const auto face = vertices[i] - farthestP;
                 if (const auto slope = std::abs(face * normal); slope < minSlope)
                 {
                     sigFace = face;
@@ -143,9 +150,9 @@ namespace eg
 
             PenetratePoints pp{};
             auto minDist = std::numeric_limits<float>::infinity();
-            for (size_t n = col_data.donor->getPointCount(), i = 0; i < n; i++) 
+            for (size_t i = 0; i < col_data.donor->vertices.size(); i++) 
             {
-                const auto p = col_data.donor->getPoint(i);
+                const auto p = col_data.donor->vertices[i];
                 const auto dist = pointSegDist(p, sig_face.first, sig_face.second);
 
                 if (eg::nearlyEqual(dist, minDist))
@@ -163,6 +170,22 @@ namespace eg
             }
             return pp;
         }
+
+        void resolveCollision(RigidBody& receptor, RigidBody& donor, const eg::Vector2f col_normal, const float depth, const float dt)
+        {
+            static constexpr float bounciness = 1.0f;
+
+            const auto vab = receptor.linear_velocity - donor.linear_velocity;
+            const auto impulseMag = vab * col_normal * (-1.0f - bounciness) / (col_normal * col_normal * (donor.getInvMass() + receptor.getInvMass()));
+
+            receptor.applyImpulse(col_normal * impulseMag);
+            donor.applyImpulse(-col_normal * impulseMag);
+            
+            const float mass_sum_inv = 1.0f / (receptor.getMass() + donor.getMass());
+            receptor.centroid_pos = receptor.centroid_pos - col_normal * (depth * receptor.getMass() * mass_sum_inv);
+            donor.centroid_pos = donor.centroid_pos + col_normal * (depth * donor.getMass() * mass_sum_inv);
+        }
+        /*
 
         struct Face
         {
@@ -241,19 +264,7 @@ namespace eg
             }
             return { inc.b, inc.b };
         }
-
-        void resolveCollision(RigidBody& a, RigidBody& b, const eg::Vector2f col_normal, const float depth)
-        {
-            const auto vab = b.linear_velocity - a.linear_velocity;
-            const auto impulse = -vab * col_normal / (col_normal * col_normal * (1.0f / a.mass + 1.0f / b.mass));
-
-            a.linear_velocity = a.linear_velocity - col_normal * (impulse / a.mass);
-            b.linear_velocity = b.linear_velocity + col_normal * (impulse / b.mass);
-
-            a.centroid_pos = a.centroid_pos - col_normal * (depth / 2.0f);
-            b.centroid_pos = b.centroid_pos + col_normal * (depth / 2.0f);
-        }
-
+        */
     } // namespace physics
 
 } // namespace eg

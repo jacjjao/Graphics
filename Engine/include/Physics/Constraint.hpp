@@ -23,7 +23,7 @@ namespace eg
 
 			const auto J = pos;
 			const auto v = body.linear_velocity;
-			const auto m = body.mass;
+			const auto m = body.getMass();
 			const float lambda = -(J * v) / (pos * pos * m * dt);
 			const auto fc = J * lambda;
 			body.external_forces += fc;
@@ -39,9 +39,9 @@ namespace eg
 			if (pos.y - obj_half_height >= floor_h)
 				return;
 
-			constexpr auto bau_term = 0.4f; // baumgarte term
+			constexpr auto bau_term = 0.2f; // baumgarte term
 			const auto bias = -(pos.y - obj_half_height - floor_h) * bau_term / dt;
-			const eg::Vector2f fc{ 0.0f, (bias - body.linear_velocity.y) * body.mass / dt };
+			const eg::Vector2f fc{ 0.0f, (bias - body.linear_velocity.y) * body.getMass() / dt };
 			body.external_forces += fc;
 		}
 
