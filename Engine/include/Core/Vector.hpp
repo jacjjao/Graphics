@@ -17,12 +17,12 @@ namespace eg
         {
         }
 
-        constexpr bool operator==(const Vector2<T>& other) const
+        constexpr bool operator==(const Vector2<T> other) const
         {
             return (x == other.x) and (y == other.y);
         }
 
-        constexpr Vector2<T>& operator+=(const Vector2<T>& other)
+        constexpr Vector2<T>& operator+=(const Vector2<T> other)
         {
             x += other.x;
             y += other.y;
@@ -30,7 +30,7 @@ namespace eg
             return *this;
         }
 
-        constexpr Vector2<T> operator+(const Vector2<T>& other) const
+        constexpr Vector2<T> operator+(const Vector2<T> other) const
         {
             return { this->x + other.x, this->y + other.y };
         }
@@ -40,12 +40,12 @@ namespace eg
             return { -x, -y };
         }
 
-        constexpr Vector2<T> operator-(const Vector2<T>& other) const
+        constexpr Vector2<T> operator-(const Vector2<T> other) const
         {
             return { this->x - other.x, this->y - other.y };
         }
 
-        constexpr T operator*(const Vector2<T>& other) const
+        constexpr T operator*(const Vector2<T> other) const
         {
             return x * other.x + y * other.y;
         }
@@ -55,7 +55,7 @@ namespace eg
             return { x * scalar, y * scalar };
         }
 
-        constexpr Vector2<T> operator/(const T& factor) const
+        constexpr Vector2<T> operator/(const T factor) const
         {
             return { x / factor, y / factor };
         }
@@ -78,6 +78,12 @@ namespace eg
             const auto len = length();
 
             return Vector2<T>{x / len, y / len};
+        }
+
+        [[nodiscard]]
+        T cross(const Vector2<T> other) const 
+        {
+            return x * other.y - y * other.x;
         }
 
         T x, y;

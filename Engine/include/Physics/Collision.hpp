@@ -4,7 +4,6 @@ namespace eg
 {
     namespace physics
     {
-
         struct Polygon
         {
             eg::Shape* poly;
@@ -66,7 +65,7 @@ namespace eg
                         result.depth    = std::min(penDepth, result.depth);
                         result.normal   = axisProj;
 
-                        max_dot = axisProj * pvec;
+                        max_dot = axisDot;
                     }
                     else if (penDepth < result.depth)
                     {
@@ -75,7 +74,7 @@ namespace eg
                         result.depth    = penDepth;
                         result.normal   = axisProj;
 
-                        max_dot = axisProj * pvec;
+                        max_dot = axisDot;
                     }
                 }
                 std::swap(s1, s2);
@@ -83,7 +82,12 @@ namespace eg
             return result;
         }
 
-        std::pair<eg::Vector2f, eg::Vector2f> findSignificantFace(std::span<eg::Vector2f> vertices, eg::Vector2f normal)
+        struct LineSegment
+        {
+            eg::Vector2f a, b;
+        };
+
+        LineSegment findSignificantFace(std::span<eg::Vector2f> vertices, eg::Vector2f normal)
         {
             size_t farthestPidx = 0;
             float dist = -std::numeric_limits<float>::infinity();
@@ -122,9 +126,11 @@ namespace eg
             int cnt;
         };
 
-        PenetratePoints findPentratePoint(const CollisionData col_data, const std::pair<eg::Vector2f, eg::Vector2f> sig_face)
+        PenetratePoints findPentratePoint(const CollisionData col_data, const LineSegment sig_face)
         {
-            const auto pointSegDist = [](const eg::Vector2f p, const eg::Vector2f a, const eg::Vector2f b) {
+            const auto pointToSegDist = [](const eg::Vector2f p, const LineSegment line) {
+                const auto& [a, b] = line;
+                
                 const auto ab = b - a;
                 const auto ap = p - a;
 
@@ -153,7 +159,7 @@ namespace eg
             for (size_t i = 0; i < col_data.donor->vertices.size(); i++) 
             {
                 const auto p = col_data.donor->vertices[i];
-                const auto dist = pointSegDist(p, sig_face.first, sig_face.second);
+                const auto dist = pointToSegDist(p, sig_face);
 
                 if (eg::nearlyEqual(dist, minDist))
                 {
@@ -171,100 +177,95 @@ namespace eg
             return pp;
         }
 
-        void resolveCollision(RigidBody& receptor, RigidBody& donor, const eg::Vector2f col_normal, const float depth, const float dt)
+        void resolveCollision(RigidBody& bodyA, RigidBody& bodyB, const PenetratePoints pp, const eg::Vector2f n, const float depth)
         {
-            static constexpr float bounciness = 1.0f;
-
-            const auto vab = receptor.linear_velocity - donor.linear_velocity;
-            const auto impulseMag = vab * col_normal * (-1.0f - bounciness) / (col_normal * col_normal * (donor.getInvMass() + receptor.getInvMass()));
-
-            receptor.applyImpulse(col_normal * impulseMag);
-            donor.applyImpulse(-col_normal * impulseMag);
             
-            const float mass_sum_inv = 1.0f / (receptor.getMass() + donor.getMass());
-            receptor.centroid_pos = receptor.centroid_pos - col_normal * (depth * receptor.getMass() * mass_sum_inv);
-            donor.centroid_pos = donor.centroid_pos + col_normal * (depth * donor.getMass() * mass_sum_inv);
+            constexpr float bounciness = 1.0f; // ¼u©Ê±`¼Æ
+
+            std::array<eg::Vector2f, 2> impulses{};
+            std::array<eg::Vector2f, 2> ras{};
+            std::array<eg::Vector2f, 2> rbs{};
+            bodyB.position = bodyB.position - (n * depth);
+            /*
+            for (int i = 0; i < pp.cnt; i++)
+            {
+                const auto cp = (i == 0) ? pp.p1 : pp.p2;
+
+                ras[i] = cp - bodyA.position;
+                rbs[i] = cp - bodyB.position;
+                const eg::Vector2f pa_perp{ -ras[i].y, ras[i].x };
+                const eg::Vector2f pb_perp{ -rbs[i].y, rbs[i].x };
+                const auto ang_vel_a = pa_perp * bodyA.angular_velocity;
+                const auto ang_vel_b = pb_perp * bodyB.angular_velocity;
+
+                const auto vab = (bodyB.linear_velocity + ang_vel_b) - (bodyA.linear_velocity + ang_vel_a);
+                const auto relativeVelMag = vab * n;
+                
+                if (relativeVelMag > 0.0f)
+                {
+                    continue;
+                }
+                
+                const auto rap_dot_n = pa_perp * n;
+                const auto rbp_dot_n = pb_perp * n;
+                const auto denom =
+                    bodyB.getInvMass() + bodyA.getInvMass() +
+                    rap_dot_n * rap_dot_n * bodyA.getInvInertiaTensor() +
+                    rbp_dot_n * rbp_dot_n * bodyB.getInvInertiaTensor();    
+
+                auto j = relativeVelMag * -(1.0f + bounciness);
+                j /= denom;
+                j /= static_cast<float>(pp.cnt);
+
+                impulses[i] = n * j;
+            }
+
+            for (int i = 0; i < pp.cnt; i++)
+            {
+                bodyA.applyImpulse(-impulses[i]);
+                // receptor.applyInertiaTensor(ras[i], -impulses[i]);
+
+                bodyB.applyImpulse(impulses[i]);
+                // donor.applyInertiaTensor(rbs[i], impulses[i]);
+            }
+            */
+            //const float mass_sum_inv = 1.0f / (receptor.getMass() + donor.getMass());
+            //receptor.centroid_pos = receptor.centroid_pos - n * (depth * receptor.getMass() * mass_sum_inv);
+            //donor.centroid_pos = donor.centroid_pos + n * (depth * donor.getMass() * mass_sum_inv);
+            /*
+            for (int i = 0; i < pp.cnt; i++)
+            {
+                const auto vab = (bodyB.linear_velocity ) - (bodyA.linear_velocity);
+                const auto relativeVelMag = vab * n;
+
+                if (relativeVelMag > 0.0f)
+                {
+                    continue;
+                }
+
+                const auto denom = bodyB.getInvMass() + bodyA.getInvMass();
+
+                auto j = relativeVelMag * -(1.0f + bounciness);
+                j /= denom;
+                j /= static_cast<float>(pp.cnt);
+
+                impulses[i] = n * j;
+            }
+
+            for (int i = 0; i < pp.cnt; i++)
+            {
+                bodyA.applyImpulse(-impulses[i]);
+                // receptor.applyInertiaTensor(ras[i], -impulses[i]);
+
+                bodyB.applyImpulse(impulses[i]);
+                // donor.applyInertiaTensor(rbs[i], impulses[i]);
+            }
+            const float mass_sum_inv = 1.0f / (bodyA.getMass() + bodyB.getMass());
+            bodyA.position = bodyA.position - n * (depth * bodyA.getMass() * mass_sum_inv);
+            bodyB.position = bodyB.position + n * (depth * bodyB.getMass() * mass_sum_inv);
+            */
         }
-        /*
 
-        struct Face
-        {
-            eg::Vector2f a, b;
-        };
-
-        struct CollisionFaces
-        {
-            Face inc_face, ref_face;
-        };
-
-        CollisionFaces findRefFace(const Face f1, const Face f2, eg::Vector2f col_normal)
-        {
-            if (std::abs((f1.a - f1.b) * col_normal) < std::abs((f2.a - f2.b) * col_normal))
-            {
-                return { f2, f1 };
-            }
-            return { f1, f2 };
-        }
-
-        struct Line
-        {
-            eg::Vector2f normal, point;
-        };
-
-        std::pair<eg::Vector2f, eg::Vector2f> clipping(Face inc, Face ref, eg::Vector2f col_normal)
-        {
-            if (ref.a.x > ref.b.x or (ref.a.x == ref.b.x and ref.a.y > ref.b.y))
-            {
-                std::swap(ref.a, ref.b);
-            }
-
-            const auto inc_direc = inc.b - inc.a;
-            const Line inc_l = { eg::Vector2f{ -inc_direc.y, inc_direc.x }, inc.a };
-
-            const auto ref_direc = ref.b - ref.a;
-            const Line ref_l = { eg::Vector2f{ -ref_direc.y, ref_direc.x }, ref.a };
-
-            const auto clip_line_normal = ref.b - ref.a;
-            const auto c1 = -clip_line_normal * ref.a;
-            const auto c2 = -clip_line_normal * ref.b; // ax+by+c=0
-
-            const auto getIntersectPoint = [](const Line l1, const Line l2) {
-                const auto c1 = -l1.normal * l1.point;
-                const auto c2 = -l2.normal * l2.point;
-
-                return eg::Vector2f{
-                    (l1.normal.y * c2 - l2.normal.y * c1) / (l1.normal.x * l2.normal.y - l2.normal.x * l1.normal.y),
-                    (l2.normal.x * c1 - l1.normal.x * c2) / (l1.normal.x * l2.normal.y - l2.normal.x * l1.normal.y)
-                };
-            };
-
-            if (clip_line_normal * inc.a + c1 < 0.0f) // if inc.a need to clip
-            {
-                inc.a = getIntersectPoint({ clip_line_normal, ref.a }, inc_l);
-            }
-            else if (clip_line_normal * inc.b + c1 < 0.0f)
-            {
-                inc.b = getIntersectPoint({ clip_line_normal, ref.a }, inc_l);
-            }
-
-            if (clip_line_normal * inc.a + c2 > 0.0f)
-            {
-                inc.a = getIntersectPoint({ clip_line_normal, ref.b }, inc_l);
-            }
-            else if (clip_line_normal * inc.b + c2 > 0.0f)
-            {
-                inc.b = getIntersectPoint({ clip_line_normal, ref.b }, inc_l);
-            }
-
-            // final clipping
-            const auto c_rf = -ref_l.normal * ref.a;
-            if (inc.a * -col_normal >= inc.b * -col_normal)
-            {
-                return { inc.a, inc.a };
-            }
-            return { inc.b, inc.b };
-        }
-        */
     } // namespace physics
 
 } // namespace eg

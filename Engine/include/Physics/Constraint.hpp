@@ -17,7 +17,7 @@ namespace eg
 	public:
 		void applyConstraint(RigidBody& body, const float dt) override
 		{
-			const auto pos = body.centroid_pos;
+			const auto pos = body.position;
 			if (pos.x * pos.x + pos.y * pos.y <= 450.f * 450.f)
 				return;
 
@@ -35,7 +35,7 @@ namespace eg
 	public:
 		void applyConstraint(RigidBody& body, const float dt) override
 		{
-			const auto pos = body.centroid_pos;
+			const auto pos = body.position;
 			if (pos.y - obj_half_height >= floor_h)
 				return;
 

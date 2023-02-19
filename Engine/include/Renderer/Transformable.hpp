@@ -18,6 +18,7 @@ namespace eg
         void translate(Vector2f vector);
         void scale(Vector2f factor);
         void rotate(float degree);
+        void setRotation(float degree);
 
         const Matrix4& getTransformMatrix();
 

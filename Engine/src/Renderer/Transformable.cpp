@@ -31,6 +31,12 @@ namespace eg
         should_update = true;
     }
 
+    void Transformable::setRotation(const float degree)
+    {
+        m_theta = degree;
+        should_update = true;
+    }
+
     const Matrix4& Transformable::getTransformMatrix()
     {
         if (should_update)
