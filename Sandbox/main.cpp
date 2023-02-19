@@ -110,23 +110,19 @@ private:
 
         if (eg::Input::isKeyPressed(eg::Key::W))
         {
-            bodies.front().position += { 0.0f, speed };
+            bodies.front().linear_velocity += { 0.0f, speed };
         }
         if (eg::Input::isKeyPressed(eg::Key::S))
         {
-            bodies.front().position += { 0.0f, -speed };
+            bodies.front().linear_velocity += { 0.0f, -speed };
         }
         if (eg::Input::isKeyPressed(eg::Key::A))
         {
-            bodies.front().position += { -speed, 0.0f };
+            bodies.front().linear_velocity += { -speed, 0.0f };
         }
         if (eg::Input::isKeyPressed(eg::Key::D))
         {
-            bodies.front().position += { speed, 0.0f };
-        }
-        if (eg::Input::isKeyPressed(eg::Key::Space))
-        {
-            bodies.front().linear_velocity = { 0.0f, 0.0f };
+            bodies.front().linear_velocity += { speed, 0.0f };
         }
         if (eg::Input::isKeyPressed(eg::Key::E))
         {
@@ -145,7 +141,6 @@ private:
         {
             rects[i].setPosition(bodies[i].position);
             rects[i].setRotation(bodies[i].rotate_radians * 57.295779513f);
-            rects[i].update();
 
             polys[i].poly = &rects[i];
             polys[i].vertices.clear();
@@ -170,29 +165,29 @@ private:
             {
                 for (int j = i + 1; j < rects.size(); j++)
                 {
-                    if (const auto result = eg::physics::isCollide(polys[i], polys[j]); result.has_value())
+                    if (const auto result = eg::physics::isCollide(&polys[i], &polys[j]); result.has_value())
                     {
                         const auto& col_data = result.value();
                         const auto sig_face = eg::physics::findSignificantFace(col_data.receptor->vertices, col_data.normal);
                         const auto pp = eg::physics::findPentratePoint(col_data, sig_face);
-
+                        /*
                         eg::Renderer2D::begin(*m_cam);
                         eg::Renderer2D::drawQuad(sig_face.a, { 10, 10 }, eg::Color::Red);
                         eg::Renderer2D::drawQuad(sig_face.b, { 10, 10 }, eg::Color::Red);
                         eg::Renderer2D::end();
-
-                        //auto& receptor = (col_data.receptor->poly == polys[i].poly) ? bodies[i] : bodies[j];
-                        //auto& donor = (col_data.donor->poly == polys[i].poly) ? bodies[i] : bodies[j];
-                        //eg::physics::resolveCollision(receptor, donor, pp, col_data.normal, col_data.depth);
+                        */
+                        auto& receptor = (col_data.receptor == &polys[i]) ? bodies[i] : bodies[j];
+                        auto& donor = (col_data.donor == &polys[i]) ? bodies[i] : bodies[j];
+                        eg::physics::resolveCollision(receptor, donor, pp, col_data.normal, col_data.depth);
                     }
                 }
             }
 
             for (size_t i = 0; i < bodies.size(); i++)
             {
-                //bodies[i].external_forces = { 0, -2000.f * bodies[i].getMass() }; // apply gravity
+                bodies[i].external_forces = { 0, -2000.f * bodies[i].getMass() }; // apply gravity
 
-                //applyConstraint(bodies[i], dtt);
+                applyConstraint(bodies[i], dtt);
 
                 bodies[i].update(dtt);
             }

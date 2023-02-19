@@ -18,24 +18,24 @@ namespace eg
             float depth;
         };
 
-        std::optional<CollisionData> isCollide(Polygon& s1, Polygon& s2)
+        std::optional<CollisionData> isCollide(Polygon* s1, Polygon* s2)
         {
             CollisionData result{};
             result.depth =  std::numeric_limits<float>::infinity();
             auto max_dot = -std::numeric_limits<float>::infinity();
             for (int i = 0; i < 2; i++)
             {
-                const auto pvec = s2.poly->getPosition() - s1.poly->getPosition();
-                for (size_t a = 0; a < s1.vertices.size(); a++)
+                const auto pvec = s2->poly->getPosition() - s1->poly->getPosition();
+                for (size_t a = 0; a < s1->vertices.size(); a++)
                 {
-                    const size_t b = (a + 1) % s1.vertices.size();
-                    const auto pa = s1.vertices[a];
-                    const auto pb = s1.vertices[b];
+                    const size_t b = (a + 1) % s1->vertices.size();
+                    const auto pa = s1->vertices[a];
+                    const auto pb = s1->vertices[b];
                     const auto axisProj = eg::Vector2f{ -(pb.y - pa.y), pb.x - pa.x }.normalize();
 
                     auto min_r1 =  std::numeric_limits<float>::infinity();
                     auto max_r1 = -std::numeric_limits<float>::infinity();
-                    for (const auto p : s1.vertices)
+                    for (const auto p : s1->vertices)
                     {
                         const auto q = p * axisProj;
                         min_r1 = std::min(min_r1, q);
@@ -44,7 +44,7 @@ namespace eg
 
                     auto min_r2 =  std::numeric_limits<float>::infinity();
                     auto max_r2 = -std::numeric_limits<float>::infinity();
-                    for (const auto p : s2.vertices)
+                    for (const auto p : s2->vertices)
                     {
                         const auto q = p * axisProj;
                         min_r2 = std::min(min_r2, q);
@@ -60,8 +60,8 @@ namespace eg
                     const auto axisDot  = axisProj * pvec;
                     if (eg::nearlyEqual(penDepth, result.depth) and axisDot > max_dot)
                     {
-                        result.donor    = &s2;
-                        result.receptor = &s1;
+                        result.donor    = s2;
+                        result.receptor = s1;
                         result.depth    = std::min(penDepth, result.depth);
                         result.normal   = axisProj;
 
@@ -69,8 +69,8 @@ namespace eg
                     }
                     else if (penDepth < result.depth)
                     {
-                        result.donor    = &s2;
-                        result.receptor = &s1;
+                        result.donor    = s2;
+                        result.receptor = s1;
                         result.depth    = penDepth;
                         result.normal   = axisProj;
 
@@ -122,7 +122,7 @@ namespace eg
 
         struct PenetratePoints
         {
-            eg::Vector2f p1, p2;
+            std::array<eg::Vector2f, 2> cp;
             int cnt;
         };
 
@@ -164,13 +164,13 @@ namespace eg
                 if (eg::nearlyEqual(dist, minDist))
                 {
                     pp.cnt = 2;
-                    pp.p2 = p;
+                    pp.cp[1] = p;
                     minDist = std::min(dist, minDist);
                 }
                 else if (dist < minDist)
                 {
                     pp.cnt = 1;
-                    pp.p1 = p;
+                    pp.cp[0] = p;
                     minDist = dist;
                 }
             }
@@ -178,23 +178,14 @@ namespace eg
         }
 
         void resolveCollision(RigidBody& bodyA, RigidBody& bodyB, const PenetratePoints pp, const eg::Vector2f n, const float depth)
-        {
-            
+        { 
             constexpr float bounciness = 1.0f; // ¼u©Ê±`¼Æ
-
-            std::array<eg::Vector2f, 2> impulses{};
-            std::array<eg::Vector2f, 2> ras{};
-            std::array<eg::Vector2f, 2> rbs{};
-            bodyB.position = bodyB.position - (n * depth);
-            /*
             for (int i = 0; i < pp.cnt; i++)
             {
-                const auto cp = (i == 0) ? pp.p1 : pp.p2;
-
-                ras[i] = cp - bodyA.position;
-                rbs[i] = cp - bodyB.position;
-                const eg::Vector2f pa_perp{ -ras[i].y, ras[i].x };
-                const eg::Vector2f pb_perp{ -rbs[i].y, rbs[i].x };
+                const auto ra = pp.cp[i] - bodyA.position;
+                const auto rb = pp.cp[i] - bodyB.position;
+                const eg::Vector2f pa_perp{ -ra.y, ra.x };
+                const eg::Vector2f pb_perp{ -rb.y, rb.x };
                 const auto ang_vel_a = pa_perp * bodyA.angular_velocity;
                 const auto ang_vel_b = pb_perp * bodyB.angular_velocity;
 
@@ -208,58 +199,20 @@ namespace eg
                 
                 const auto rap_dot_n = pa_perp * n;
                 const auto rbp_dot_n = pb_perp * n;
-                const auto denom =
-                    bodyB.getInvMass() + bodyA.getInvMass() +
-                    rap_dot_n * rap_dot_n * bodyA.getInvInertiaTensor() +
-                    rbp_dot_n * rbp_dot_n * bodyB.getInvInertiaTensor();    
+                const auto denom = bodyA.getInvMass() + bodyB.getInvMass();  
 
                 auto j = relativeVelMag * -(1.0f + bounciness);
                 j /= denom;
                 j /= static_cast<float>(pp.cnt);
 
-                impulses[i] = n * j;
-            }
-
-            for (int i = 0; i < pp.cnt; i++)
-            {
-                bodyA.applyImpulse(-impulses[i]);
+                const auto impulse = n * j;
+                bodyA.applyImpulse(-impulse);
                 // receptor.applyInertiaTensor(ras[i], -impulses[i]);
 
-                bodyB.applyImpulse(impulses[i]);
+                bodyB.applyImpulse(impulse);
                 // donor.applyInertiaTensor(rbs[i], impulses[i]);
             }
-            */
-            //const float mass_sum_inv = 1.0f / (receptor.getMass() + donor.getMass());
-            //receptor.centroid_pos = receptor.centroid_pos - n * (depth * receptor.getMass() * mass_sum_inv);
-            //donor.centroid_pos = donor.centroid_pos + n * (depth * donor.getMass() * mass_sum_inv);
             /*
-            for (int i = 0; i < pp.cnt; i++)
-            {
-                const auto vab = (bodyB.linear_velocity ) - (bodyA.linear_velocity);
-                const auto relativeVelMag = vab * n;
-
-                if (relativeVelMag > 0.0f)
-                {
-                    continue;
-                }
-
-                const auto denom = bodyB.getInvMass() + bodyA.getInvMass();
-
-                auto j = relativeVelMag * -(1.0f + bounciness);
-                j /= denom;
-                j /= static_cast<float>(pp.cnt);
-
-                impulses[i] = n * j;
-            }
-
-            for (int i = 0; i < pp.cnt; i++)
-            {
-                bodyA.applyImpulse(-impulses[i]);
-                // receptor.applyInertiaTensor(ras[i], -impulses[i]);
-
-                bodyB.applyImpulse(impulses[i]);
-                // donor.applyInertiaTensor(rbs[i], impulses[i]);
-            }
             const float mass_sum_inv = 1.0f / (bodyA.getMass() + bodyB.getMass());
             bodyA.position = bodyA.position - n * (depth * bodyA.getMass() * mass_sum_inv);
             bodyB.position = bodyB.position + n * (depth * bodyB.getMass() * mass_sum_inv);
