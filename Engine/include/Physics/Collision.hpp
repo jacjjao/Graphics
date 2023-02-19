@@ -182,6 +182,49 @@ namespace eg
             constexpr float bounciness = 1.0f; // 彈性常數
             for (int i = 0; i < pp.cnt; i++)
             {
+                const auto vab = bodyB.linear_velocity - bodyA.linear_velocity;
+                const auto relativeVelMag = vab * n;
+
+                if (relativeVelMag >= 0.0f)
+                {
+                    continue;
+                }
+
+                auto j = relativeVelMag * (-1.0f - bounciness);
+                j /= (bodyA.getInvMass() + bodyB.getInvMass());
+                // j /= static_cast<float>(pp.cnt);
+
+                const auto impulse = n * j;
+                if (not bodyA.is_static)
+                {
+                    bodyA.applyImpulse(-impulse);
+                }
+                // receptor.applyInertiaTensor(ras[i], -impulses[i]);
+
+                if (not bodyB.is_static)
+                {
+                    bodyB.applyImpulse(impulse);
+                }
+                // donor.applyInertiaTensor(rbs[i], impulses[i]);
+            }
+            if (bodyA.is_static)
+            {
+                bodyB.position = bodyB.position + n * depth;
+            }
+            else if (bodyB.is_static)
+            {
+                bodyA.position = bodyA.position - n * depth;
+            }
+            else
+            {
+                const float mass_sum_inv = 1.0f / (bodyA.getMass() + bodyB.getMass());
+                bodyA.position = bodyA.position - n * (depth * bodyA.getMass() * mass_sum_inv);
+                bodyB.position = bodyB.position + n * (depth * bodyB.getMass() * mass_sum_inv);
+            }
+            /*
+            constexpr float bounciness = 1.0f; // 彈性常數
+            for (int i = 0; i < pp.cnt; i++)
+            {
                 const auto ra = pp.cp[i] - bodyA.position;
                 const auto rb = pp.cp[i] - bodyB.position;
                 const eg::Vector2f pa_perp{ -ra.y, ra.x };
@@ -212,6 +255,7 @@ namespace eg
                 bodyB.applyImpulse(impulse);
                 // donor.applyInertiaTensor(rbs[i], impulses[i]);
             }
+            */
             /*
             const float mass_sum_inv = 1.0f / (bodyA.getMass() + bodyB.getMass());
             bodyA.position = bodyA.position - n * (depth * bodyA.getMass() * mass_sum_inv);

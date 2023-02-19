@@ -11,16 +11,20 @@ namespace eg
 	{
 	public:
 		Vector2f acceleration{}, linear_velocity{}, position{}, external_forces{};
-		float angular_velocity = 0.0f, torque = 0.0f, rotate_radians = 0.0f;
+		float angular_velocity = 0.0f, rotate_radians = 0.0f;
+		bool is_static = false;
 
 		void update(const float dt)
 		{
+			if (is_static)
+			{
+				return;
+			}
+
 			acceleration = external_forces * m_mass_inv;
 			linear_velocity += acceleration * dt;
 			position = position + linear_velocity * dt;
 
-			const auto angular_acc = torque * m_inertia_tensor_inv;
-			angular_velocity += angular_acc * dt;
 			rotate_radians += angular_velocity * dt;
 			/*
 			constexpr auto two_pi	  = 2.0f * std::numbers::pi_v<float>;
@@ -34,12 +38,6 @@ namespace eg
 		void applyImpulse(const eg::Vector2f impulse)
 		{
 			linear_velocity += (impulse * m_mass_inv);
-		}
-
-		void applyTorque(const eg::Vector2f force, const eg::Vector2f point)
-		{
-			const auto r = point - position;
-			torque += force.cross(r);
 		}
 
 		void setMass(const float mass)

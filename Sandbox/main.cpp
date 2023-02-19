@@ -28,6 +28,11 @@ public:
         const auto width = (float)eg::Application::getInstance().getWindow().getWidth();
         const auto height = (float)eg::Application::getInstance().getWindow().getHeight();
         m_cam = std::make_unique<eg::OrthographicCamera>((float)-width / 2, (float)width / 2, (float)-height / 2, (float)height / 2);
+
+        rects.emplace_back(1600.f, 20.f);
+        bodies.emplace_back();
+        bodies.front().is_static = true;
+        bodies.front().position = { 0.f, -500.f };
     }
 
     ~TheLayer()
@@ -110,27 +115,27 @@ private:
 
         if (eg::Input::isKeyPressed(eg::Key::W))
         {
-            bodies.front().linear_velocity += { 0.0f, speed };
+            bodies[1].linear_velocity += { 0.0f, speed };
         }
         if (eg::Input::isKeyPressed(eg::Key::S))
         {
-            bodies.front().linear_velocity += { 0.0f, -speed };
+            bodies[1].linear_velocity += { 0.0f, -speed };
         }
         if (eg::Input::isKeyPressed(eg::Key::A))
         {
-            bodies.front().linear_velocity += { -speed, 0.0f };
+            bodies[1].linear_velocity += { -speed, 0.0f };
         }
         if (eg::Input::isKeyPressed(eg::Key::D))
         {
-            bodies.front().linear_velocity += { speed, 0.0f };
+            bodies[1].linear_velocity += { speed, 0.0f };
         }
         if (eg::Input::isKeyPressed(eg::Key::E))
         {
-            bodies.front().rotate_radians -= 0.01f;
+            bodies[1].rotate_radians -= 0.01f;
         }
         if (eg::Input::isKeyPressed(eg::Key::Q))
         {
-            bodies.front().rotate_radians += 0.01f;
+            bodies[1].rotate_radians += 0.01f;
         }
     }
 
@@ -165,17 +170,16 @@ private:
             {
                 for (int j = i + 1; j < rects.size(); j++)
                 {
+                    if (bodies[i].is_static and bodies[j].is_static)
+                    {
+                        continue;
+                    }
                     if (const auto result = eg::physics::isCollide(&polys[i], &polys[j]); result.has_value())
                     {
                         const auto& col_data = result.value();
                         const auto sig_face = eg::physics::findSignificantFace(col_data.receptor->vertices, col_data.normal);
                         const auto pp = eg::physics::findPentratePoint(col_data, sig_face);
-                        /*
-                        eg::Renderer2D::begin(*m_cam);
-                        eg::Renderer2D::drawQuad(sig_face.a, { 10, 10 }, eg::Color::Red);
-                        eg::Renderer2D::drawQuad(sig_face.b, { 10, 10 }, eg::Color::Red);
-                        eg::Renderer2D::end();
-                        */
+                        
                         auto& receptor = (col_data.receptor == &polys[i]) ? bodies[i] : bodies[j];
                         auto& donor = (col_data.donor == &polys[i]) ? bodies[i] : bodies[j];
                         eg::physics::resolveCollision(receptor, donor, pp, col_data.normal, col_data.depth);
