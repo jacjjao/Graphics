@@ -5,48 +5,50 @@
 
 namespace eg
 {
-
-	class Constraint
+	namespace physics
 	{
-	public:
-		virtual void applyConstraint(RigidBody& body, const float dt) = 0;
-	};
-
-	class CircleConstraint : public Constraint
-	{
-	public:
-		void applyConstraint(RigidBody& body, const float dt) override
+		class Constraint
 		{
-			const auto pos = body.position;
-			if (pos.x * pos.x + pos.y * pos.y <= 450.f * 450.f)
-				return;
+		public:
+			virtual void applyConstraint(RigidBody& body, const float dt) = 0;
+		};
 
-			const auto J = pos;
-			const auto v = body.linear_velocity;
-			const auto m = body.getMass();
-			const float lambda = -(J * v) / (pos * pos * m * dt);
-			const auto fc = J * lambda;
-			body.external_forces += fc;
-		}
-	};
-
-	class FloorConstraint : public Constraint
-	{
-	public:
-		void applyConstraint(RigidBody& body, const float dt) override
+		class CircleConstraint : public Constraint
 		{
-			const auto pos = body.position;
-			if (pos.y - obj_half_height >= floor_h)
-				return;
+		public:
+			void applyConstraint(RigidBody& body, const float dt) override
+			{
+				const auto pos = body.position;
+				if (pos.x * pos.x + pos.y * pos.y <= 450.f * 450.f)
+					return;
 
-			constexpr auto bau_term = 0.2f; // baumgarte term
-			const auto bias = -(pos.y - obj_half_height - floor_h) * bau_term / dt;
-			const eg::Vector2f fc{ 0.0f, (bias - body.linear_velocity.y) * body.getMass() / dt };
-			body.external_forces += fc;
-		}
+				const auto J = pos;
+				const auto v = body.linear_velocity;
+				const auto m = body.getMass();
+				const float lambda = -(J * v) / (pos * pos * m * dt);
+				const auto fc = J * lambda;
+				body.external_forces += fc;
+			}
+		};
 
-		float floor_h = 0.0f;
-		float obj_half_height = 0.0f;
-	};
+		class FloorConstraint : public Constraint
+		{
+		public:
+			void applyConstraint(RigidBody& body, const float dt) override
+			{
+				const auto pos = body.position;
+				if (pos.y - obj_half_height >= floor_h)
+					return;
+
+				constexpr auto bau_term = 0.2f; // baumgarte term
+				const auto bias = -(pos.y - obj_half_height - floor_h) * bau_term / dt;
+				const eg::Vector2f fc{ 0.0f, (bias - body.linear_velocity.y) * body.getMass() / dt };
+				body.external_forces += fc;
+			}
+
+			float floor_h = 0.0f;
+			float obj_half_height = 0.0f;
+		};
+	} // namespace physics
 
 } // namespace eg

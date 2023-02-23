@@ -123,7 +123,7 @@ namespace eg
         struct PenetratePoints
         {
             std::array<eg::Vector2f, 2> cp;
-            int cnt;
+            size_t cnt;
         };
 
         PenetratePoints findPentratePoint(const CollisionData col_data, const LineSegment sig_face)
@@ -180,32 +180,52 @@ namespace eg
         void resolveCollision(RigidBody& bodyA, RigidBody& bodyB, const PenetratePoints pp, const eg::Vector2f n, const float depth)
         { 
             constexpr float bounciness = 1.0f; // 彈性常數
-            for (int i = 0; i < pp.cnt; i++)
+            std::array<eg::Vector2f, 2> impulses{};
+            std::array<eg::Vector2f, 2> ras{};
+            std::array<eg::Vector2f, 2> rbs{};
+            for (size_t i = 0; i < pp.cnt; i++)
             {
-                const auto vab = bodyB.linear_velocity - bodyA.linear_velocity;
-                const auto relativeVelMag = vab * n;
+                const auto ra = pp.cp[i] - bodyA.position;
+                const auto rb = pp.cp[i] - bodyB.position;
 
-                if (relativeVelMag >= 0.0f)
+                ras[i] = ra;
+                rbs[i] = rb;
+
+                const auto relativeVelMag =
+                    ((bodyB.linear_velocity + bodyB.angular_velocity * rb.cross(n)) - 
+                    (bodyA.linear_velocity + bodyA.angular_velocity * ra.cross(n))) * n;
+                
+                if (relativeVelMag > 0.0f)
                 {
                     continue;
                 }
+                
+                const auto ra_cross_n = ra.cross(n);
+                const auto rb_cross_n = rb.cross(n);
+                const auto denom = n * n * (bodyA.getInverseMass() + bodyB.getInverseMass()) +
+                    ra_cross_n * ra_cross_n * bodyA.getInverseInertia() +
+                    rb_cross_n * rb_cross_n * bodyB.getInverseInertia();
 
-                auto j = relativeVelMag * (-1.0f - bounciness);
-                j /= (bodyA.getInvMass() + bodyB.getInvMass());
-                // j /= static_cast<float>(pp.cnt);
+                auto j = -(1.0f + bounciness) * relativeVelMag;
+                j /= denom;
+                j /= static_cast<float>(pp.cnt);
 
                 const auto impulse = n * j;
+                impulses[i] = impulse;
+            }
+            for (size_t i = 0; i < pp.cnt; i++)
+            {
                 if (not bodyA.is_static)
                 {
-                    bodyA.applyImpulse(-impulse);
+                    bodyA.applyImpulse(-impulses[i]);
+                    bodyA.applyInertiaTensor(ras[i], -impulses[i]);
                 }
-                // receptor.applyInertiaTensor(ras[i], -impulses[i]);
 
                 if (not bodyB.is_static)
                 {
-                    bodyB.applyImpulse(impulse);
+                    bodyB.applyImpulse(impulses[i]);
+                    bodyB.applyInertiaTensor(rbs[i], impulses[i]);
                 }
-                // donor.applyInertiaTensor(rbs[i], impulses[i]);
             }
             if (bodyA.is_static)
             {
@@ -221,46 +241,6 @@ namespace eg
                 bodyA.position = bodyA.position - n * (depth * bodyA.getMass() * mass_sum_inv);
                 bodyB.position = bodyB.position + n * (depth * bodyB.getMass() * mass_sum_inv);
             }
-            /*
-            constexpr float bounciness = 1.0f; // 彈性常數
-            for (int i = 0; i < pp.cnt; i++)
-            {
-                const auto ra = pp.cp[i] - bodyA.position;
-                const auto rb = pp.cp[i] - bodyB.position;
-                const eg::Vector2f pa_perp{ -ra.y, ra.x };
-                const eg::Vector2f pb_perp{ -rb.y, rb.x };
-                const auto ang_vel_a = pa_perp * bodyA.angular_velocity;
-                const auto ang_vel_b = pb_perp * bodyB.angular_velocity;
-
-                const auto vab = (bodyB.linear_velocity + ang_vel_b) - (bodyA.linear_velocity + ang_vel_a);
-                const auto relativeVelMag = vab * n;
-                
-                if (relativeVelMag > 0.0f)
-                {
-                    continue;
-                }
-                
-                const auto rap_dot_n = pa_perp * n;
-                const auto rbp_dot_n = pb_perp * n;
-                const auto denom = bodyA.getInvMass() + bodyB.getInvMass();  
-
-                auto j = relativeVelMag * -(1.0f + bounciness);
-                j /= denom;
-                j /= static_cast<float>(pp.cnt);
-
-                const auto impulse = n * j;
-                bodyA.applyImpulse(-impulse);
-                // receptor.applyInertiaTensor(ras[i], -impulses[i]);
-
-                bodyB.applyImpulse(impulse);
-                // donor.applyInertiaTensor(rbs[i], impulses[i]);
-            }
-            */
-            /*
-            const float mass_sum_inv = 1.0f / (bodyA.getMass() + bodyB.getMass());
-            bodyA.position = bodyA.position - n * (depth * bodyA.getMass() * mass_sum_inv);
-            bodyB.position = bodyB.position + n * (depth * bodyB.getMass() * mass_sum_inv);
-            */
         }
 
     } // namespace physics

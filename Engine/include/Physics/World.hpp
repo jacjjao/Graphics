@@ -8,33 +8,35 @@
 
 namespace eg
 {
-
-	class World
+	namespace physics
 	{
-	public:
-		void setGravity(const Vector2f gravity) { m_gravity = gravity; }
-
-		void update(const float dt)
+		class World
 		{
-		}
+		public:
+			void setGravity(const Vector2f gravity) { m_gravity = gravity; }
 
-		void addBody(const RigidBody rd)
-		{
-			m_bodies.push_back(rd);
-		}
+			void update(const float dt)
+			{
+			}
 
-		const std::vector<RigidBody>& getBodies() const
-		{
-			return m_bodies;
-		}
+			void addBody(const RigidBody& rd)
+			{
+				m_bodies.push_back(rd);
+			}
 
-	private:
-		void applyConstraint(RigidBody& body, const float dt)
-		{
-		}
+			const std::vector<RigidBody>& getBodies() const
+			{
+				return m_bodies;
+			}
 
-		Vector2f m_gravity;
-		std::vector<RigidBody> m_bodies;
-	};
+		private:
+			void applyConstraint(RigidBody& body, const float dt)
+			{
+			}
+
+			Vector2f m_gravity;
+			std::vector<RigidBody> m_bodies;
+		};
+	} // physics
 
 } // namespace eg

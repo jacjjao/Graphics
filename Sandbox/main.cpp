@@ -28,11 +28,23 @@ public:
         const auto width = (float)eg::Application::getInstance().getWindow().getWidth();
         const auto height = (float)eg::Application::getInstance().getWindow().getHeight();
         m_cam = std::make_unique<eg::OrthographicCamera>((float)-width / 2, (float)width / 2, (float)-height / 2, (float)height / 2);
-
-        rects.emplace_back(1600.f, 20.f);
+        
+        rects.emplace_back(1900.f, 20.f);
         bodies.emplace_back();
         bodies.front().is_static = true;
         bodies.front().position = { 0.f, -500.f };
+        bodies.front().width = 1900.f;
+        bodies.front().height = 20.f;
+        bodies.front().calcInertia();
+
+        rects.emplace_back(300.f, 20.f);
+        bodies.emplace_back();
+        bodies.back().is_static = true;
+        bodies.back().position = { -300.f, 0.f };
+        bodies.back().rotate_radians = eg::radians(-20.f);
+        bodies.back().width = 300.f;
+        bodies.back().height = 20.f;
+        bodies.back().calcInertia();
     }
 
     ~TheLayer()
@@ -69,9 +81,12 @@ public:
                 rect.setColor(color);
                 rects.push_back(std::move(rect));
 
-                eg::RigidBody body{};
+                eg::physics::RigidBody body{};
+                body.type = eg::physics::RigidBodyType::Box;
                 body.position = p;
-                body.setMass(rd.generate(1.f, 20.f));
+                body.setMass(rd.generate(10.f, 20.f));
+                body.width = body.height = 100.0f;
+                body.calcInertia();
                 bodies.push_back(body);
             }
         }
@@ -189,7 +204,7 @@ private:
 
             for (size_t i = 0; i < bodies.size(); i++)
             {
-                bodies[i].external_forces = { 0, -2000.f * bodies[i].getMass() }; // apply gravity
+                bodies[i].external_forces = { 0, -1000.f * bodies[i].getMass() }; // apply gravity
 
                 applyConstraint(bodies[i], dtt);
 
@@ -198,12 +213,12 @@ private:
         }                   
     }
 
-    void applyConstraint(eg::RigidBody& body, const float dt) const
+    void applyConstraint(eg::physics::RigidBody& body, const float dt) const
     {
-        eg::FloorConstraint constraint{};
-        constraint.floor_h = -600.f;
-        constraint.obj_half_height = rect_height / 2.0f;
-        constraint.applyConstraint(body, dt);
+        //eg::physics::FloorConstraint constraint{};
+        //constraint.floor_h = -600.f;
+        //constraint.obj_half_height = rect_height / 2.0f;
+        //constraint.applyConstraint(body, dt);
 
         if (body.position.x - 50.f < -1000.0f)
         {
@@ -221,7 +236,7 @@ private:
 
     std::unique_ptr<eg::OrthographicCamera> m_cam;
 
-    std::vector<eg::RigidBody> bodies;
+    std::vector<eg::physics::RigidBody> bodies;
     std::vector<eg::Rectangle2D> rects;
     std::vector<eg::physics::Polygon> polys;
 
