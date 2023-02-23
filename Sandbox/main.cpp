@@ -37,12 +37,21 @@ public:
         bodies.front().height = 20.f;
         bodies.front().calcInertia();
 
-        rects.emplace_back(300.f, 20.f);
+        rects.emplace_back(800.f, 20.f);
         bodies.emplace_back();
         bodies.back().is_static = true;
-        bodies.back().position = { -300.f, 0.f };
+        bodies.back().position = { -500.f, 0.f };
         bodies.back().rotate_radians = eg::radians(-20.f);
-        bodies.back().width = 300.f;
+        bodies.back().width = 800.f;
+        bodies.back().height = 20.f;
+        bodies.back().calcInertia();
+
+        rects.emplace_back(800.f, 20.f);
+        bodies.emplace_back();
+        bodies.back().is_static = true;
+        bodies.back().position = { 500.f, 0.f };
+        bodies.back().rotate_radians = eg::radians(20.f);
+        bodies.back().width = 800.f;
         bodies.back().height = 20.f;
         bodies.back().calcInertia();
     }
@@ -84,7 +93,7 @@ public:
                 eg::physics::RigidBody body{};
                 body.type = eg::physics::RigidBodyType::Box;
                 body.position = p;
-                body.setMass(rd.generate(10.f, 20.f));
+                body.setMass(100.f);
                 body.width = body.height = 100.0f;
                 body.calcInertia();
                 bodies.push_back(body);
@@ -174,7 +183,7 @@ private:
 
     void updateWorld()
     {
-        constexpr int step = 8;
+        constexpr int step = 10;
         constexpr auto dt = 1.0f / 170.0f;
         constexpr auto dtt = dt / float(step);
 
@@ -192,8 +201,9 @@ private:
                     if (const auto result = eg::physics::isCollide(&polys[i], &polys[j]); result.has_value())
                     {
                         const auto& col_data = result.value();
-                        const auto sig_face = eg::physics::findSignificantFace(col_data.receptor->vertices, col_data.normal);
-                        const auto pp = eg::physics::findPentratePoint(col_data, sig_face);
+                        const auto inc_face = eg::physics::findSignificantFace(col_data.receptor->vertices, col_data.normal);
+                        const auto ref_face = eg::physics::findSignificantFace(col_data.donor->vertices, -col_data.normal);
+                        const auto pp = eg::physics::findPentratePoint(inc_face, ref_face);
                         
                         auto& receptor = (col_data.receptor == &polys[i]) ? bodies[i] : bodies[j];
                         auto& donor = (col_data.donor == &polys[i]) ? bodies[i] : bodies[j];
@@ -215,10 +225,11 @@ private:
 
     void applyConstraint(eg::physics::RigidBody& body, const float dt) const
     {
-        //eg::physics::FloorConstraint constraint{};
-        //constraint.floor_h = -600.f;
-        //constraint.obj_half_height = rect_height / 2.0f;
-        //constraint.applyConstraint(body, dt);
+        /*
+        eg::physics::FloorConstraint constraint{};
+        constraint.floor_h = -600.f;
+        constraint.obj_half_height = rect_height / 2.0f;
+        constraint.applyConstraint(body, dt);
 
         if (body.position.x - 50.f < -1000.0f)
         {
@@ -230,6 +241,7 @@ private:
             body.position.x = 1000.0f - 50.f;
             body.linear_velocity.x *= -1.0f;
         }
+        */
     }
 
     static constexpr float rect_width = 100.f, rect_height = 100.f;

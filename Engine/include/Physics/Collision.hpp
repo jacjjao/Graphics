@@ -84,7 +84,7 @@ namespace eg
 
         struct LineSegment
         {
-            eg::Vector2f a, b;
+            std::array<eg::Vector2f, 2> p;
         };
 
         LineSegment findSignificantFace(std::span<eg::Vector2f> vertices, eg::Vector2f normal)
@@ -126,10 +126,11 @@ namespace eg
             size_t cnt;
         };
 
-        PenetratePoints findPentratePoint(const CollisionData col_data, const LineSegment sig_face)
+        PenetratePoints findPentratePoint(LineSegment inc_face, LineSegment ref_face)
         {
             const auto pointToSegDist = [](const eg::Vector2f p, const LineSegment line) {
-                const auto& [a, b] = line;
+                const auto& a = line.p[0];
+                const auto& b = line.p[1];
                 
                 const auto ab = b - a;
                 const auto ap = p - a;
@@ -156,23 +157,26 @@ namespace eg
 
             PenetratePoints pp{};
             auto minDist = std::numeric_limits<float>::infinity();
-            for (size_t i = 0; i < col_data.donor->vertices.size(); i++) 
+            for (size_t i = 0; i < 2; i++)
             {
-                const auto p = col_data.donor->vertices[i];
-                const auto dist = pointToSegDist(p, sig_face);
+                for (const auto& p : inc_face.p)
+                {
+                    const auto dist = pointToSegDist(p, ref_face);
 
-                if (eg::nearlyEqual(dist, minDist))
-                {
-                    pp.cnt = 2;
-                    pp.cp[1] = p;
-                    minDist = std::min(dist, minDist);
+                    if (eg::nearlyEqual(dist, minDist))
+                    {
+                        pp.cnt = 2;
+                        pp.cp[1] = p;
+                        minDist = std::min(dist, minDist);
+                    }
+                    else if (dist < minDist)
+                    {
+                        pp.cnt = 1;
+                        pp.cp[0] = p;
+                        minDist = dist;
+                    }
                 }
-                else if (dist < minDist)
-                {
-                    pp.cnt = 1;
-                    pp.cp[0] = p;
-                    minDist = dist;
-                }
+                std::swap(inc_face, ref_face);
             }
             return pp;
         }
@@ -227,6 +231,7 @@ namespace eg
                     bodyB.applyInertiaTensor(rbs[i], impulses[i]);
                 }
             }
+            
             if (bodyA.is_static)
             {
                 bodyB.position = bodyB.position + n * depth;
@@ -237,9 +242,10 @@ namespace eg
             }
             else
             {
+                const auto bias = 0.01f;
                 const float mass_sum_inv = 1.0f / (bodyA.getMass() + bodyB.getMass());
-                bodyA.position = bodyA.position - n * (depth * bodyA.getMass() * mass_sum_inv);
-                bodyB.position = bodyB.position + n * (depth * bodyB.getMass() * mass_sum_inv);
+                bodyA.position = bodyA.position - n * (depth * bodyA.getMass() * mass_sum_inv + bias);
+                bodyB.position = bodyB.position + n * (depth * bodyB.getMass() * mass_sum_inv + bias);
             }
         }
 
