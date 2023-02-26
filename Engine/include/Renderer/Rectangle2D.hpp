@@ -9,6 +9,7 @@ namespace eg
     class Rectangle2D : public Shape
     {
     public:
+        Rectangle2D();
         explicit Rectangle2D(float width, float height);
         ~Rectangle2D() override = default;
 

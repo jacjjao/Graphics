@@ -14,10 +14,11 @@ namespace eg
     class VertexArray
     {
     private:
-        using element_type = Vertex2D;
-        using container    = std::vector<Vertex2D>;
-        using value_type   = container::value_type;
-        using iterator     = container::iterator;
+        using element_type   = Vertex2D;
+        using container      = std::vector<Vertex2D>;
+        using value_type     = container::value_type;
+        using iterator       = container::iterator;
+        using const_iterator = container::const_iterator;
 
     public:
         explicit VertexArray(size_t size, VertexBuffer::Usage usage = VertexBuffer::Usage::StaticDraw);
@@ -59,6 +60,11 @@ namespace eg
         iterator begin() { return m_vertices.begin(); } 
         [[nodiscard]] 
         iterator end() { return m_vertices.end(); }
+
+        [[nodiscard]]
+        const_iterator cbegin() const { return m_vertices.cbegin(); }
+        [[nodiscard]]
+        const_iterator cend() const { return m_vertices.cend(); }
 
         value_type& operator[](size_t index) { return m_vertices[index]; }
         const value_type& operator[](size_t index) const { return m_vertices[index]; }

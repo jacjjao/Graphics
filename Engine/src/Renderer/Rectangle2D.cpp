@@ -7,12 +7,20 @@
 namespace eg
 {
 
-    Rectangle2D::Rectangle2D(const float width, const float height) :
+    Rectangle2D::Rectangle2D() :
         Shape{ 4 },
-        m_ebo{ 6 },
-        m_width{ width },
-        m_height{ height }
+        m_ebo{ 6 }
     {
+        m_ebo = { 0, 1, 3, 1, 2, 3 };
+        m_ebo.update();
+        m_vao.setElementBuffer(m_ebo);
+    }
+
+    Rectangle2D::Rectangle2D(const float width, const float height) :
+        Rectangle2D()
+    {
+        m_width = width;
+        m_height = height;
         m_ebo = { 0, 1, 3, 1, 2, 3 };
         m_ebo.update();
         m_vao.setElementBuffer(m_ebo);

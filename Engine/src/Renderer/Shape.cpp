@@ -1,5 +1,6 @@
 #include "pch.hpp"
 #include "include/Renderer/Shape.hpp"
+#include "include/Core/Math.hpp"
 
 namespace eg
 {
@@ -17,10 +18,57 @@ namespace eg
 
     Vector2f Shape::getPoint(const size_t index)
     {
-        const auto pos = m_vao[index].position;
-        Matrix<float, 4, 1> mat = { pos.x, pos.y, 0, 1 };
+        const auto p = m_vao[index].position;
+        /*Matrix<float, 4, 1> mat = {pos.x, pos.y, 0, 1};
         const auto result = getTransformMatrix() * mat;
-        return Vector2f{ result[0][0], result[1][0] };
+        return Vector2f{ result[0][0], result[1][0] };*/
+        const auto scale  = getScale();
+        const auto degree = getRotateDegree();
+        const auto [x, y] = getPosition();
+        const auto origin = getOrigin();
+        const auto cosine = std::cos(radians(degree));
+        const auto sine   = std::sin(radians(degree));
+
+        eg::Vector2f tp{};
+        tp.x = 
+            scale.x * p.x * cosine + 
+            scale.y * origin.y * sine - 
+            scale.y * p.y * sine - 
+            scale.x * origin.x * cosine + x;
+        tp.y =
+            scale.x * p.x * sine +
+            scale.y * p.y * cosine -
+            scale.x * origin.x * sine -
+            scale.y * origin.y * cosine + y;
+
+        return tp;
+    }
+
+    std::vector<Vector2f> Shape::getAllTransformPoint() const
+    {
+        const auto scale = getScale();
+        const auto degree = getRotateDegree();
+        const auto [x, y] = getPosition();
+        const auto origin = getOrigin();
+        const auto cosine = std::cos(radians(degree));
+        const auto sine = std::sin(radians(degree));
+
+        std::vector<Vector2f> points(m_vao.size());
+        for (size_t i = 0; i < m_vao.size(); i++)
+        {
+            const auto p = m_vao[i].position;
+            points[i].x = 
+                scale.x * p.x * cosine +
+                scale.y * origin.y * sine -
+                scale.y * p.y * sine -
+                scale.x * origin.x * cosine + x;
+            points[i].y =
+                scale.x * p.x * sine +
+                scale.y * p.y * cosine -
+                scale.x * origin.x * sine -
+                scale.y * origin.y * cosine + y;
+        }
+        return points;
     }
 
 } // namespace eg

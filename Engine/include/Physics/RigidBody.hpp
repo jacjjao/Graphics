@@ -10,6 +10,20 @@ namespace eg
 	namespace physics
 	{
 
+		eg::Vector2f rk4(const eg::Vector2f y, const eg::Vector2f dy, const float dt)
+		{
+			constexpr float one_div_six = 1.0f / 6.0f;
+
+			const auto half_dt = 0.5f * dt;
+
+			const auto k1 = dy * dt;
+			const auto k2 = k1 * 0.5f;
+			const auto k3 = k2;
+			const auto k4 = k1;
+
+			return y + (k1 + k2 * 2.0f + k3 * 2.0f + k4) * one_div_six;
+		}
+
 		enum class RigidBodyType
 		{
 			Box, Circle

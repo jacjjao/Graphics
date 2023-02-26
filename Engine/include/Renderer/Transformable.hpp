@@ -26,6 +26,13 @@ namespace eg
 
         [[nodiscard]] 
         Vector2f getPosition() const { return m_position; }
+        [[nodiscard]]
+        Vector2f getScale() const { return m_scale; }
+        [[nodiscard]]
+        Vector2f getOrigin() const { return m_origin; }
+        [[nodiscard]]
+        float getRotateDegree() const { return m_theta; }
+
 
     protected:
         void setOrigin(const Vector2f origin) { m_origin = origin; }

@@ -6,8 +6,8 @@ namespace eg
     {
         struct Polygon
         {
-            eg::Shape* poly;
-            std::vector<eg::Vector2f> vertices;
+            eg::Shape* poly = nullptr;
+            std::vector<eg::Vector2f> vertices{};
         };
 
         struct CollisionData
@@ -183,55 +183,96 @@ namespace eg
 
         void resolveCollision(RigidBody& bodyA, RigidBody& bodyB, const PenetratePoints pp, const eg::Vector2f n, const float depth)
         { 
-            constexpr float bounciness = 1.0f; // 彈性常數
+            constexpr float bounciness = 0.0f; // 彈性常數
             std::array<eg::Vector2f, 2> impulses{};
             std::array<eg::Vector2f, 2> ras{};
             std::array<eg::Vector2f, 2> rbs{};
-            for (size_t i = 0; i < pp.cnt; i++)
+
+            if (!bodyA.is_static and !bodyB.is_static)
             {
-                const auto ra = pp.cp[i] - bodyA.position;
-                const auto rb = pp.cp[i] - bodyB.position;
-
-                ras[i] = ra;
-                rbs[i] = rb;
-
-                const auto relativeVelMag =
-                    ((bodyB.linear_velocity + bodyB.angular_velocity * rb.cross(n)) - 
-                    (bodyA.linear_velocity + bodyA.angular_velocity * ra.cross(n))) * n;
-                
-                if (relativeVelMag > 0.0f)
+                for (size_t i = 0; i < pp.cnt; i++)
                 {
-                    continue;
+                    const auto ra = pp.cp[i] - bodyA.position;
+                    const auto rb = pp.cp[i] - bodyB.position;
+
+                    ras[i] = ra;
+                    rbs[i] = rb;
+
+                    const auto relativeVelMag =
+                        ((bodyB.linear_velocity + bodyB.angular_velocity * rb.cross(n)) -
+                         (bodyA.linear_velocity + bodyA.angular_velocity * ra.cross(n))) * n;
+
+                    if (relativeVelMag > 0.0f)
+                    {
+                        continue;
+                    }
+
+                    const auto ra_cross_n = ra.cross(n);
+                    const auto rb_cross_n = rb.cross(n);
+                    const auto za = (ra_cross_n * ra_cross_n * bodyA.getInverseInertia());
+                    const auto zb = (rb_cross_n * rb_cross_n * bodyB.getInverseInertia());
+                    const auto denom = bodyA.getInverseMass() + bodyB.getInverseMass() + za + zb;
+
+                    auto j = -(1.0f + bounciness) * relativeVelMag;
+                    j /= denom;
+                    if (pp.cnt == 2)
+                        j *= 0.5f;
+
+                    impulses[i] = n * j;
                 }
-                
-                const auto ra_cross_n = ra.cross(n);
-                const auto rb_cross_n = rb.cross(n);
-                const auto denom = n * n * (bodyA.getInverseMass() + bodyB.getInverseMass()) +
-                    ra_cross_n * ra_cross_n * bodyA.getInverseInertia() +
-                    rb_cross_n * rb_cross_n * bodyB.getInverseInertia();
-
-                auto j = -(1.0f + bounciness) * relativeVelMag;
-                j /= denom;
-                j /= static_cast<float>(pp.cnt);
-
-                const auto impulse = n * j;
-                impulses[i] = impulse;
             }
+            else
+            {
+                for (size_t i = 0; i < pp.cnt; i++)
+                {
+                    float relativeVelMag = 0.0f;
+                    float denom = 0.0f;
+                    if (bodyA.is_static)
+                    {
+                        const auto rb = pp.cp[i] - bodyB.position;
+                        rbs[i] = rb;
+                        const eg::Vector2f rb_prep = { -rb.y, rb.x };
+                        const auto rb_cross_n = rb.cross(n);
+                        relativeVelMag = (bodyB.linear_velocity + rb_prep * bodyB.angular_velocity) * n;
+                        denom = bodyB.getInverseMass() + rb_cross_n * rb_cross_n * bodyB.getInverseInertia();
+                    }
+                    else
+                    {
+                        const auto ra = pp.cp[i] - bodyA.position;
+                        ras[i] = ra;
+                        const eg::Vector2f ra_prep = { -ra.y, ra.x };
+                        const auto ra_cross_n = ra.cross(n);
+                        relativeVelMag = -(bodyA.linear_velocity + ra_prep * bodyA.angular_velocity) * n;
+                        denom = bodyA.getInverseMass() + ra_cross_n * ra_cross_n * bodyA.getInverseInertia();
+                    }
+
+                    if (relativeVelMag > 0.0f)
+                    {
+                        continue;
+                    }
+
+                    auto j = -(1.0f + bounciness) * relativeVelMag / denom;
+                    if (pp.cnt == 2)
+                        j *= 0.5f;
+
+                    impulses[i] = n * j;
+                }
+            }
+
             for (size_t i = 0; i < pp.cnt; i++)
             {
-                if (not bodyA.is_static)
+                if (!bodyA.is_static)
                 {
                     bodyA.applyImpulse(-impulses[i]);
                     bodyA.applyInertiaTensor(ras[i], -impulses[i]);
                 }
 
-                if (not bodyB.is_static)
+                if (!bodyB.is_static)
                 {
                     bodyB.applyImpulse(impulses[i]);
                     bodyB.applyInertiaTensor(rbs[i], impulses[i]);
                 }
             }
-            
             if (bodyA.is_static)
             {
                 bodyB.position = bodyB.position + n * depth;

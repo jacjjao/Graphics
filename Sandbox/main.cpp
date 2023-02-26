@@ -31,11 +31,11 @@ public:
         
         rects.emplace_back(1900.f, 20.f);
         bodies.emplace_back();
-        bodies.front().is_static = true;
-        bodies.front().position = { 0.f, -500.f };
-        bodies.front().width = 1900.f;
-        bodies.front().height = 20.f;
-        bodies.front().calcInertia();
+        bodies.back().is_static = true;
+        bodies.back().position = { 0.f, -500.f };
+        bodies.back().width = 1900.f;
+        bodies.back().height = 20.f;
+        bodies.back().calcInertia();
 
         rects.emplace_back(800.f, 20.f);
         bodies.emplace_back();
@@ -53,6 +53,22 @@ public:
         bodies.back().rotate_radians = eg::radians(20.f);
         bodies.back().width = 800.f;
         bodies.back().height = 20.f;
+        bodies.back().calcInertia();
+
+        rects.emplace_back(20.f, 1200.f);
+        bodies.emplace_back();
+        bodies.back().is_static = true;
+        bodies.back().position = { 900.f, 0.f };
+        bodies.back().width = 20.f;
+        bodies.back().height = 600.f;
+        bodies.back().calcInertia();
+
+        rects.emplace_back(20.f, 1200.f);
+        bodies.emplace_back();
+        bodies.back().is_static = true;
+        bodies.back().position = { -900.f, 0.f };
+        bodies.back().width = 20.f;
+        bodies.back().height = 600.f;
         bodies.back().calcInertia();
     }
 
@@ -93,7 +109,7 @@ public:
                 eg::physics::RigidBody body{};
                 body.type = eg::physics::RigidBodyType::Box;
                 body.position = p;
-                body.setMass(100.f);
+                body.setMass(1000.f);
                 body.width = body.height = 100.0f;
                 body.calcInertia();
                 bodies.push_back(body);
@@ -118,11 +134,19 @@ public:
             rects[i].draw();
         }
 
+        eg::Renderer2D::begin(*m_cam);
+        for (const auto& v : vecs)
+        {
+            eg::Renderer2D::drawQuad(v, { 10, 10 }, eg::Color::Red);
+        }
+        eg::Renderer2D::end();
+
         static int fps = 1;
         static eg::Clock clock{};
         if (clock.getElapsedTime().asSeconds() >= 1.0)
         {
-            EG_TRACE("{}", fps);
+            // EG_TRACE("{}", fps);
+            EG_TRACE("({},{}) {}", bodies.back().linear_velocity.x, bodies.back().linear_velocity.y, bodies.back().angular_velocity);
             fps = 0;
             clock.restart();
         }
@@ -161,6 +185,14 @@ private:
         {
             bodies[1].rotate_radians += 0.01f;
         }
+        if (eg::Input::isKeyPressed(eg::Key::Space))
+        {
+            if (bodies.size() > 5)
+            {
+                bodies.resize(5);
+                rects.resize(5);
+            }
+        }
     }
 
     void precompute()
@@ -183,9 +215,18 @@ private:
 
     void updateWorld()
     {
-        constexpr int step = 10;
+        constexpr int step = 8;
         constexpr auto dt = 1.0f / 170.0f;
         constexpr auto dtt = dt / float(step);
+
+        vecs.clear();
+
+        // apply gravity
+        for (auto& body : bodies)
+        {
+            constexpr eg::Vector2f gravity = { 0, -500.f };
+            body.linear_velocity += gravity * dt;
+        }
 
         for (int i = 0; i < step; i++)
         {
@@ -198,13 +239,17 @@ private:
                     {
                         continue;
                     }
-                    if (const auto result = eg::physics::isCollide(&polys[i], &polys[j]); result.has_value())
+                    if (const auto result = eg::physics::isCollide(&polys[i], &polys[j]); result.has_value() and result.value().depth > 0.005f)
                     {
                         const auto& col_data = result.value();
                         const auto inc_face = eg::physics::findSignificantFace(col_data.receptor->vertices, col_data.normal);
                         const auto ref_face = eg::physics::findSignificantFace(col_data.donor->vertices, -col_data.normal);
                         const auto pp = eg::physics::findPentratePoint(inc_face, ref_face);
-                        
+                        for (size_t i = 0; i < pp.cnt; i++)
+                        {
+                            vecs.push_back(pp.cp[i]);
+                        }
+
                         auto& receptor = (col_data.receptor == &polys[i]) ? bodies[i] : bodies[j];
                         auto& donor = (col_data.donor == &polys[i]) ? bodies[i] : bodies[j];
                         eg::physics::resolveCollision(receptor, donor, pp, col_data.normal, col_data.depth);
@@ -212,13 +257,9 @@ private:
                 }
             }
 
-            for (size_t i = 0; i < bodies.size(); i++)
+            for (auto& body : bodies)
             {
-                bodies[i].external_forces = { 0, -1000.f * bodies[i].getMass() }; // apply gravity
-
-                applyConstraint(bodies[i], dtt);
-
-                bodies[i].update(dtt);
+                body.update(dtt);
             }
         }                   
     }
@@ -251,6 +292,8 @@ private:
     std::vector<eg::physics::RigidBody> bodies;
     std::vector<eg::Rectangle2D> rects;
     std::vector<eg::physics::Polygon> polys;
+
+    std::vector<eg::Vector2f> vecs;
 
     eg::RandomFloatGenerator rd;
 };
