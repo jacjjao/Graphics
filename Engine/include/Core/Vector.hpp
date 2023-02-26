@@ -55,9 +55,9 @@ namespace eg
             return { x * scalar, y * scalar };
         }
 
-        constexpr Vector2<T> operator/(const T factor) const
+        friend constexpr Vector2<T> operator*(const T scalar, const Vector2<T>& vector)
         {
-            return { x / factor, y / factor };
+            return vector * scalar;
         }
 
         [[nodiscard]] 

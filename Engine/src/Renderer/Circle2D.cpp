@@ -32,8 +32,8 @@ namespace eg
 
         const auto f_point_count = static_cast<float>(getPointCount());
         const auto slice = 2.0F * pi / f_point_count;
-        const auto tex_center = m_tex_rect.position + m_tex_rect.size / 2.0F;
-        const auto half_tex_size = m_tex_rect.size / 2.0F;
+        const auto tex_center = m_tex_rect.position + m_tex_rect.size * 0.5f;
+        const auto half_tex_size = m_tex_rect.size * 0.5f;
         const auto center = getPosition();
 
         setOrigin(center);

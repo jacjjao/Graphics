@@ -221,15 +221,16 @@ private:
 
         vecs.clear();
 
-        // apply gravity
-        for (auto& body : bodies)
-        {
-            constexpr eg::Vector2f gravity = { 0, -500.f };
-            body.linear_velocity += gravity * dt;
-        }
-
         for (int i = 0; i < step; i++)
         {
+            // apply gravity
+            for (auto& body : bodies)
+            {
+                constexpr eg::Vector2f gravity = { 0, -500.f };
+                body.external_forces += gravity * body.getMass();
+                body.update(dtt);
+            }
+
             precompute();
             for (int i = 0; i < rects.size(); i++)
             {

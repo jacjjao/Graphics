@@ -1,7 +1,6 @@
 #pragma once
 
 #include "include/Core/Vector.hpp"
-
 #include <numbers>
 
 namespace eg
@@ -9,19 +8,23 @@ namespace eg
 
 	namespace physics
 	{
-
-		eg::Vector2f rk4(const eg::Vector2f y, const eg::Vector2f dy, const float dt)
+		template<typename T>
+		std::pair<T, T> rk4(const T x, const T v, const T a, const float dt)
 		{
 			constexpr float one_div_six = 1.0f / 6.0f;
 
-			const auto half_dt = 0.5f * dt;
+			const auto half_dt = dt * 0.5f;
 
-			const auto k1 = dy * dt;
-			const auto k2 = k1 * 0.5f;
-			const auto k3 = k2;
-			const auto k4 = k1;
+			const auto dv = a * dt;
 
-			return y + (k1 + k2 * 2.0f + k3 * 2.0f + k4) * one_div_six;
+			const auto k1_x = v * dt;
+			const auto k2_x = (v + 0.5 * dv) * dt;
+			const auto k3_x = (v + 0.5 * dv) * dt;
+			const auto k4_x = (v + dv) * dt;
+
+			const auto x_new = x + one_div_six * (k1_x + 2.0f * k2_x + 2.0f * k3_x + k4_x);
+			const auto v_new = v + a * dt;
+			return { x_new, v_new };
 		}
 
 		enum class RigidBodyType
@@ -44,18 +47,14 @@ namespace eg
 				{
 					return;
 				}
-
 				const auto acceleration = external_forces * m_inverse_mass;
-				linear_velocity += acceleration * dt;
-				position = position + linear_velocity * dt;
+				const auto [x, v] = rk4(position, linear_velocity, acceleration, dt);
+				position = x;
+				linear_velocity = v;
 
-				rotate_radians += angular_velocity * dt;
-				/*
-				constexpr auto two_pi	  = 2.0f * std::numbers::pi_v<float>;
-				constexpr auto two_pi_inv = 1.0f / two_pi;
-				const auto m = static_cast<int>(rotate_radians * two_pi_inv);
-				rotate_radians -= m * two_pi; // clamp it in [0,2pi]
-				*/
+				const auto [ax, _] = rk4(rotate_radians, angular_velocity, 0.0f, dt);
+				rotate_radians = ax;
+
 				external_forces = {};
 			}
 

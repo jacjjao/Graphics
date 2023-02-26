@@ -68,7 +68,7 @@ namespace eg
             begin(*cam);
         }
 
-        const auto half_size = size / 2.0f;
+        const auto half_size = size * 0.5f;
 
         Vertex2D bottom_left;
         bottom_left.position = position - half_size;

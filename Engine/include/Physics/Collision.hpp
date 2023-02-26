@@ -183,7 +183,7 @@ namespace eg
 
         void resolveCollision(RigidBody& bodyA, RigidBody& bodyB, const PenetratePoints pp, const eg::Vector2f n, const float depth)
         { 
-            constexpr float bounciness = 0.0f; // 彈性常數
+            constexpr float bounciness = 1.0f; // 彈性常數
             std::array<eg::Vector2f, 2> impulses{};
             std::array<eg::Vector2f, 2> ras{};
             std::array<eg::Vector2f, 2> rbs{};
