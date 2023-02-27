@@ -133,19 +133,19 @@ public:
             rects[i].update();
             rects[i].draw();
         }
-
+        /*
         eg::Renderer2D::begin(*m_cam);
         for (const auto& v : vecs)
         {
             eg::Renderer2D::drawQuad(v, { 10, 10 }, eg::Color::Red);
         }
         eg::Renderer2D::end();
-
+        */
         static int fps = 1;
         static eg::Clock clock{};
         if (clock.getElapsedTime().asSeconds() >= 1.0)
         {
-            // EG_TRACE("{}", fps);
+            EG_TRACE("{}", fps);
             // EG_TRACE("({},{}) {}", bodies.back().linear_velocity.x, bodies.back().linear_velocity.y, bodies.back().angular_velocity);
             fps = 0;
             clock.restart();
@@ -206,6 +206,15 @@ private:
             polys[i].poly = &rects[i];
             polys[i].vertices.clear();
             rects[i].getAllTransformPoint(polys[i].vertices);
+            // calculate edges
+            polys[i].edges_normal.resize(polys[i].vertices.size());
+            for (size_t a = 0; a < polys[i].vertices.size(); a++)
+            {
+                size_t b = (a + 1) % polys[i].vertices.size();
+                const auto pa = polys[i].vertices[a];
+                const auto pb = polys[i].vertices[b];
+                polys[i].edges_normal[a] = eg::Vector2f{ -(pb.y - pa.y), pb.x - pa.x }.normalize();
+            }
         }
     }
 
@@ -222,7 +231,7 @@ private:
             // apply gravity
             for (auto& body : bodies)
             {
-                constexpr eg::Vector2f gravity = { 0, -500.f };
+                constexpr eg::Vector2f gravity = { 0, -1000.f };
                 body.external_forces += gravity * body.getMass();
                 body.update(dtt);
             }
@@ -241,7 +250,7 @@ private:
                         const auto& col_data = result.value();
                         const auto inc_face = eg::physics::findSignificantFace(col_data.receptor->vertices, col_data.normal);
                         const auto ref_face = eg::physics::findSignificantFace(col_data.donor->vertices, -col_data.normal);
-                        const auto pp = eg::physics::findPentratePoint(inc_face, ref_face);
+                        const auto pp = eg::physics::findContactPoint(inc_face, ref_face);
                         for (size_t i = 0; i < pp.cnt; i++)
                         {
                             vecs.push_back(pp.cp[i]);

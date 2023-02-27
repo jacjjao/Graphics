@@ -6,8 +6,9 @@ namespace eg
     {
         struct Polygon
         {
-            eg::Shape* poly = nullptr;
-            std::vector<eg::Vector2f> vertices{};
+            eg::Shape* poly;
+            std::vector<eg::Vector2f> vertices;
+            std::vector<eg::Vector2f> edges_normal;
         };
 
         struct CollisionData
@@ -21,23 +22,18 @@ namespace eg
         std::optional<CollisionData> isCollide(Polygon* s1, Polygon* s2)
         {
             CollisionData result{};
-            result.depth =  std::numeric_limits<float>::infinity();
+            float min_depth =  std::numeric_limits<float>::infinity();
             auto max_dot = -std::numeric_limits<float>::infinity();
             for (int i = 0; i < 2; i++)
             {
                 const auto pvec = s2->poly->getPosition() - s1->poly->getPosition();
-                for (size_t a = 0; a < s1->vertices.size(); a++)
+                for (const auto axis : s1->edges_normal)
                 {
-                    const size_t b = (a + 1) % s1->vertices.size();
-                    const auto pa = s1->vertices[a];
-                    const auto pb = s1->vertices[b];
-                    const auto axisProj = eg::Vector2f{ -(pb.y - pa.y), pb.x - pa.x }.normalize();
-
                     auto min_r1 =  std::numeric_limits<float>::infinity();
                     auto max_r1 = -std::numeric_limits<float>::infinity();
                     for (const auto p : s1->vertices)
                     {
-                        const auto q = p * axisProj;
+                        const auto q = p * axis;
                         min_r1 = std::min(min_r1, q);
                         max_r1 = std::max(max_r1, q);
                     }
@@ -46,7 +42,7 @@ namespace eg
                     auto max_r2 = -std::numeric_limits<float>::infinity();
                     for (const auto p : s2->vertices)
                     {
-                        const auto q = p * axisProj;
+                        const auto q = p * axis;
                         min_r2 = std::min(min_r2, q);
                         max_r2 = std::max(max_r2, q);
                     }
@@ -57,29 +53,30 @@ namespace eg
                         return std::nullopt;
                     }
 
-                    const auto penDepth = std::min(max_r1, max_r2) - std::max(min_r1, min_r2);
-                    const auto axisDot  = axisProj * pvec;
-                    if (eg::nearlyEqual(penDepth, result.depth) and axisDot > max_dot)
+                    const auto pen_depth = std::min(max_r1, max_r2) - std::max(min_r1, min_r2);
+                    const auto axisDot  = axis * pvec;
+                    if (eg::nearlyEqual(pen_depth, min_depth) and axisDot > max_dot)
                     {
                         result.donor    = s2;
                         result.receptor = s1;
-                        result.depth    = std::min(penDepth, result.depth);
-                        result.normal   = axisProj;
+                        result.normal   = axis;
 
+                        min_depth = std::min(pen_depth, min_depth);
                         max_dot = axisDot;
                     }
-                    else if (penDepth < result.depth)
+                    else if (pen_depth < min_depth)
                     {
                         result.donor    = s2;
                         result.receptor = s1;
-                        result.depth    = penDepth;
-                        result.normal   = axisProj;
+                        result.normal   = axis;
 
+                        min_depth = pen_depth;
                         max_dot = axisDot;
                     }
                 }
                 std::swap(s1, s2);
             }
+            result.depth = min_depth;
             return result;
         }
 
@@ -90,35 +87,36 @@ namespace eg
 
         LineSegment findSignificantFace(std::span<eg::Vector2f> vertices, eg::Vector2f normal)
         {
-            size_t farthestPidx = 0;
-            float dist = -std::numeric_limits<float>::infinity();
+            size_t farthest_p_idx = 0;
+            float max_proj = -std::numeric_limits<float>::infinity();
             for (size_t i = 0; i < vertices.size(); i++)
             {
                 const auto proj = vertices[i] * normal;
-                if (proj > dist)
+                if (proj > max_proj)
                 {
-                    dist = proj;
-                    farthestPidx = i;
+                    max_proj = proj;
+                    farthest_p_idx = i;
                 }
             }
 
-            eg::Vector2f sigFace{};
-            const auto farthestP = vertices[farthestPidx];
-            float minSlope = std::numeric_limits<float>::infinity();
+            eg::Vector2f sig_face{};
+            const auto farthest_p = vertices[farthest_p_idx];
+            float min_slope = std::numeric_limits<float>::infinity();
             for (size_t i = 0; i < vertices.size(); i++)
             {
-                if (i == farthestPidx)
+                if (i == farthest_p_idx)
                 {
                     continue;
                 }
-                const auto face = vertices[i] - farthestP;
-                if (const auto slope = std::abs(face * normal); slope < minSlope)
+                const auto face = vertices[i] - farthest_p;
+                const auto slope = std::abs(face * normal);
+                if (slope < min_slope)
                 {
-                    sigFace = face;
-                    minSlope = slope;
+                    sig_face = face;
+                    min_slope = slope;
                 }
             }
-            return { farthestP, farthestP + sigFace };
+            return { farthest_p, farthest_p + sig_face };
         }
 
         struct PenetratePoints
@@ -127,7 +125,7 @@ namespace eg
             size_t cnt;
         };
 
-        PenetratePoints findPentratePoint(LineSegment inc_face, LineSegment ref_face)
+        PenetratePoints findContactPoint(LineSegment inc_face, LineSegment ref_face)
         {
             const auto pointToSegDist = [](const eg::Vector2f p, const LineSegment line) {
                 const auto& a = line.p[0];
@@ -153,7 +151,7 @@ namespace eg
                 {
                     cp = a + ab * d;
                 }
-                return (p - cp).length();
+                return (p - cp).lengthSquared();
             };
 
             PenetratePoints pp{};
@@ -163,7 +161,7 @@ namespace eg
                 for (const auto& p : inc_face.p)
                 {
                     const auto dist = pointToSegDist(p, ref_face);
-
+                    
                     if (eg::nearlyEqual(dist, minDist))
                     {
                         pp.cnt = 2;
@@ -187,7 +185,7 @@ namespace eg
             constexpr float bounciness = 0.2f; // ¼u©Ê±`¼Æ
             constexpr float static_friction = 0.6f;
             constexpr float dynamic_friction = 0.4f;
-            constexpr float max_tol_vel = -5.0f;
+            constexpr float max_tol_vel = -0.5f;
 
             std::array<eg::Vector2f, 2> impulse_list{};
             std::array<eg::Vector2f, 2> friction_impulse{};
@@ -337,7 +335,7 @@ namespace eg
 
                     auto tangent = relativeVel - (relativeVel * n) * n;
 
-                    if (eg::nearlyEqual(tangent.x, 0.0f) and eg::nearlyEqual(tangent.y, 0.0f))
+                    if (eg::nearlyEqual(tangent, {}))
                     {
                         continue;
                     }
