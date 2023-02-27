@@ -36,7 +36,7 @@ namespace eg
 		{
 		public:
 			Vector2f linear_velocity{}, position{}, external_forces = {};
-			float angular_velocity = 0.0f, rotate_radians = 0.0f;
+			float angular_velocity = 0.0f, angular_acceleration, rotate_radians = 0.0f;
 			float width = 0.0f, height = 0.0f, radius = 0.0f;
 			RigidBodyType type = RigidBodyType::Box;
 			bool is_static = false;
@@ -52,8 +52,9 @@ namespace eg
 				position = x;
 				linear_velocity = v;
 
-				const auto [ax, _] = rk4(rotate_radians, angular_velocity, 0.0f, dt);
+				const auto [ax, av] = rk4(rotate_radians, angular_velocity, angular_acceleration, dt);
 				rotate_radians = ax;
+				angular_velocity = av;
 
 				external_forces = {};
 			}
@@ -98,9 +99,9 @@ namespace eg
 				m_inverse_inertia = 1.0f / m_inertia;
 			}
 
-			void applyInertiaTensor(const eg::Vector2f r, const eg::Vector2f j)
+			void applyInertiaTensor(const eg::Vector2f r, const eg::Vector2f jr)
 			{
-				angular_velocity += r.cross(j) * m_inverse_inertia;
+				angular_velocity += r.cross(jr) * m_inverse_inertia;
 			}
 
 			[[nodiscard]]

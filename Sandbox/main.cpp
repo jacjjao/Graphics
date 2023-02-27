@@ -146,7 +146,7 @@ public:
         if (clock.getElapsedTime().asSeconds() >= 1.0)
         {
             // EG_TRACE("{}", fps);
-            EG_TRACE("({},{}) {}", bodies.back().linear_velocity.x, bodies.back().linear_velocity.y, bodies.back().angular_velocity);
+            // EG_TRACE("({},{}) {}", bodies.back().linear_velocity.x, bodies.back().linear_velocity.y, bodies.back().angular_velocity);
             fps = 0;
             clock.restart();
         }

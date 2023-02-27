@@ -180,13 +180,18 @@ namespace eg
             }
             return pp;
         }
-
+        
         void resolveCollision(RigidBody& bodyA, RigidBody& bodyB, const PenetratePoints pp, const eg::Vector2f n, const float depth)
         { 
-            constexpr float bounciness = 1.0f; // 彈性常數
-            std::array<eg::Vector2f, 2> impulses{};
-            std::array<eg::Vector2f, 2> ras{};
-            std::array<eg::Vector2f, 2> rbs{};
+            constexpr float bounciness = 0.2f; // 彈性常數
+            constexpr float static_friction = 0.6f;
+            constexpr float dynamic_friction = 0.4f;
+
+            std::array<eg::Vector2f, 2> impulse_list{};
+            std::array<eg::Vector2f, 2> friction_impulse{};
+            std::array<eg::Vector2f, 2> ra_list{};
+            std::array<eg::Vector2f, 2> rb_list{};
+            std::array<float, 2> j_list{};
 
             if (!bodyA.is_static and !bodyB.is_static)
             {
@@ -195,12 +200,15 @@ namespace eg
                     const auto ra = pp.cp[i] - bodyA.position;
                     const auto rb = pp.cp[i] - bodyB.position;
 
-                    ras[i] = ra;
-                    rbs[i] = rb;
+                    const eg::Vector2f ra_prep = { -ra.y, ra.x };
+                    const eg::Vector2f rb_prep = { -rb.y, rb.x };
+
+                    ra_list[i] = ra;
+                    rb_list[i] = rb;
 
                     const auto relativeVelMag =
-                        ((bodyB.linear_velocity + bodyB.angular_velocity * rb.cross(n)) -
-                         (bodyA.linear_velocity + bodyA.angular_velocity * ra.cross(n))) * n;
+                        ((bodyB.linear_velocity + bodyB.angular_velocity * rb_prep) -
+                         (bodyA.linear_velocity + bodyA.angular_velocity * ra_prep)) * n;
 
                     if (relativeVelMag > 0.0f)
                     {
@@ -209,16 +217,17 @@ namespace eg
 
                     const auto ra_cross_n = ra.cross(n);
                     const auto rb_cross_n = rb.cross(n);
-                    const auto za = (ra_cross_n * ra_cross_n * bodyA.getInverseInertia());
-                    const auto zb = (rb_cross_n * rb_cross_n * bodyB.getInverseInertia());
-                    const auto denom = bodyA.getInverseMass() + bodyB.getInverseMass() + za + zb;
+                    const auto denom = bodyA.getInverseMass() + bodyB.getInverseMass() + 
+                        (ra_cross_n * ra_cross_n * bodyA.getInverseInertia()) + 
+                        (rb_cross_n * rb_cross_n * bodyB.getInverseInertia());
 
                     auto j = -(1.0f + bounciness) * relativeVelMag;
                     j /= denom;
                     if (pp.cnt == 2)
                         j *= 0.5f;
 
-                    impulses[i] = n * j;
+                    j_list[i] = j;
+                    impulse_list[i] = n * j;
                 }
             }
             else
@@ -230,7 +239,7 @@ namespace eg
                     if (bodyA.is_static)
                     {
                         const auto rb = pp.cp[i] - bodyB.position;
-                        rbs[i] = rb;
+                        rb_list[i] = rb;
                         const eg::Vector2f rb_prep = { -rb.y, rb.x };
                         const auto rb_cross_n = rb.cross(n);
                         relativeVelMag = (bodyB.linear_velocity + rb_prep * bodyB.angular_velocity) * n;
@@ -239,7 +248,7 @@ namespace eg
                     else
                     {
                         const auto ra = pp.cp[i] - bodyA.position;
-                        ras[i] = ra;
+                        ra_list[i] = ra;
                         const eg::Vector2f ra_prep = { -ra.y, ra.x };
                         const auto ra_cross_n = ra.cross(n);
                         relativeVelMag = -(bodyA.linear_velocity + ra_prep * bodyA.angular_velocity) * n;
@@ -255,22 +264,135 @@ namespace eg
                     if (pp.cnt == 2)
                         j *= 0.5f;
 
-                    impulses[i] = n * j;
+                    j_list[i] = j;
+                    impulse_list[i] = n * j;
                 }
             }
 
+            // friction
+            if (!bodyA.is_static and !bodyB.is_static)
+            {
+                for (size_t i = 0; i < pp.cnt; i++)
+                {
+                    const auto ra = ra_list[i];
+                    const auto rb = rb_list[i];
+
+                    const eg::Vector2f ra_prep = { -ra.y, ra.x };
+                    const eg::Vector2f rb_prep = { -rb.y, rb.x };
+
+                    const auto relativeVel =
+                        (bodyB.linear_velocity + bodyB.angular_velocity * rb_prep) -
+                        (bodyA.linear_velocity + bodyA.angular_velocity * ra_prep);
+
+                    auto tangent = relativeVel - (relativeVel * n) * n;
+
+                    if (eg::nearlyEqual(tangent.x, 0.0f) and eg::nearlyEqual(tangent.y, 0.0f))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        tangent = tangent.normalize();
+                    }
+
+                    const auto ra_prep_dot_t = ra_prep * tangent;
+                    const auto rb_prep_dot_t = rb_prep * tangent;
+                    const auto denom = bodyA.getInverseMass() + bodyB.getInverseMass() +
+                        (ra_prep_dot_t * ra_prep_dot_t) * bodyA.getInverseInertia() +
+                        (rb_prep_dot_t * rb_prep_dot_t) * bodyB.getInverseInertia();
+
+                    auto jt = -relativeVel * tangent;
+                    jt /= denom;
+                    if (pp.cnt == 2)
+                        jt *= 0.5f;
+
+                    eg::Vector2f f_impulse{};
+                    if (std::abs(jt) <= j_list[i] * static_friction)
+                    {
+                        f_impulse = jt * tangent;
+                    }
+                    else
+                    {
+                        f_impulse = -j_list[i] * tangent * dynamic_friction;
+                    }
+
+                    friction_impulse[i] = f_impulse;
+                }
+            }
+            else
+            {
+                for (size_t i = 0; i < pp.cnt; i++)
+                {
+                    const auto ra = ra_list[i];
+                    const auto rb = rb_list[i];
+
+                    const eg::Vector2f ra_prep = { -ra.y, ra.x };
+                    const eg::Vector2f rb_prep = { -rb.y, rb.x };
+
+                    const auto relativeVel =
+                        (bodyB.linear_velocity + bodyB.angular_velocity * rb_prep) -
+                        (bodyA.linear_velocity + bodyA.angular_velocity * ra_prep);
+
+                    auto tangent = relativeVel - (relativeVel * n) * n;
+
+                    if (eg::nearlyEqual(tangent.x, 0.0f) and eg::nearlyEqual(tangent.y, 0.0f))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        tangent = tangent.normalize();
+                    }
+
+                    const auto ra_prep_dot_t = ra_prep * tangent;
+                    const auto rb_prep_dot_t = rb_prep * tangent;
+
+                    float denom = 0.0f;
+                    if (bodyA.is_static)
+                    {
+                        denom = bodyB.getInverseMass() + (rb_prep_dot_t * rb_prep_dot_t) * bodyB.getInverseInertia();
+                    }
+                    else
+                    {
+                        denom = bodyA.getInverseMass() + (ra_prep_dot_t * ra_prep_dot_t) * bodyA.getInverseInertia();
+                    }
+
+                    auto jt = -relativeVel * tangent;
+                    jt /= denom;
+                    if (pp.cnt == 2)
+                        jt *= 0.5f;
+
+                    eg::Vector2f f_impulse{};
+                    if (std::abs(jt) <= j_list[i] * static_friction)
+                    {
+                        f_impulse = jt * tangent;
+                    }
+                    else
+                    {
+                        f_impulse = -j_list[i] * tangent * dynamic_friction;
+                    }
+
+                    friction_impulse[i] = f_impulse;
+                }
+            }
             for (size_t i = 0; i < pp.cnt; i++)
             {
                 if (!bodyA.is_static)
                 {
-                    bodyA.applyImpulse(-impulses[i]);
-                    bodyA.applyInertiaTensor(ras[i], -impulses[i]);
+                    bodyA.applyImpulse(-impulse_list[i]);
+                    bodyA.applyInertiaTensor(ra_list[i], -impulse_list[i]);
+
+                    bodyA.applyImpulse(-friction_impulse[i]);
+                    bodyA.applyInertiaTensor(ra_list[i], -friction_impulse[i]);
                 }
 
                 if (!bodyB.is_static)
                 {
-                    bodyB.applyImpulse(impulses[i]);
-                    bodyB.applyInertiaTensor(rbs[i], impulses[i]);
+                    bodyB.applyImpulse(impulse_list[i]);
+                    bodyB.applyInertiaTensor(rb_list[i], impulse_list[i]);
+
+                    bodyB.applyImpulse(friction_impulse[i]);
+                    bodyB.applyInertiaTensor(rb_list[i], friction_impulse[i]);
                 }
             }
             if (bodyA.is_static)
@@ -283,12 +405,12 @@ namespace eg
             }
             else
             {
-                const auto bias = 0.01f;
                 const float mass_sum_inv = 1.0f / (bodyA.getMass() + bodyB.getMass());
-                bodyA.position = bodyA.position - n * (depth * bodyA.getMass() * mass_sum_inv + bias);
-                bodyB.position = bodyB.position + n * (depth * bodyB.getMass() * mass_sum_inv + bias);
+                bodyA.position = bodyA.position - n * (depth * bodyA.getMass() * mass_sum_inv);
+                bodyB.position = bodyB.position + n * (depth * bodyB.getMass() * mass_sum_inv);
             }
         }
+        
 
     } // namespace physics
 
