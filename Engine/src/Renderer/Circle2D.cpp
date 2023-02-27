@@ -72,4 +72,9 @@ namespace eg
         return Shape::getPoint(index + 1);
     }
 
+    void Circle2D::getAllTransformPoint(std::vector<Vector2f>& container, size_t from) const
+    {
+        return Shape::getAllTransformPoint(container, 1);
+    }
+
 } // namespace eg

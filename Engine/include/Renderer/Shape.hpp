@@ -22,7 +22,7 @@ namespace eg
 
         virtual size_t getPointCount() const = 0;
         virtual Vector2f getPoint(size_t index);
-        virtual std::vector<Vector2f> getAllTransformPoint() const;
+        virtual void getAllTransformPoint(std::vector<Vector2f>& container, size_t from = 0) const;
 
         void applyTexture(Texture* texture) { m_texture = texture; }
 

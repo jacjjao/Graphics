@@ -51,7 +51,8 @@ namespace eg
                         max_r2 = std::max(max_r2, q);
                     }
 
-                    if (min_r2 > max_r1 or max_r2 < min_r1)
+                    constexpr float tol_error = 1.0f;
+                    if ((min_r2 > max_r1 and min_r2 - max_r1 > tol_error) or (max_r2 < min_r1 and min_r1 - max_r2 > tol_error))
                     {
                         return std::nullopt;
                     }
@@ -186,6 +187,7 @@ namespace eg
             constexpr float bounciness = 0.2f; // ¼u©Ê±`¼Æ
             constexpr float static_friction = 0.6f;
             constexpr float dynamic_friction = 0.4f;
+            constexpr float max_tol_vel = -5.0f;
 
             std::array<eg::Vector2f, 2> impulse_list{};
             std::array<eg::Vector2f, 2> friction_impulse{};
@@ -210,7 +212,7 @@ namespace eg
                         ((bodyB.linear_velocity + bodyB.angular_velocity * rb_prep) -
                          (bodyA.linear_velocity + bodyA.angular_velocity * ra_prep)) * n;
 
-                    if (relativeVelMag > 0.0f)
+                    if (relativeVelMag > max_tol_vel)
                     {
                         continue;
                     }
@@ -255,7 +257,7 @@ namespace eg
                         denom = bodyA.getInverseMass() + ra_cross_n * ra_cross_n * bodyA.getInverseInertia();
                     }
 
-                    if (relativeVelMag > 0.0f)
+                    if (relativeVelMag > max_tol_vel)
                     {
                         continue;
                     }

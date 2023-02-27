@@ -23,6 +23,8 @@ namespace eg
         size_t getPointCount() const override { return m_vao.size() - 2; }
         [[nodiscard]]
         Vector2f getPoint(const size_t index) override;
+        [[nodiscard]]
+        void getAllTransformPoint(std::vector<Vector2f>& container, size_t from = 0) const override;
     private:
         float m_radius;
     };

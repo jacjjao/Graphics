@@ -205,11 +205,7 @@ private:
 
             polys[i].poly = &rects[i];
             polys[i].vertices.clear();
-            polys[i].vertices.reserve(rects[i].getPointCount());            
-            for (size_t j = 0; j < rects[i].getPointCount(); j++)
-            {
-                polys[i].vertices.push_back(rects[i].getPoint(j));
-            }
+            rects[i].getAllTransformPoint(polys[i].vertices);
         }
     }
 
