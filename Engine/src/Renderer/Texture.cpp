@@ -57,7 +57,7 @@ namespace eg
         int nr_channels = 0;
         stbi_set_flip_vertically_on_load(true);
 
-        auto data = stbi_load(path.string().c_str(), &width, &height, &nr_channels, STBI_rgb);
+        auto data = stbi_load(path.string().c_str(), &width, &height, &nr_channels, STBI_rgb_alpha);
         if (data != nullptr)
         {
             createFromData(data, width, height, parameters);
@@ -76,22 +76,22 @@ namespace eg
         glGenTextures(1, &m_id);
         bind(this);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, static_cast<GLenum>(parameters.wrap_s));
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, static_cast<GLenum>(parameters.wrap_t));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, static_cast<GLenum>(parameters.min_filter));
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<GLenum>(parameters.mag_filter));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         m_size.x = static_cast<float>(width);
         m_size.y = static_cast<float>(height);
         glTexImage2D(
             GL_TEXTURE_2D,
             0,
-            static_cast<GLenum>(parameters.format),
+            GL_RGBA,
             width,
             height,
             0,
-            static_cast<GLenum>(parameters.format),
+            GL_RGBA,
             GL_UNSIGNED_BYTE,
             data
         );

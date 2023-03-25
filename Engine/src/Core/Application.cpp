@@ -1,6 +1,7 @@
 #include "include/Core/Application.hpp"
 #include "include/Core/Log.hpp"
 #include "include/Input/Input.hpp"
+#include "include/Core/Math.hpp"
 #include <glad/glad.h>
 
 namespace eg
@@ -11,7 +12,8 @@ namespace eg
 	{
 		while (m_running)
 		{
-			glClearColor(m_clear_color.r, m_clear_color.g, m_clear_color.b, m_clear_color.a);
+			const auto [r, g, b, a] = m_clear_color;
+			glClearColor(r, g, b, a);
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			for (const auto& layer : m_layerStack)
@@ -30,6 +32,14 @@ namespace eg
 		m_window->setEventCallback([this](eg::Event& e) {
 			onEvent(e);
 		});
+
+		const float hw = static_cast<float>(m_window->getWidth()) / 2.0f;
+		const float hh = static_cast<float>(m_window->getHeight()) / 2.0f;
+		auto& shader = DefaultShaderProgram::instance();
+		shader.use();
+		shader.setMat4("view", Constants::identity_mat4);
+		shader.setMat4("proj", ortho(-hw, hw, -hh, hh, -1.0f, 1.0f));
+		shader.unuse();
 	}
 
 	void Application::onEvent(eg::Event& e)
@@ -39,7 +49,7 @@ namespace eg
 			return onWindowClosed(e);
 		});
 		dispatcher.dispatch<WindowResizeEvent>([this](WindowResizeEvent& e) {
-			glViewport(0, 0, (GLsizei)e.getWidth(), (GLsizei)e.getHeight());
+			glViewport(0, 0, static_cast<GLsizei>(e.getWidth()), static_cast<GLsizei>(e.getHeight()));
 			return true;	
 		});
 

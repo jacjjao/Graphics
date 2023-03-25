@@ -72,6 +72,7 @@ namespace eg
     {
         auto& program = DefaultShaderProgram::instance();
 
+        program.use();
         program.setMat4("model", model_mat);
         program.setFloat("color_alpha", color_alpha);
         if (texture != nullptr)
@@ -87,6 +88,7 @@ namespace eg
         {
             Texture::unbind();
         }
+        program.unuse();
     }
 
     void VertexArray::drawIndices(const int32_t size,
@@ -97,6 +99,7 @@ namespace eg
     {
         auto& program = DefaultShaderProgram::instance();
 
+        program.use();
         program.setMat4("model", model_mat);
         program.setFloat("color_alpha", color_alpha);
         if (texture != nullptr)
@@ -112,6 +115,7 @@ namespace eg
         {
             Texture::unbind();
         }
+        program.unuse();
     }
 
     void VertexArray::setElementBuffer(ElementBuffer& ebo)

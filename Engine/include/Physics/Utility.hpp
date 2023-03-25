@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <include/Core/Vector.hpp>
+#include <numbers>
 
 namespace eg
 {

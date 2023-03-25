@@ -47,8 +47,7 @@ namespace eg
                         max_r2 = std::max(max_r2, q);
                     }
 
-                    constexpr float tol_error = 1.0f;
-                    if ((min_r2 > max_r1 and min_r2 - max_r1 > tol_error) or (max_r2 < min_r1 and min_r1 - max_r2 > tol_error))
+                    if (min_r2 > max_r1 or max_r2 < min_r1)
                     {
                         return std::nullopt;
                     }

@@ -24,11 +24,11 @@ namespace eg
 
     void OrthographicCamera::move(const Vector3f vector)
     {
-        const auto theta = radians(-m_degree);
-        const auto ccos = std::cos(theta);
-        const auto ssin = std::sin(theta);
+        const float theta = radians(-m_degree);
+        const float ccos = std::cos(theta);
+        const float ssin = std::sin(theta);
 
-        auto vec = vector;
+        eg::Vector3f vec = vector;
 
         vec.x = (vector.x * ccos - vector.y * ssin) / m_scale.x;
         vec.y = (vector.x * ssin + vector.y * ccos) / m_scale.y;
@@ -60,10 +60,11 @@ namespace eg
         if (should_update)
         {
             const auto [x, y, _] = m_position;
-            const auto theta = radians(m_degree);
-            const auto ccos = std::cos(theta);
-            const auto ssin = std::sin(theta);
             const auto [a, b] = m_scale;
+
+            const float theta = radians(m_degree);
+            const float ccos = std::cos(theta);
+            const float ssin = std::sin(theta);
 
             m_view[0][0] = a * ccos;
             m_view[0][1] = -b * ssin;

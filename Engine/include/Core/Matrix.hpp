@@ -50,7 +50,8 @@ namespace eg
                 return ptr_[index];
             }
 
-            [[nodiscard]] constexpr size_t size() const
+            [[nodiscard]] 
+            constexpr size_t size() const
             {
                 return Width;
             }
@@ -80,7 +81,8 @@ namespace eg
                 return ptr_[index];
             }
 
-            [[nodiscard]] constexpr size_t size() const
+            [[nodiscard]] 
+            constexpr size_t size() const
             {
                 return Width;
             }
@@ -102,19 +104,14 @@ namespace eg
         {
         }
 
+        Matrix(Matrix<T, Height, Width>&&) = default;
+        Matrix& operator=(Matrix<T, Height, Width>&&) = default;
+
         Matrix(std::initializer_list<T> list) : items_(list)
         {
             assert(list.size() == Width * Height);
             items_.resize(Width * Height);
         }
-
-        ~Matrix() = default;
-
-        Matrix(const Matrix<T, Height, Width>&) = delete;
-        Matrix& operator=(const Matrix<T, Height, Width>&) = delete;
-
-        Matrix(Matrix<T, Height, Width>&&) = default;
-        Matrix& operator=(Matrix<T, Height, Width>&&) = default;
 
         detail::Row<T, Width> operator[](const size_t index)
         {
@@ -217,22 +214,26 @@ namespace eg
             return result;
         }
 
-        [[nodiscard]] size_t width() const
+        [[nodiscard]] 
+        size_t width() const
         {
             return Width;
         }
 
-        [[nodiscard]] size_t height() const
+        [[nodiscard]] 
+        size_t height() const
         {
             return Height;
         }
 
-        [[nodiscard]] T* data()
+        [[nodiscard]] 
+        T* data()
         {
             return items_.data();
         }
 
-        [[nodiscard]] const T* data() const
+        [[nodiscard]] 
+        const T* data() const
         {
             return items_.data();
         }
@@ -251,12 +252,6 @@ namespace eg
 
             return mat;
         }
-
-        static Matrix<T, Width, Height> transpose(const Matrix<T, Height, Width>& mat)
-        {
-
-        }
-
 
     private:
         std::vector<T> items_;

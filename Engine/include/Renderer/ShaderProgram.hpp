@@ -117,6 +117,8 @@ namespace eg
                 
                 void main()
                 {	
+                    // color = frag_color * color_alpha;
+                    
                     switch(unit_index)
 	                {
 	                	case  0: color = mix(texture(textures[ 0], tex_coord), frag_color, color_alpha); break;
