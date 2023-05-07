@@ -3,95 +3,10 @@
 #include <cstdint>
 #include <cassert>
 #include <initializer_list>
-#include <vector>
-
-#ifdef EG_DEBUG
-#define ENABLE_BOUNDS_CHECK
-#include <sstream>
-#endif
+#include <array>
 
 namespace eg
 {
-
-    namespace detail
-    {
-
-        template <typename T, size_t Width>
-        class Row
-        {
-        public:
-            explicit constexpr Row(T* ptr) : ptr_(ptr)
-            {
-            }
-
-            constexpr T& operator[](const size_t index)
-            {
-#ifdef ENABLE_BOUNDS_CHECK
-                if (index >= Width)
-                {
-                    std::stringstream ss;
-                    ss << "Index out of bounds! Index: " << index << " Size: " << Width << '\n';
-                    throw std::runtime_error{ std::move(ss).str() };
-                }
-#endif
-                return ptr_[index];
-            }
-
-            constexpr T& operator[](const size_t index) const
-            {
-#ifdef ENABLE_BOUNDS_CHECK
-                if (index >= Width)
-                {
-                    std::stringstream ss;
-                    ss << "Index out of bounds! Index: " << index << " Size: " << Width << '\n';
-                    throw std::runtime_error{ std::move(ss).str() };
-                }
-#endif
-                return ptr_[index];
-            }
-
-            [[nodiscard]] 
-            constexpr size_t size() const
-            {
-                return Width;
-            }
-
-        private:
-            T* ptr_;
-        };
-
-        template <typename T, size_t Width>
-        class ConstRow
-        {
-        public:
-            explicit constexpr ConstRow(const T* ptr) : ptr_(ptr)
-            {
-            }
-
-            constexpr const T& operator[](const size_t index) const
-            {
-#ifdef ENABLE_BOUNDS_CHECK
-                if (index >= Width)
-                {
-                    std::stringstream ss;
-                    ss << "Index out of bounds! Index: " << index << " Size: " << Width << '\n';
-                    throw std::runtime_error{ std::move(ss).str() };
-                }
-#endif
-                return ptr_[index];
-            }
-
-            [[nodiscard]] 
-            constexpr size_t size() const
-            {
-                return Width;
-            }
-
-        private:
-            const T* ptr_;
-        };
-
-    } // namespace detail
 
     template <typename T, size_t Height, size_t Width>
     class Matrix
@@ -100,43 +15,25 @@ namespace eg
         static_assert(Width > 0, "Invalid width value");
         static_assert(Height > 0, "Invalid Height value");
 
-        explicit Matrix() : items_(Width* Height)
-        {
-        }
-
-        Matrix(Matrix<T, Height, Width>&&) = default;
-        Matrix& operator=(Matrix<T, Height, Width>&&) = default;
-
+        /*
         Matrix(std::initializer_list<T> list) : items_(list)
         {
             assert(list.size() == Width * Height);
             items_.resize(Width * Height);
         }
+        */
 
-        detail::Row<T, Width> operator[](const size_t index)
+        Matrix(const Matrix&) = delete;
+        Matrix& operator=(Matrix&) = delete;
+
+        std::array<T, Width>& operator[](const size_t index)
         {
-#ifdef ENABLE_BOUNDS_CHECK
-            if (index >= Height)
-            {
-                std::stringstream ss;
-                ss << "Index out of bounds! Index: " << index << " Size: " << Height << '\n';
-                throw std::runtime_error{ std::move(ss).str() };
-            }
-#endif
-            return detail::Row<T, Width>{&items_[index * Width]};
+            return items_[index];
         }
 
-        detail::ConstRow<T, Width> operator[](const size_t index) const
+        const std::array<T, Width>& operator[](const size_t index) const
         {
-#ifdef ENABLE_BOUNDS_CHECK
-            if (index >= Height)
-            {
-                std::stringstream ss;
-                ss << "Index out of bounds! Index: " << index << " Size: " << Height << '\n';
-                throw std::runtime_error{ std::move(ss).str() };
-            }
-#endif
-            return detail::ConstRow<T, Width>{&items_[index * Width]};
+            return items_[index];
         }
 
         friend Matrix<T, Height, Width> operator+(const Matrix<T, Height, Width>& lhs, const Matrix<T, Height, Width>& rhs)
@@ -229,15 +126,16 @@ namespace eg
         [[nodiscard]] 
         T* data()
         {
-            return items_.data();
+            return items_.begin()->data();
         }
 
         [[nodiscard]] 
         const T* data() const
         {
-            return items_.data();
+            return items_.begin()->data();
         }
-
+        
+        [[nodiscard]]
         static Matrix<T, Height, Width> makeIdentity()
         {
             static_assert(Width == Height, "Invalid identity matrix size");
@@ -254,7 +152,7 @@ namespace eg
         }
 
     private:
-        std::vector<T> items_;
+        std::array<std::array<T, Width>, Height> items_;
     };
 
     using Matrix3 = Matrix<float, 3, 3>;
