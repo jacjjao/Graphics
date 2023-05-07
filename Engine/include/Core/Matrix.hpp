@@ -15,16 +15,8 @@ namespace eg
         static_assert(Width > 0, "Invalid width value");
         static_assert(Height > 0, "Invalid Height value");
 
-        /*
-        Matrix(std::initializer_list<T> list) : items_(list)
-        {
-            assert(list.size() == Width * Height);
-            items_.resize(Width * Height);
-        }
-        */
-
-        Matrix(const Matrix&) = delete;
-        Matrix& operator=(Matrix&) = delete;
+        // Matrix(const Matrix&) = delete;
+        // Matrix& operator=(Matrix&) = delete;
 
         std::array<T, Width>& operator[](const size_t index)
         {
