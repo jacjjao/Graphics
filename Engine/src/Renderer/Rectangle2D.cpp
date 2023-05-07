@@ -34,15 +34,15 @@ namespace eg
             PrimitiveType::Triangles,
             getTransformMatrix(),
             hasTexture() ? 0.0F : 1.0F,
-            m_texture
+            m_texture.get()
         );
     }
 
     void Rectangle2D::update()
     {
         // update size
-        const auto half_width = m_width / 2.0f;
-        const auto half_height = m_height / 2.0f;
+        const float half_width = m_width / 2.0f;
+        const float half_height = m_height / 2.0f;
         const auto [x, y] = getPosition();
 
         setOrigin({ x, y });

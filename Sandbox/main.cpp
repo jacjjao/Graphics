@@ -6,18 +6,21 @@ class TheLayer : public eg::Layer
 public:
     TheLayer()
     {
-        m_rect = new eg::Rectangle2D{ 100.f, 100.f };
-        m_rect->setColor(eg::Color::Blue);
-        m_rect->update();
+        tex = std::make_shared<eg::Texture>(FileSystem::getPath("/asset/images/container.jpg"));
 
-        tex = new eg::Texture{ FileSystem::getPath("/asset/images/container.jpg") };
+        m_rect = new eg::Rectangle2D{ 500.f, 500.f };
+        m_rect->setColor(eg::Color::Blue);
         m_rect->applyTexture(tex);
+        eg::Rect r = m_rect->getTextureRect();
+        r.size.x /= 2.0f;
+        r.size.y /= 2.0f;
+        m_rect->setTextureRect(r);
+        m_rect->update();
     }
 
     ~TheLayer() override
     {
         delete m_rect;
-        delete tex;
     }
 
     void onAttach() override {}
@@ -42,7 +45,7 @@ public:
 
 private:
     eg::Rectangle2D* m_rect;
-    eg::Texture* tex;
+    std::shared_ptr<eg::Texture> tex;
 };
 
 class SandBox : public eg::Application

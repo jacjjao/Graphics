@@ -9,48 +9,45 @@
 
 namespace eg
 {
-
-    class TexConstructParams
-    {
-    public:
-        enum class Wrapping : uint32_t
-        {
-            Repeat = 0x2901,
-            MirroredRepeat = 0x8370,
-            ClampToEdge = 0x812F,
-            ClampToBorder = 0x812D
-        };
-
-        enum class Filtering : uint32_t
-        {
-            Nearest = 0x2600,
-            Linear = 0x2601
-        };
-
-        enum class Format : uint32_t
-        {
-            DepthComponent = 0x1902,
-            DepthStencil = 0x84F9,
-            Red = 0x1903,
-            RG = 0x8227,
-            RGB = 0x1907,
-            RGBA = 0x1908,
-        };
-
-        Wrapping  wrap_s = Wrapping::Repeat, wrap_t = Wrapping::Repeat;
-        Filtering min_filter = Filtering::Linear, mag_filter = Filtering::Linear;
-        Format format = Format::RGB;
-        bool use_mipmap = false;
-    };
-
     class Texture
     {
     public:
-        static void Init();
+        struct Params
+        {
+        public:
+            enum class Wrapping : uint32_t
+            {
+                Repeat = 0x2901,
+                MirroredRepeat = 0x8370,
+                ClampToEdge = 0x812F,
+                ClampToBorder = 0x812D
+            };
+
+            enum class Filtering : uint32_t
+            {
+                Nearest = 0x2600,
+                Linear = 0x2601
+            };
+
+            enum class Format : uint32_t
+            {
+                DepthComponent = 0x1902,
+                DepthStencil = 0x84F9,
+                Red = 0x1903,
+                RG = 0x8227,
+                RGB = 0x1907,
+                RGBA = 0x1908,
+            };
+
+            Wrapping  wrap_s = Wrapping::Repeat, wrap_t = Wrapping::Repeat;
+            Filtering min_filter = Filtering::Linear, mag_filter = Filtering::Linear;
+            Format format = Format::RGBA;
+            bool use_mipmap = false;
+        };
 
         Texture() = default;
-        explicit Texture(const std::filesystem::path& path, const TexConstructParams& parameters = {});
-        explicit Texture(const void* data, int32_t width, int32_t height, const TexConstructParams& parameters = {});
+        explicit Texture(const std::filesystem::path& path, const Params& parameters = {});
+        explicit Texture(const void* data, int32_t width, int32_t height, const Params& parameters = {});
         ~Texture();
 
         Texture(const Texture&) = delete;
@@ -70,21 +67,16 @@ namespace eg
         [[nodiscard]] 
         float getHeight() const { return m_size.y; }
 
-        [[nodiscard]] 
-        size_t getUnit() const { return which_unit; }
-
         static void bind(Texture* texture, size_t unit_index = 0);
         static void unbind(size_t unit_index = 0);
 
-        void createFromImage(const std::filesystem::path& path, const TexConstructParams& parameters = {});
-        void createFromData(const void* data, int32_t width, int32_t height, const TexConstructParams& parameters = {});
+        void createFromImage(const std::filesystem::path& path, const Params& parameters = {});
+        void createFromData(const void* data, int32_t width, int32_t height, const Params& parameters = {});
 
     private:
-        static std::array<Texture*, 32> textures_in_bind;
+        static uint32_t tex_in_bind;
 
         uint32_t m_id;
-
-        size_t which_unit = 0;
 
         Vector2f m_size;
     };

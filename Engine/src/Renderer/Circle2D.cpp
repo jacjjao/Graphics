@@ -22,7 +22,7 @@ namespace eg
             PrimitiveType::TriangleFan,
             getTransformMatrix(),
             hasTexture() ? 0.0F : 1.0F,
-            m_texture
+            m_texture.get()
         );
     }
 

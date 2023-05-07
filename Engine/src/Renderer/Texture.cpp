@@ -8,36 +8,14 @@
 
 namespace eg
 {
-    std::array<Texture*, 32> Texture::textures_in_bind{};
+    uint32_t Texture::tex_in_bind = 0;
 
-    void Texture::Init()
-    {
-        auto& program = DefaultShaderProgram::instance();
-        program.use();
-
-        char tex0_9[] = "textures[0]";
-        for (int i = 0; i < 10; i++)
-        {
-            tex0_9[9] = i + '0';
-            program.setI32(tex0_9, i);
-        }
-        char tex10_31[] = "textures[10]";
-        for (int i = 10; i < 32; i++)
-        {
-            tex10_31[9] = (i / 10) + '0';
-            tex10_31[10] = (i % 10) + '0';
-            program.setI32(tex10_31, i);
-        }
-
-        program.unuse();
-    }
-
-    Texture::Texture(const std::filesystem::path& path, const TexConstructParams& parameters) : m_id{ 0 }, m_size{}
+    Texture::Texture(const std::filesystem::path& path, const Params& parameters) : m_id{ 0 }, m_size{}
     {
         createFromImage(path);
     }
 
-    Texture::Texture(const void* data, int32_t width, int32_t height, const TexConstructParams& parameters) :
+    Texture::Texture(const void* data, int32_t width, int32_t height, const Params& parameters) :
         m_id{ 0 },
         m_size{}
     {
@@ -49,7 +27,7 @@ namespace eg
         destroy();
     }
 
-    void Texture::createFromImage(const std::filesystem::path& path, const TexConstructParams& parameters)
+    void Texture::createFromImage(const std::filesystem::path& path, const Params& parameters)
     {
         // load image
         int width = 0;
@@ -57,7 +35,7 @@ namespace eg
         int nr_channels = 0;
         stbi_set_flip_vertically_on_load(true);
 
-        auto data = stbi_load(path.string().c_str(), &width, &height, &nr_channels, STBI_rgb_alpha);
+        stbi_uc* data = stbi_load(path.string().c_str(), &width, &height, &nr_channels, STBI_rgb_alpha);
         if (data != nullptr)
         {
             createFromData(data, width, height, parameters);
@@ -70,28 +48,28 @@ namespace eg
         stbi_image_free(data);
     }
 
-    void Texture::createFromData(const void* data, const int32_t width, const int32_t height, const TexConstructParams& parameters)
+    void Texture::createFromData(const void* data, const int32_t width, const int32_t height, const Params& parameters)
     {
         // create texture
         glGenTextures(1, &m_id);
         bind(this);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, static_cast<GLenum>(parameters.wrap_s));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, static_cast<GLenum>(parameters.wrap_t));
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, static_cast<GLenum>(parameters.min_filter));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<GLenum>(parameters.mag_filter));
 
         m_size.x = static_cast<float>(width);
         m_size.y = static_cast<float>(height);
         glTexImage2D(
             GL_TEXTURE_2D,
             0,
-            GL_RGBA,
+            static_cast<GLenum>(parameters.format),
             width,
             height,
             0,
-            GL_RGBA,
+            static_cast<GLenum>(parameters.format),
             GL_UNSIGNED_BYTE,
             data
         );
@@ -105,7 +83,8 @@ namespace eg
     }
 
     Texture::Texture(Texture&& other) noexcept :
-        m_id{ other.m_id }, m_size{ other.m_size }
+        m_id{ other.m_id }, 
+        m_size{ other.m_size }
     {
         other.m_id = 0;
     }
@@ -133,22 +112,19 @@ namespace eg
 
     void Texture::bind(Texture* texture, const size_t unit_index)
     {
-        if (textures_in_bind[unit_index] != texture)
+        if (tex_in_bind != texture->m_id)
         {
-            texture->which_unit = unit_index;
-            glActiveTexture(GL_TEXTURE0 + unit_index);
             glBindTexture(GL_TEXTURE_2D, texture->m_id);
-            textures_in_bind[unit_index] = texture;
+            tex_in_bind = texture->m_id;
         }
     }
 
     void Texture::unbind(const size_t unit_index)
     {
-        if (textures_in_bind[unit_index] != nullptr)
+        if (tex_in_bind != 0)
         {
-            glActiveTexture(GL_TEXTURE0 + unit_index);
             glBindTexture(GL_TEXTURE_2D, 0);
-            textures_in_bind[unit_index] = nullptr;
+            tex_in_bind = 0;
         }
     }
 

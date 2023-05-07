@@ -33,7 +33,7 @@ namespace eg
             PrimitiveType::Lines,
             getTransformMatrix(),
             hasTexture() ? 0.0 : 1.0,
-            m_texture
+            m_texture.get()
         );
         glLineWidth(1.0f);
     }

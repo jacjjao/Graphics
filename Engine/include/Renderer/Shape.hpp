@@ -24,7 +24,7 @@ namespace eg
         virtual Vector2f getPoint(size_t index);
         virtual void getAllTransformPoint(std::vector<Vector2f>& container, size_t from = 0) const;
 
-        void applyTexture(Texture* texture) { m_texture = texture; }
+        void applyTexture(std::shared_ptr<Texture> texture) { m_texture = texture; }
 
         [[nodiscard]] 
         bool hasTexture() const { return (m_texture != nullptr); }
@@ -44,7 +44,7 @@ namespace eg
 
         Color m_color;
 
-        Texture* m_texture;
+        std::shared_ptr<Texture> m_texture;
 
         Rect m_tex_rect;
     };

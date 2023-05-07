@@ -77,7 +77,6 @@ namespace eg
         program.setFloat("color_alpha", color_alpha);
         if (texture != nullptr)
         {
-            program.setI32("unit_index", texture->getUnit());
             Texture::bind(texture);
         }
 
@@ -104,7 +103,6 @@ namespace eg
         program.setFloat("color_alpha", color_alpha);
         if (texture != nullptr)
         {
-            program.setI32("unit_index", texture->getUnit());
             Texture::bind(texture);
         }
 

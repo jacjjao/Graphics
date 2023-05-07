@@ -62,10 +62,10 @@ namespace eg
         // disable byte-alignment restriction
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-        TexConstructParams parameters{};
-        parameters.wrap_s = parameters.wrap_t = TexConstructParams::Wrapping::ClampToEdge;
-        parameters.min_filter = parameters.mag_filter = TexConstructParams::Filtering::Linear;
-        parameters.format = TexConstructParams::Format::Red;
+        Texture::Params parameters{};
+        parameters.wrap_s = parameters.wrap_t = Texture::Params::Wrapping::ClampToEdge;
+        parameters.min_filter = parameters.mag_filter = Texture::Params::Filtering::Linear;
+        parameters.format = Texture::Params::Format::Red;
 
         // load first 128 characters of ASCII set
         for (unsigned char c = 0; c < 128; c++)
