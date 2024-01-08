@@ -15,7 +15,6 @@ namespace eg
 	{
 	public:
 		explicit Application();
-		virtual ~Application() = default;
 
 		static Application& getInstance() { return *s_instance; }
 
