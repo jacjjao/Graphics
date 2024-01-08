@@ -1,0 +1,34 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "base",
+            "toolchainFile": "C:\\Users\\user\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            }
+        },
+        {
+            "name": "x64-windows-debug",
+            "displayName": "Debug",
+            "inherits": "base",
+            "binaryDir": "${sourceDir}/out/build/debug",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_CXX_FLAGS": "/analyze /W4 /MP /fsanitize=address /MDd /Od /EHsc"
+            }
+        },
+        {
+            "name": "x64-windows-release",
+            "displayName": "Release",
+            "inherits": "base",
+            "binaryDir": "${sourceDir}/out/build/release",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_CXX_FLAGS": "/analyze /W4 /MP /MD /GL /O2 /EHsc"
+            }
+        }
+    ]
+}
