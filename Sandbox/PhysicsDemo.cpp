@@ -100,9 +100,9 @@ public:
                 
                 eg::Rectangle2D rect{ rect_width, rect_height };
                 eg::Color color{};
-                color.r = rd.generate(0.f, 255.f);
-                color.g = rd.generate(0.f, 255.f);
-                color.b = rd.generate(0.f, 255.f);
+                color.r = static_cast<uint8_t>(rd.generate(0, 255));
+                color.g = static_cast<uint8_t>(rd.generate(0, 255));
+                color.b = static_cast<uint8_t>(rd.generate(0, 255));
                 rect.setColor(color);
                 rects.push_back(std::move(rect));
 
@@ -301,7 +301,7 @@ private:
 
     std::vector<eg::Vector2f> vecs;
 
-    eg::RandomFloatGenerator rd;
+    eg::RandomIntGenerator rd;
 };
 
 class SandBox : public eg::Application

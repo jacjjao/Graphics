@@ -22,8 +22,8 @@ namespace eg
     void TextRenderer::initialize(const unsigned font_size)
     {
         text_size = font_size;
-        const float half_width = Application::getInstance().getWindow().getWidth() / 2;
-        const float half_height = Application::getInstance().getWindow().getHeight() / 2;
+        const auto half_width = static_cast<float>(Application::getInstance().getWindow().getWidth()) * 0.5f;
+        const auto half_height = static_cast<float>(Application::getInstance().getWindow().getHeight()) * 0.5f;
 
         auto& shader = TextShaderProgram::instance();
         shader.use();

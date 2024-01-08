@@ -52,7 +52,7 @@ namespace eg
         {
             quad_data->vao.update();
             quad_data->vao.drawIndices(
-                quad_count * 6,
+                static_cast<int32_t>(quad_count * 6),
                 PrimitiveType::Triangles
             );
             quad_count = 0;

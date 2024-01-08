@@ -10,3 +10,12 @@ target_link_libraries(${PROJECT_NAME}
 PRIVATE 
 	MyGraphicsLib
 )
+
+add_executable("PhysicsDemo"
+	"PhysicsDemo.cpp"
+)
+
+target_link_libraries("PhysicsDemo"
+PRIVATE 
+	MyGraphicsLib
+)

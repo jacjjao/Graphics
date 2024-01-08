@@ -29,7 +29,7 @@ namespace eg
     void Rectangle2D::draw()
     {
         m_vao.drawIndices(
-            m_ebo.size(),
+            static_cast<int32_t>(m_ebo.size()),
             PrimitiveType::Triangles,
             getTransformMatrix(),
             hasTexture() ? 0.0F : 1.0F,

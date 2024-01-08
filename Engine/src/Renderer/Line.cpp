@@ -31,7 +31,7 @@ namespace eg
         m_vao.draw(
             PrimitiveType::Lines,
             getTransformMatrix(),
-            hasTexture() ? 0.0 : 1.0,
+            hasTexture() ? 0.0f : 1.0f,
             m_texture.get()
         );
         glLineWidth(1.0f);

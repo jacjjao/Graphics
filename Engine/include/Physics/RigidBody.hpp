@@ -9,21 +9,10 @@ namespace eg
 	namespace physics
 	{
 		template<typename T>
-		std::pair<T, T> rk4(const T x, const T v, const T a, const float dt)
+		std::pair<T, T> eulerODESolver(const T x, const T v, const T a, const float dt)
 		{
-			constexpr float one_div_six = 1.0f / 6.0f;
-
-			const auto half_dt = dt * 0.5f;
-
-			const auto dv = a * dt;
-
-			const auto k1_x = v * dt;
-			const auto k2_x = (v + 0.5 * dv) * dt;
-			const auto k3_x = (v + 0.5 * dv) * dt;
-			const auto k4_x = (v + dv) * dt;
-
-			const auto x_new = x + one_div_six * (k1_x + 2.0f * k2_x + 2.0f * k3_x + k4_x);
-			const auto v_new = v + a * dt;
+            const auto x_new = x + v * dt;
+            const auto v_new = v + a * dt;
 			return { x_new, v_new };
 		}
 
@@ -35,7 +24,7 @@ namespace eg
 		class RigidBody
 		{
 		public:
-			Vector2f linear_velocity{}, position{}, external_forces = {};
+			Vector2f linear_velocity{}, position{}, external_forces{};
 			float angular_velocity = 0.0f, angular_acceleration, rotate_radians = 0.0f;
 			float width = 0.0f, height = 0.0f, radius = 0.0f;
 			RigidBodyType type = RigidBodyType::Box;
@@ -48,11 +37,11 @@ namespace eg
 					return;
 				}
 				const auto acceleration = external_forces * m_inverse_mass;
-				const auto [x, v] = rk4(position, linear_velocity, acceleration, dt);
+				const auto [x, v] = eulerODESolver(position, linear_velocity, acceleration, dt);
 				position = x;
 				linear_velocity = v;
 
-				const auto [ax, av] = rk4(rotate_radians, angular_velocity, angular_acceleration, dt);
+				const auto [ax, av] = eulerODESolver(rotate_radians, angular_velocity, angular_acceleration, dt);
 				rotate_radians = ax;
 				angular_velocity = av;
 

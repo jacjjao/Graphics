@@ -7,11 +7,11 @@ namespace eg
 	class MouseMovedEvent : public Event
 	{
 	public:
-		explicit MouseMovedEvent(const float x, const float y)
+        explicit MouseMovedEvent(const double x, const double y)
 			: m_mouseX(x), m_mouseY(y) {}
 
-		float getX() const { return m_mouseX; }
-		float getY() const { return m_mouseY; }
+		double getX() const { return m_mouseX; }
+		double getY() const { return m_mouseY; }
 
 		std::string toString() const override
 		{
@@ -23,17 +23,17 @@ namespace eg
 		EVENT_CLASS_TYPE(MouseMoved)
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 	private:
-		float m_mouseX, m_mouseY;
+        double m_mouseX, m_mouseY;
 	};
 
 	class MouseScrolledEvent : public Event
 	{
 	public:
-		explicit MouseScrolledEvent(const float xOffset, const float yOffset)
+        explicit MouseScrolledEvent(const double xOffset, const double yOffset)
 			: m_xOffset(xOffset), m_yOffset(yOffset) {}
 
-		[[nodiscard]] float getXOffset() const { return m_xOffset; }
-		[[nodiscard]] float getYOffset() const { return m_yOffset; }
+		[[nodiscard]] double getXOffset() const { return m_xOffset; }
+		[[nodiscard]] double getYOffset() const { return m_yOffset; }
 
 		[[nodiscard]] std::string toString() const override
 		{
@@ -45,7 +45,7 @@ namespace eg
 		EVENT_CLASS_TYPE(MouseScrolled)
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 	private:
-		float m_xOffset, m_yOffset;
+        double m_xOffset, m_yOffset;
 	};
 
 	class MouseButtonEvent : public Event

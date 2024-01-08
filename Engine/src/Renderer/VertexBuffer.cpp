@@ -23,26 +23,25 @@ namespace eg
 
     VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept
     {
-        m_id       = other.m_id;
-        m_size     = other.m_size;
-        m_capacity = other.m_capacity;
-        m_usage    = other.m_usage;
-
-        other.m_id = other.m_size = other.m_capacity = 0;
+        moveVertexBuffer(std::move(other));
     }
 
     VertexBuffer& VertexBuffer::operator=(VertexBuffer&& other) noexcept
     {
         destroy();
+        moveVertexBuffer(std::move(other));
+        return *this;
+    }
 
+    void VertexBuffer::moveVertexBuffer(VertexBuffer&& other) noexcept
+    {
         m_id       = other.m_id;
         m_size     = other.m_size;
         m_capacity = other.m_capacity;
         m_usage    = other.m_usage;
 
-        other.m_id = other.m_size = other.m_capacity = 0;
-
-        return *this;
+        other.m_id   = 0;
+        other.m_size = other.m_capacity = 0;
     }
 
     void VertexBuffer::destroy()

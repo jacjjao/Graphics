@@ -45,6 +45,8 @@ namespace eg
         static void unbind();
 
     private:
+        void moveVertexBuffer(VertexBuffer&& other) noexcept;
+
         static uint32_t vbo_in_bind;
 
         Usage m_usage;
