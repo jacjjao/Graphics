@@ -6,7 +6,6 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <GLFW/glfw3.h>
 
-#include <iostream>
 #include <cmath>
 #include <memory>
 #include <utility>

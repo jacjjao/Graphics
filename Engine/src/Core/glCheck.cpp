@@ -1,4 +1,5 @@
 #include "pch.hpp"
+#include "include/Core/Log.hpp"
 #include "include/Core/glCheck.hpp"
 
 void glCheckError(const char* file, const unsigned line, const char* function)
@@ -10,45 +11,45 @@ void glCheckError(const char* file, const unsigned line, const char* function)
         return;
     }
 
-    std::cerr << "[OpenGL Error] (" << error_code << ' ';
+    EG_CORE_ERROR("[OpenGL Error]({} ", error_code);
     switch (error_code)
     {
         case GL_INVALID_ENUM:
-            std::cerr << "Invalid enum";
+            EG_CORE_ERROR("Invalid enum");
             break;
 
         case GL_INVALID_VALUE:
-            std::cerr << "Invalid value";
+            EG_CORE_ERROR("Invalid value");
             break;
 
         case GL_INVALID_OPERATION:
-            std::cerr << "Invalid operation";
+            EG_CORE_ERROR("Invalid operation");
             break;
 
         case GL_STACK_OVERFLOW:
-            std::cerr << "Stack overflow";
+            EG_CORE_ERROR("Stack overflow");
             break;
 
         case GL_STACK_UNDERFLOW:
-            std::cerr << "Stack underflow";
+            EG_CORE_ERROR("Stack underflow");
             break;
 
         case GL_OUT_OF_MEMORY:
-            std::cerr << "Out of memory";
+            EG_CORE_ERROR("Out of memory");
             break;
 
         case GL_INVALID_FRAMEBUFFER_OPERATION:
-            std::cerr << "Invalid frame buffer operation";
+            EG_CORE_ERROR("Invalid frame buffer operation");
             break;
 
         case GL_CONTEXT_LOST:
-            std::cerr << "Context lost";
+            EG_CORE_ERROR("Context lost");
             break;
 
         default:
-            std::cerr << "Unknown error code";
+            EG_CORE_ERROR("Unknown error code");
             break;
     }
 
-    std::cerr << "): " << function << ' ' << file << ':' << line << '\n';
+    EG_CORE_ERROR("): {} {}:{}\n", function, file, line);
 }

@@ -1,6 +1,7 @@
 #include "pch.hpp"
 #include "include/Renderer/Texture.hpp"
 #include "include/Renderer/ShaderProgram.hpp"
+#include "include/Core/Log.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -41,7 +42,7 @@ namespace eg
         }
         else
         {
-            std::cerr << "Failed to load texture: " << path << '\n';
+            EG_CORE_ERROR("Failed to load texture: {}\n", path.string().c_str());
         }
 
         stbi_image_free(data);
