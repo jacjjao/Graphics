@@ -15,7 +15,14 @@ namespace eg
 		EG_CORE_ERROR("GLFW Error: ({}): {}", error, description);
 	}
 
-	static void APIENTRY GLDebugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* msg, const void* data)
+	static void APIENTRY GLDebugMessageCallback(
+        GLenum                       source,
+        GLenum                       type,
+        GLuint                       id,
+        GLenum                       severity,
+        [[maybe_unused]] GLsizei     length,
+        const GLchar*                msg,
+        [[maybe_unused]] const void* data)
 	{
 		static std::string _source;
 		static std::string _type;
@@ -86,23 +93,23 @@ namespace eg
 
 		switch (severity) {
 		case GL_DEBUG_SEVERITY_HIGH:
-			EG_CORE_ERROR("{}: {} of {} severity, rasied from {}: {}", id, _type, "HIGH", _source, msg);
+			EG_CORE_ERROR("{}: {} of {} severity, raised from {}: {}", id, _type, "HIGH", _source, msg);
 			break;
 
 		case GL_DEBUG_SEVERITY_MEDIUM:
-			EG_CORE_WARN("{}: {} of {} severity, rasied from {}: {}", id, _type, "MEDIUM", _source, msg);
+			EG_CORE_WARN("{}: {} of {} severity, raised from {}: {}", id, _type, "MEDIUM", _source, msg);
 			break;
 
 		case GL_DEBUG_SEVERITY_LOW:
-			EG_CORE_TRACE("{}: {} of {} severity, rasied from {}: {}", id, _type, "LOW", _source, msg);
+			EG_CORE_TRACE("{}: {} of {} severity, raised from {}: {}", id, _type, "LOW", _source, msg);
 			break;
 
 		case GL_DEBUG_SEVERITY_NOTIFICATION:
-			EG_CORE_INFO("{}: {} of {} severity, rasied from {}: {}", id, _type, "INFO", _source, msg);
+			EG_CORE_INFO("{}: {} of {} severity, raised from {}: {}", id, _type, "INFO", _source, msg);
 			break;
 
 		default:
-			EG_CORE_ERROR("{}: {} of {} severity, rasied from {}: {}", id, _type, "FATAL", _source, msg);
+			EG_CORE_ERROR("{}: {} of {} severity, raised from {}: {}", id, _type, "FATAL", _source, msg);
 			break;
 		}
 	}
@@ -171,7 +178,7 @@ namespace eg
 			data.eventCallBack(event);
 		});
 
-		glfwSetKeyCallback(m_window, [](GLFWwindow* window, const int key, const int scancode, const int action, const int mods) {
+		glfwSetKeyCallback(m_window, [](GLFWwindow* window, const int key, [[maybe_unused]]const int scancode, const int action, [[maybe_unused]]const int mods) {
 			WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 			switch(action)
@@ -197,7 +204,7 @@ namespace eg
 			}
 		});
 
-		glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, const int button, const int action, const int mods) {
+		glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, const int button, const int action, [[maybe_unused]] const int mods) {
 			WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 			switch (action)

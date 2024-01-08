@@ -20,9 +20,6 @@ namespace eg
 			void update()
 			{
 				constexpr int step = 10;
-				constexpr auto dt = 1.0f / 170.0f;
-				constexpr auto dtt = dt / float(step);
-
 				for (int i = 0; i < step; i++)
 				{
 					getAllpoint();

@@ -3,6 +3,8 @@
     "configurePresets": [
         {
             "name": "base",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build/${presetName}",
             "toolchainFile": "C:\\Users\\user\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake",
             "cacheVariables": {
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
@@ -12,7 +14,6 @@
             "name": "x64-windows-debug",
             "displayName": "Debug",
             "inherits": "base",
-            "binaryDir": "${sourceDir}/out/build/debug",
             "generator": "Ninja",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
@@ -23,7 +24,6 @@
             "name": "x64-windows-release",
             "displayName": "Release",
             "inherits": "base",
-            "binaryDir": "${sourceDir}/out/build/release",
             "generator": "Ninja",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release",

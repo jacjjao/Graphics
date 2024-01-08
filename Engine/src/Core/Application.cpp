@@ -71,7 +71,7 @@ namespace eg
 		m_layerStack.pushOverlay(overlay);
 	}
 
-	bool Application::onWindowClosed(WindowCloseEvent& e)
+	bool Application::onWindowClosed(WindowCloseEvent&)
 	{
 		m_running = false;
 		return true;

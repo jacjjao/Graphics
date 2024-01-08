@@ -10,7 +10,7 @@ namespace eg
 {
     uint32_t Texture::tex_in_bind = 0;
 
-    Texture::Texture(const std::filesystem::path& path, const Params& parameters) : m_id{ 0 }, m_size{}
+    Texture::Texture(const std::filesystem::path& path, const Params&) : m_id{ 0 }, m_size{}
     {
         createFromImage(path);
     }
@@ -110,7 +110,7 @@ namespace eg
         }
     }
 
-    void Texture::bind(Texture* texture, const size_t unit_index)
+    void Texture::bind(Texture* texture, [[maybe_unused]] const size_t unit_index)
     {
         if (tex_in_bind != texture->m_id)
         {
@@ -119,7 +119,7 @@ namespace eg
         }
     }
 
-    void Texture::unbind(const size_t unit_index)
+    void Texture::unbind([[maybe_unused]] const size_t unit_index)
     {
         if (tex_in_bind != 0)
         {

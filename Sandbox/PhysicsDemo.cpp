@@ -237,27 +237,27 @@ private:
             }
 
             precompute();
-            for (int i = 0; i < rects.size(); i++)
+            for (int j = 0; j < rects.size(); j++)
             {
-                for (int j = i + 1; j < rects.size(); j++)
+                for (int k = j + 1; k < rects.size(); k++)
                 {
-                    if (bodies[i].is_static and bodies[j].is_static)
+                    if (bodies[j].is_static and bodies[k].is_static)
                     {
                         continue;
                     }
-                    if (const auto result = eg::physics::isCollide(&polys[i], &polys[j]); result.has_value() and !eg::nearlyEqual(result.value().depth, 0.0f))
+                    if (const auto result = eg::physics::isCollide(&polys[j], &polys[k]); result.has_value() and !eg::nearlyEqual(result.value().depth, 0.0f))
                     {
                         const auto& col_data = result.value();
                         const auto inc_face = eg::physics::findSignificantFace(col_data.receptor->vertices, col_data.normal);
                         const auto ref_face = eg::physics::findSignificantFace(col_data.donor->vertices, -col_data.normal);
                         const auto pp = eg::physics::findContactPoint(inc_face, ref_face);
-                        for (size_t i = 0; i < pp.cnt; i++)
+                        for (size_t a = 0; a < pp.cnt; a++)
                         {
-                            vecs.push_back(pp.cp[i]);
+                            vecs.push_back(pp.cp[a]);
                         }
 
-                        auto& receptor = (col_data.receptor == &polys[i]) ? bodies[i] : bodies[j];
-                        auto& donor = (col_data.donor == &polys[i]) ? bodies[i] : bodies[j];
+                        auto& receptor = (col_data.receptor == &polys[j]) ? bodies[j] : bodies[k];
+                        auto& donor = (col_data.donor == &polys[j]) ? bodies[j] : bodies[k];
                         eg::physics::resolveCollision(receptor, donor, pp, col_data.normal, col_data.depth);
                     }
                 }
