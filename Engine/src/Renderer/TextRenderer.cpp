@@ -7,9 +7,6 @@
 
 #include "include/Core/FileSystem.hpp"
 
-#include <iostream>
-
-#include <glad/glad.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 

@@ -1,8 +1,8 @@
+#include "pch.hpp"
 #include "include/Core/Application.hpp"
 #include "include/Core/Log.hpp"
 #include "include/Input/Input.hpp"
 #include "include/Core/Math.hpp"
-#include <glad/glad.h>
 
 namespace eg
 {

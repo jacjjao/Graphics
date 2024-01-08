@@ -2,7 +2,6 @@
 #include "include/Renderer/Rectangle2D.hpp"
 #include "include/Renderer/ShaderProgram.hpp"
 
-#include <glad/glad.h>
 
 namespace eg
 {

@@ -1,8 +1,6 @@
 #include "pch.hpp"
 #include "include/Core/Log.hpp"
 
-#include <spdlog/sinks/stdout_color_sinks.h>
-
 namespace eg
 {
 	Log::logger_ptr Log::s_CoreLogger = nullptr;

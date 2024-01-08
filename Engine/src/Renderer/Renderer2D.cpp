@@ -1,7 +1,6 @@
 #include "pch.hpp"
 #include "include/Renderer/Renderer2D.hpp"
 
-#include <glad/glad.h>
 
 namespace eg
 {

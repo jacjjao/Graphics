@@ -1,8 +1,6 @@
 #include "pch.hpp"
 #include "include/Renderer/VertexBuffer.hpp"
 
-#include <glad/glad.h>
-
 namespace eg
 {
 

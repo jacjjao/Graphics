@@ -6,9 +6,6 @@
 #include "include/Events/KeyEvent.hpp"
 #include "include/Events/MouseEvent.hpp"
 
-#include <glad/glad.h>
-#include <glfw/glfw3.h>
-
 namespace eg
 {
 	static bool s_GLFWInitialized = false;

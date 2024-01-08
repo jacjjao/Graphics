@@ -2,10 +2,6 @@
 #include "include/Renderer/Circle2D.hpp"
 #include "include/Renderer/ShaderProgram.hpp"
 
-#include <glad/glad.h>
-
-#include <numbers>
-
 namespace eg
 {
 

@@ -1,7 +1,6 @@
 #include "pch.hpp"
 #include "include/Renderer/ElementBuffer.hpp"
 
-#include <glad/glad.h>
 
 namespace eg
 {

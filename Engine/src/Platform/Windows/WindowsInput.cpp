@@ -1,8 +1,6 @@
+#include "pch.hpp"
 #include "include/Platform/Windows/WindowsInput.hpp"
-
 #include "include/Core/Application.hpp"
-
-#include <GLFW/glfw3.h>
 
 namespace eg
 {

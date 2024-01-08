@@ -2,13 +2,6 @@
 #include "include/Renderer/ShaderProgram.hpp"
 #include "include/Core/Log.hpp"
 
-#include <glad/glad.h>
-
-#include <fstream>
-#include <stdexcept>
-
-#define SUCCESS true
-#define FAILED false
 
 namespace eg
 {
@@ -40,9 +33,9 @@ namespace eg
         {
             glGetShaderInfoLog(shader, 512, nullptr, info_log);
             EG_CORE_ERROR("Shader compile error!\n{}", info_log);
-            return FAILED;
+            return false;
         }
-        return SUCCESS;
+        return true;
     }
 
     bool checkProgramLinkStatus(const uint32_t program)
@@ -54,9 +47,9 @@ namespace eg
         {
             glGetProgramInfoLog(program, 512, nullptr, info_log);
             EG_CORE_ERROR("Shader program link error!\n{}", info_log);
-            return FAILED;
+            return false;
         }
-        return SUCCESS;
+        return true;
     }
 
     uint32_t ShaderProgram::program_in_use = 0;

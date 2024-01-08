@@ -4,8 +4,6 @@
 #include "include/Renderer/ShaderProgram.hpp"
 #include "include/Core/Matrix.hpp"
 
-#include <glad/glad.h>
-
 namespace eg
 {
 
