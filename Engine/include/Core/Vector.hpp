@@ -9,7 +9,9 @@ namespace eg
     class Vector2
     {
     public:
-        constexpr Vector2(T val = static_cast<T>(0)) : x{ val }, y{ val }
+        constexpr Vector2() = default;
+
+        explicit constexpr Vector2(T val) : x{ val }, y{ val }
         {
         }
 
@@ -95,7 +97,9 @@ namespace eg
     class Vector3
     {
     public:
-        constexpr Vector3(T val = static_cast<T>(0)) : x{ val }, y{ val }, z{ val }
+        constexpr Vector3() = default;
+
+        explicit constexpr Vector3(T val) : x{ val }, y{ val }, z{ val }
         {
         }
 
