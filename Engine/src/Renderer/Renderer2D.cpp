@@ -48,7 +48,7 @@ namespace eg
 
     void Renderer2D::end()
     {
-        if (quad_count)
+        if (quad_count > 0)
         {
             quad_data->vao.update();
             quad_data->vao.drawIndices(
@@ -61,34 +61,28 @@ namespace eg
 
     void Renderer2D::drawQuad(const float x, const float y, const float width, const float height, Color color)
     {
-        if (quad_data->vao.size() >= max_vertices_num)
+        if (quad_count * 6 >= max_vertices_num)
         {
             end();
-            begin(*cam);
         }
 
-        const Vector2f position{x, y};
-        const Vector2f size{width, height};
-
-        const auto half_size = size * 0.5f;
-
         Vertex bottom_left;
-        bottom_left.position = position - half_size;
+        bottom_left.position  = { x, y + height };
         bottom_left.tex_coord = { 0.0F, 0.0F };
         bottom_left.color = color;
 
         Vertex bottom_right;
-        bottom_right.position = { position.x + half_size.x, position.y - half_size.y };
+        bottom_right.position = { x + width, y + height };
         bottom_right.tex_coord = { 1.0F, 0.0F };
         bottom_right.color = color;
 
         Vertex top_right;
-        top_right.position = { position.x + half_size.x, position.y + half_size.y };
+        top_right.position = { x + width, y };
         top_right.tex_coord = { 1.0F, 1.0F };
         top_right.color = color;
 
         Vertex top_left;
-        top_left.position = { position.x - half_size.x, position.y + half_size.y };
+        top_left.position = { x, y };
         top_left.tex_coord = { 0.0F, 1.0F };
         top_left.color = color;
 
