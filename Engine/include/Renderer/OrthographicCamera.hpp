@@ -9,7 +9,7 @@ namespace eg
     class OrthographicCamera
     {
     public:
-        explicit OrthographicCamera(float left, float right, float bottom, float top, float zNear = -1.0F, float zFar = 1.0F);
+        explicit OrthographicCamera(float width, float height);
 
         void move(Vector3f vector);
         void moveTo(Vector3f position);

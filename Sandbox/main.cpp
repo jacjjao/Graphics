@@ -5,8 +5,9 @@ class TheLayer : public eg::Layer
 {
 public:
     TheLayer() : 
-        cam(0, 800, 600, 0)
+        cam(800, 600)
     {
+        //cam.move({-400, -300, 0});
     }
 
     ~TheLayer() override = default;
@@ -35,13 +36,16 @@ public:
 
     void onUpdate() override
     {
-
     }
 
     void onDraw() override
     {
+        static float degree = 90.0f;
+        degree += 1.0f;
+        if (degree >= 360.0f)
+            degree -= 360.0f;
         eg::Renderer2D::begin(cam);
-        eg::Renderer2D::drawQuad(400, 300, 400, 300, eg::Color::Red);
+        eg::Renderer2D::drawQuad(200, 150, 400, 300, eg::Color::Red, degree);
         eg::Renderer2D::end();
     }
 

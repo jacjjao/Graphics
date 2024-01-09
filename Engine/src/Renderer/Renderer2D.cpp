@@ -1,6 +1,6 @@
 #include "pch.hpp"
 #include "include/Renderer/Renderer2D.hpp"
-
+#include "include/Core/Math.hpp"
 
 namespace eg
 {
@@ -92,6 +92,65 @@ namespace eg
         quad_data->vao[quad_count * 4 + 3] = top_left;
 
         quad_count++;
+    }
+
+    void Renderer2D::drawQuad(const float x, const float y, const float width, const float height, Color color, float degree)
+    {
+        if (quad_count * 6 >= max_vertices_num)
+        {
+            end();
+        }
+
+        const float half_width = width / 2.0f;
+        const float half_height = height / 2.0f;
+
+        Vertex bottom_left;
+        bottom_left.position  = {-half_width, half_height};
+        bottom_left.tex_coord = {0.0F, 0.0F};
+        bottom_left.color     = color;
+
+        Vertex bottom_right;
+        bottom_right.position  = {half_width, half_height};
+        bottom_right.tex_coord = {1.0F, 0.0F};
+        bottom_right.color     = color;
+
+        Vertex top_right;
+        top_right.position  = {half_width, -half_height};
+        top_right.tex_coord = {1.0F, 1.0F};
+        top_right.color     = color;
+
+        Vertex top_left;
+        top_left.position  = {-half_width, -half_height};
+        top_left.tex_coord = {0.0F, 1.0F};
+        top_left.color     = color;
+
+        degree = -degree; // y-axis is inverted 
+        const float sine   = std::sin(radians(degree));
+        const float cosine = std::cos(radians(degree));
+        const auto rotate = [sine, cosine](float x, float y) -> Vector3f {
+            return {x * cosine - y * sine, x * sine + y * cosine, 0};
+        };
+
+        top_left.position = rotate(top_left.position.x, top_left.position.y);
+        top_right.position = rotate(top_right.position.x, top_right.position.y);
+        bottom_left.position = rotate(bottom_left.position.x, bottom_left.position.y);
+        bottom_right.position = rotate(bottom_right.position.x, bottom_right.position.y);
+
+        top_left.position += {half_width + x, half_height + y, 0};
+        top_right.position += {half_width + x, half_height + y, 0};
+        bottom_left.position += {half_width + x, half_height + y, 0};
+        bottom_right.position += {half_width + x, half_height + y, 0};
+
+        quad_data->vao[quad_count * 4 + 0] = bottom_left;
+        quad_data->vao[quad_count * 4 + 1] = bottom_right;
+        quad_data->vao[quad_count * 4 + 2] = top_right;
+        quad_data->vao[quad_count * 4 + 3] = top_left;
+
+        quad_count++;
+    }
+
+    void Renderer2D::drawCircle(const float x, const float y, const float radius)
+    {
     }
 
 } // namespace eg

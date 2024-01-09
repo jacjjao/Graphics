@@ -23,7 +23,7 @@ namespace eg
     class Renderer2D
     {
     public:
-        static constexpr size_t max_quad_num = 2000;
+        static constexpr size_t max_quad_num = 10000;
         static constexpr size_t max_vertices_num = max_quad_num * 4;
 
         static void Init();
@@ -32,6 +32,9 @@ namespace eg
         static void end();
 
         static void drawQuad(float x, float y, float width, float height, Color color);
+        static void drawQuad(float x, float y, float width, float height, Color color, float degree);
+
+        static void drawCircle(float x, float y, float radius);
 
     private:
         static std::unique_ptr<detail::QuadData> quad_data;

@@ -5,21 +5,14 @@
 namespace eg
 {
 
-    OrthographicCamera::OrthographicCamera(
-        const float left,
-        const float right,
-        const float bottom,
-        const float top,
-        const float zNear,
-        const float zFar
-    ) :
+    OrthographicCamera::OrthographicCamera(const float width, const float height) :
         m_view{ Matrix4::makeIdentity() },
         should_update{ true },
         m_degree{ 0.0F },
         m_scale{ 1.0F },
         m_position{ 0.0F }
     {
-        m_proj = ortho(left, right, bottom, top, zNear, zFar);
+        m_proj = ortho(0.0f, width, height, 0.0f, -1.0f, 1.0f);
     }
 
     void OrthographicCamera::move(const Vector3f vector)
@@ -63,16 +56,16 @@ namespace eg
             const auto [a, b] = m_scale;
 
             const float theta = radians(m_degree);
-            const float ccos = std::cos(theta);
-            const float ssin = std::sin(theta);
+            const float cosine = std::cos(theta);
+            const float sine = std::sin(theta);
 
-            m_view[0][0] = a * ccos;
-            m_view[0][1] = -b * ssin;
-            m_view[0][3] = -(a * x * ccos - a * y * ssin);
+            m_view[0][0] = a * cosine;
+            m_view[0][1] = -b * sine;
+            m_view[0][3] = -(a * x * cosine - a * y * sine);
 
-            m_view[1][0] = a * ssin;
-            m_view[1][1] = b * ccos;
-            m_view[1][3] = -(b * y * ccos + b * x * ssin);
+            m_view[1][0] = a * sine;
+            m_view[1][1] = b * cosine;
+            m_view[1][3] = -(b * y * cosine + b * x * sine);
 
             should_update = false;
         }
