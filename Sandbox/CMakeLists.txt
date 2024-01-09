@@ -10,11 +10,11 @@ PRIVATE
 	MyGraphicsLib
 )
 
-add_executable("PhysicsDemo"
-	"PhysicsDemo.cpp"
-)
+#add_executable("PhysicsDemo"
+#	"PhysicsDemo.cpp"
+#)
 
-target_link_libraries("PhysicsDemo"
-PRIVATE 
-	MyGraphicsLib
-)
+#target_link_libraries("PhysicsDemo"
+#PRIVATE 
+#	MyGraphicsLib
+#)

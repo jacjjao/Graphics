@@ -131,13 +131,13 @@ namespace eg
 
 	void WindowsWindow::init(const WindowProps& props)
 	{
+		// copy data
 		m_data.title = props.title;
 		m_data.width = props.width;
 		m_data.height = props.height;
-
 		EG_CORE_INFO("Creating window {} ({}, {})", props.title, props.width, props.height);
 
-		if (not s_GLFWInitialized)
+		if (!s_GLFWInitialized)
 		{
 			int success = glfwInit();
 			EG_CORE_ASSERT(success, "Could not initialize GLFW!");
@@ -145,16 +145,24 @@ namespace eg
 			s_GLFWInitialized = true;
 		}
 
+		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 		m_window = glfwCreateWindow((int)props.width, (int)props.height, m_data.title.c_str(), nullptr, nullptr);
+
+		// center the window
+		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        glfwSetWindowPos(m_window, mode->width / 2 - m_data.width / 2, mode->height / 2 - m_data.height / 2);
+
+		// load glad
 		glfwMakeContextCurrent(m_window);
 		auto status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		EG_CORE_ASSERT(status, "Failed to initialized Glad!");
+
 		glfwSetWindowUserPointer(m_window, &m_data);
-		setVSync(true);
+		// setVSync(true);
 
 #ifdef EG_ENABLE_DEBUG_OUTPUT
 		glEnable(GL_DEBUG_OUTPUT);
@@ -244,13 +252,29 @@ namespace eg
 		glfwDestroyWindow(m_window);
 	}
 
-	void WindowsWindow::onUpdate()
+	void WindowsWindow::pollEvent()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(m_window);
+    }
+
+	void WindowsWindow::swapBuffer()
+	{
+        glfwSwapBuffers(m_window);
 	}
 
-	void WindowsWindow::setVSync(const bool enabled)
+    void WindowsWindow::setSize(unsigned width, unsigned height)
+    {
+        m_data.width = width;
+        m_data.height = height;
+        glfwSetWindowSize(m_window, width, height);
+    }
+
+	void WindowsWindow::show()
+    {
+        glfwShowWindow(m_window);
+    }
+
+    void WindowsWindow::setVSync(const bool enabled)
 	{
 		if (enabled)
 			glfwSwapInterval(1);

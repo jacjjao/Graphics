@@ -15,7 +15,7 @@ namespace eg
 
 	void LayerStack::popLayer(Layer* layer)
 	{
-		const auto it = std::ranges::find_if(m_layers.begin(), m_layers.end(), [&layer](const auto& ptr) {
+		const auto it = std::ranges::find_if(m_layers, [&layer](const auto& ptr) {
 			return ptr.get() == layer;
 		});
 		if (it != m_layers.end())
@@ -28,7 +28,7 @@ namespace eg
 
 	void LayerStack::popOverlay(Layer* overlay)
 	{
-		const auto it = std::ranges::find_if(m_layers.begin(), m_layers.end(), [&overlay](const auto& ptr) {
+		const auto it = std::ranges::find_if(m_layers, [&overlay](const auto& ptr) {
 			return ptr.get() == overlay;
 		});
 		if (it != m_layers.end())

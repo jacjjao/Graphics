@@ -31,7 +31,7 @@ namespace eg
         static void begin(eg::OrthographicCamera& scene_cam);
         static void end();
 
-        static void drawQuad(Vector2f position, Vector2f size, Color color);
+        static void drawQuad(float x, float y, float width, float height, Color color);
 
     private:
         static std::unique_ptr<detail::QuadData> quad_data;

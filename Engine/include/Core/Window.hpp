@@ -26,7 +26,13 @@ namespace eg
 
 		virtual ~Window() = default;
 
-		virtual void onUpdate() = 0;
+		virtual void pollEvent() = 0;
+
+		virtual void swapBuffer() = 0;
+
+		virtual void setSize(unsigned width, unsigned height) = 0;
+
+		virtual void show() = 0;
 
 		[[nodiscard]] 
 		virtual unsigned getWidth() const = 0;

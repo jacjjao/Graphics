@@ -117,7 +117,7 @@ public:
         }
     }
 
-    void onUpdate() override
+    void pollEvent() override
     {
         static auto& program = eg::DefaultShaderProgram::instance();
         program.use();

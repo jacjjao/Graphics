@@ -11,7 +11,7 @@ namespace eg
     class VertexBuffer
     {
     private:
-        using element_type = Vertex2D;
+        using element_type = Vertex;
 
     public:
         enum class Usage : uint32_t

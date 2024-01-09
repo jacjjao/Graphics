@@ -4,27 +4,22 @@
 class TheLayer : public eg::Layer
 {
 public:
-    TheLayer()
+    TheLayer() : 
+        cam(0, 800, 600, 0)
     {
-        tex = std::make_shared<eg::Texture>(FileSystem::getPath("/asset/images/container.jpg"));
-
-        m_rect = new eg::Rectangle2D{ 500.f, 500.f };
-        m_rect->setColor(eg::Color::Blue);
-        m_rect->applyTexture(tex);
-        eg::Rect r = m_rect->getTextureRect();
-        r.size.x /= 2.0f;
-        r.size.y /= 2.0f;
-        m_rect->setTextureRect(r);
-        m_rect->update();
     }
 
-    ~TheLayer() override
+    ~TheLayer() override = default;
+
+    void onAttach() override
     {
-        delete m_rect;
+        eg::Renderer2D::Init();
     }
 
-    void onAttach() override {}
-    void onDetach() override {}
+    void onDetach() override 
+    {
+    }
+
     void onEvent(eg::Event& e) override
     {
         if (e.getEventType() == eg::EventType::KeyPressed)
@@ -40,34 +35,29 @@ public:
 
     void onUpdate() override
     {
-        m_rect->draw();
+
+    }
+
+    void onDraw() override
+    {
+        eg::Renderer2D::begin(cam);
+        eg::Renderer2D::drawQuad(400, 300, 400, 300, eg::Color::Red);
+        eg::Renderer2D::end();
     }
 
 private:
-    eg::Rectangle2D* m_rect;
+    eg::OrthographicCamera cam;
     std::shared_ptr<eg::Texture> tex;
-};
-
-class SandBox : public eg::Application
-{
-public:
-    SandBox()
-    {
-        setClearColor(eg::Color::Grey);
-        pushLayer(new TheLayer{});
-    }
-
-    ~SandBox()
-    {
-
-    }
 };
 
 int main()
 {
     eg::Log::Init();
 
-    SandBox app{};
+    eg::Application app(800, 600, "");
+    app.setTargetFps(60);
+    app.setClearColor(eg::Color::Grey);
+    app.pushLayer(new TheLayer{});
     app.run();
 
     return 0;

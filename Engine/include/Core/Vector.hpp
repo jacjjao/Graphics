@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <compare>
 
 namespace eg
 {
@@ -19,12 +20,9 @@ namespace eg
         {
         }
 
-        constexpr bool operator==(const Vector2<T> other) const
-        {
-            return (x == other.x) and (y == other.y);
-        }
+        constexpr bool operator==(const Vector2<T>& other) const = default;
 
-        constexpr Vector2<T>& operator+=(const Vector2<T> other)
+        constexpr Vector2<T>& operator+=(const Vector2<T>& other)
         {
             x += other.x;
             y += other.y;
@@ -32,7 +30,7 @@ namespace eg
             return *this;
         }
 
-        constexpr Vector2<T> operator+(const Vector2<T> other) const
+        constexpr Vector2<T> operator+(const Vector2<T>& other) const
         {
             return { this->x + other.x, this->y + other.y };
         }
@@ -42,12 +40,12 @@ namespace eg
             return { -x, -y };
         }
 
-        constexpr Vector2<T> operator-(const Vector2<T> other) const
+        constexpr Vector2<T> operator-(const Vector2<T>& other) const
         {
             return { this->x - other.x, this->y - other.y };
         }
 
-        constexpr T operator*(const Vector2<T> other) const
+        constexpr T operator*(const Vector2<T>& other) const
         {
             return x * other.x + y * other.y;
         }
@@ -83,7 +81,7 @@ namespace eg
         }
 
         [[nodiscard]]
-        T cross(const Vector2<T> other) const 
+        T cross(const Vector2<T>& other) const 
         {
             return x * other.y - y * other.x;
         }

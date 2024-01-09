@@ -4,6 +4,8 @@
 #include "include/Core/Math.hpp"
 #include "include/Core/Log.hpp"
 #include "include/Core/Application.hpp"
+#include "include/Renderer/VertexBuffer.hpp"
+#include "include/Renderer/VertexArray.hpp"
 
 #include "include/Core/FileSystem.hpp"
 

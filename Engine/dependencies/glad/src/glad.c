@@ -1210,8 +1210,8 @@ PFNGLUSEPROGRAMPROC                                  glad_glUseProgram          
 PFNGLUSEPROGRAMSTAGESPROC                            glad_glUseProgramStages                            = NULL;
 PFNGLVALIDATEPROGRAMPROC                             glad_glValidateProgram                             = NULL;
 PFNGLVALIDATEPROGRAMPIPELINEPROC                     glad_glValidateProgramPipeline                     = NULL;
-PFNGLVERTEX2DPROC                                    glad_glVertex2d                                    = NULL;
-PFNGLVERTEX2DVPROC                                   glad_glVertex2dv                                   = NULL;
+PFNGLVertexPROC                                    glad_glVertex                                    = NULL;
+PFNGLVertexVPROC                                   glad_glVertexv                                   = NULL;
 PFNGLVERTEX2FPROC                                    glad_glVertex2f                                    = NULL;
 PFNGLVERTEX2FVPROC                                   glad_glVertex2fv                                   = NULL;
 PFNGLVERTEX2IPROC                                    glad_glVertex2i                                    = NULL;
@@ -1529,8 +1529,8 @@ static void                                          load_GL_VERSION_1_0(GLADloa
     glad_glTexCoord4iv            = (PFNGLTEXCOORD4IVPROC)load("glTexCoord4iv");
     glad_glTexCoord4s             = (PFNGLTEXCOORD4SPROC)load("glTexCoord4s");
     glad_glTexCoord4sv            = (PFNGLTEXCOORD4SVPROC)load("glTexCoord4sv");
-    glad_glVertex2d               = (PFNGLVERTEX2DPROC)load("glVertex2d");
-    glad_glVertex2dv              = (PFNGLVERTEX2DVPROC)load("glVertex2dv");
+    glad_glVertex               = (PFNGLVertexPROC)load("glVertex");
+    glad_glVertexv              = (PFNGLVertexVPROC)load("glVertexv");
     glad_glVertex2f               = (PFNGLVERTEX2FPROC)load("glVertex2f");
     glad_glVertex2fv              = (PFNGLVERTEX2FVPROC)load("glVertex2fv");
     glad_glVertex2i               = (PFNGLVERTEX2IPROC)load("glVertex2i");

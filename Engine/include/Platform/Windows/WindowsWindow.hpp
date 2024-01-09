@@ -13,10 +13,16 @@ namespace eg
 		explicit WindowsWindow(const WindowProps& props);
 		~WindowsWindow() override;
 
-		void onUpdate() override;
+		void pollEvent() override;
+
+		void swapBuffer() override;
+
+		void setSize(unsigned width, unsigned height) override;
 
 		[[nodiscard]] unsigned getWidth() const override { return m_data.width; }
 		[[nodiscard]] unsigned getHeight() const override { return m_data.height; }
+
+		void show() override;
 
 		void setEventCallback(const EventCallbackFn& callback) override { m_data.eventCallBack = callback; }
 		void setVSync(bool enabled) override;

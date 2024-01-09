@@ -84,7 +84,7 @@ namespace eg
             inline const std::string vertex_shader_src = R"(
                 #version 460 core
 
-                layout (location = 0) in vec2 in_pos;
+                layout (location = 0) in vec3 in_pos;
                 layout (location = 1) in vec4 in_color; 
                 layout (location = 2) in vec2 in_tex_coord;
                 
@@ -97,7 +97,7 @@ namespace eg
                 
                 void main()
                 {
-                	gl_Position = proj * view * model * vec4(in_pos, 0.0, 1.0);
+                	gl_Position = proj * view * model * vec4(in_pos, 1.0);
                 	frag_color = in_color;
                 	tex_coord = in_tex_coord;
                 }
@@ -113,7 +113,6 @@ namespace eg
                 
                 uniform float color_alpha;
                 uniform sampler2D u_texture;
-                uniform int unit_index;
                 
                 void main()
                 {	

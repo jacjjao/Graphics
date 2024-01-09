@@ -67,8 +67,8 @@ namespace eg
         [[nodiscard]] 
         float getHeight() const { return m_size.y; }
 
-        static void bind(Texture* texture, size_t unit_index = 0);
-        static void unbind(size_t unit_index = 0);
+        static void bind(Texture* texture);
+        static void unbind();
 
         void createFromImage(const std::filesystem::path& path, const Params& parameters = {});
         void createFromData(const void* data, int32_t width, int32_t height, const Params& parameters = {});

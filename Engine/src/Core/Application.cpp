@@ -8,27 +8,47 @@ namespace eg
 {
 	Application* Application::s_instance = nullptr;
 
+	void Application::onDraw()
+    {
+        const auto [r, g, b, a] = m_clear_color;
+        glClearColor(r, g, b, a);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        for (const auto& layer : m_layerStack)
+            layer->onDraw();
+        m_window->swapBuffer();
+        if (m_fps_control)
+			m_draw_clock.restart();
+    }
+
 	void Application::run()
 	{
+        m_window->show();
 		while (m_running)
 		{
-			const auto [r, g, b, a] = m_clear_color;
-			glClearColor(r, g, b, a);
-			glClear(GL_COLOR_BUFFER_BIT);
-
 			for (const auto& layer : m_layerStack)
 				layer->onUpdate();
 
-			m_window->onUpdate();
+			m_window->pollEvent();
+
+			if (!m_fps_control || (m_fps_control && m_draw_clock.getElapsedTime().asSeconds() >= m_draw_interval))
+            {
+                onDraw();
+			}
 		}
 	}
 
-	Application::Application()
+	Application::Application(const unsigned width, const unsigned height, const std::string& title)
 	{
 		EG_CORE_ASSERT(s_instance == nullptr, "Application is already exist!");
 		s_instance = this;
 
-		m_window = Window::create();
+		eg::WindowProps props{
+			.title = title,
+			.width = width, 
+			.height = height
+        };
+		m_window = Window::create(props);
 		m_window->setEventCallback([this](eg::Event& e) {
 			onEvent(e);
 		});
@@ -63,12 +83,25 @@ namespace eg
 
 	void Application::pushLayer(Layer* layer)
 	{
+        layer->onAttach();
 		m_layerStack.pushLayer(layer);
 	}
 
 	void Application::pushOverlay(Layer* overlay)
 	{
+        overlay->onAttach();
 		m_layerStack.pushOverlay(overlay);
+	}
+
+	void Application::setTargetFps(const unsigned fps)
+	{
+		if (fps == 0)
+		{
+            m_fps_control = false;
+            return;
+		}
+        m_fps_control = true;
+        m_draw_interval = 1.0 / static_cast<double>(fps);
 	}
 
 	bool Application::onWindowClosed(WindowCloseEvent&)

@@ -14,8 +14,8 @@ namespace eg
     class VertexArray
     {
     private:
-        using element_type   = Vertex2D;
-        using container      = std::vector<Vertex2D>;
+        using element_type   = Vertex;
+        using container      = std::vector<Vertex>;
         using value_type     = container::value_type;
         using iterator       = container::iterator;
         using const_iterator = container::const_iterator;

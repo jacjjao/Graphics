@@ -24,14 +24,14 @@ namespace eg
 
     void OrthographicCamera::move(const Vector3f vector)
     {
-        const float theta = radians(-m_degree);
-        const float ccos = std::cos(theta);
-        const float ssin = std::sin(theta);
+        const float theta  = radians(-m_degree);
+        const float cosine = std::cos(theta);
+        const float sine   = std::sin(theta);
 
         eg::Vector3f vec = vector;
 
-        vec.x = (vector.x * ccos - vector.y * ssin) / m_scale.x;
-        vec.y = (vector.x * ssin + vector.y * ccos) / m_scale.y;
+        vec.x = (vector.x * cosine - vector.y * sine) / m_scale.x;
+        vec.y = (vector.x * sine + vector.y * cosine) / m_scale.y;
 
         m_position += vec;
         should_update = true;

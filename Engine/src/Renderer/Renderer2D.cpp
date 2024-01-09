@@ -16,11 +16,11 @@ namespace eg
         quad_data = std::make_unique<detail::QuadData>(detail::QuadData{
             VertexArray{max_vertices_num, VertexBuffer::Usage::StreamDraw},
             ElementBuffer{max_quad_num * 6}
-            });
+        });
 
         std::vector<uint32_t> indices(max_quad_num * 6);
         uint32_t              offset = 0;
-        for (size_t i = 0; i < max_quad_num * 6; i += 6, offset += 4)
+        for (size_t i = 0; i < indices.size(); i += 6, offset += 4)
         {
             indices[i + 0] = offset + 0;
             indices[i + 1] = offset + 1;
@@ -59,7 +59,7 @@ namespace eg
         }
     }
 
-    void Renderer2D::drawQuad(Vector2f position, Vector2f size, Color color)
+    void Renderer2D::drawQuad(const float x, const float y, const float width, const float height, Color color)
     {
         if (quad_data->vao.size() >= max_vertices_num)
         {
@@ -67,24 +67,27 @@ namespace eg
             begin(*cam);
         }
 
+        const Vector2f position{x, y};
+        const Vector2f size{width, height};
+
         const auto half_size = size * 0.5f;
 
-        Vertex2D bottom_left;
+        Vertex bottom_left;
         bottom_left.position = position - half_size;
         bottom_left.tex_coord = { 0.0F, 0.0F };
         bottom_left.color = color;
 
-        Vertex2D bottom_right;
+        Vertex bottom_right;
         bottom_right.position = { position.x + half_size.x, position.y - half_size.y };
         bottom_right.tex_coord = { 1.0F, 0.0F };
         bottom_right.color = color;
 
-        Vertex2D top_right;
+        Vertex top_right;
         top_right.position = { position.x + half_size.x, position.y + half_size.y };
         top_right.tex_coord = { 1.0F, 1.0F };
         top_right.color = color;
 
-        Vertex2D top_left;
+        Vertex top_left;
         top_left.position = { position.x - half_size.x, position.y + half_size.y };
         top_left.tex_coord = { 0.0F, 1.0F };
         top_left.color = color;

@@ -2466,12 +2466,12 @@ GLAPI PFNGLTEXCOORD4SPROC glad_glTexCoord4s;
 typedef void (APIENTRYP PFNGLTEXCOORD4SVPROC)(const GLshort *v);
 GLAPI PFNGLTEXCOORD4SVPROC glad_glTexCoord4sv;
 #define glTexCoord4sv glad_glTexCoord4sv
-typedef void (APIENTRYP PFNGLVERTEX2DPROC)(GLdouble x, GLdouble y);
-GLAPI PFNGLVERTEX2DPROC glad_glVertex2d;
-#define glVertex2d glad_glVertex2d
-typedef void (APIENTRYP PFNGLVERTEX2DVPROC)(const GLdouble *v);
-GLAPI PFNGLVERTEX2DVPROC glad_glVertex2dv;
-#define glVertex2dv glad_glVertex2dv
+typedef void (APIENTRYP PFNGLVertexPROC)(GLdouble x, GLdouble y);
+GLAPI PFNGLVertexPROC glad_glVertex;
+#define glVertex glad_glVertex
+typedef void (APIENTRYP PFNGLVertexVPROC)(const GLdouble *v);
+GLAPI PFNGLVertexVPROC glad_glVertexv;
+#define glVertexv glad_glVertexv
 typedef void (APIENTRYP PFNGLVERTEX2FPROC)(GLfloat x, GLfloat y);
 GLAPI PFNGLVERTEX2FPROC glad_glVertex2f;
 #define glVertex2f glad_glVertex2f

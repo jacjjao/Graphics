@@ -25,11 +25,8 @@
 #include "include/Input/MouseCodes.hpp"
 
 // Renderer
-#include "include/Renderer/Circle2D.hpp"
 #include "include/Renderer/ElementBuffer.hpp"
-#include "include/Renderer/Line.hpp"
 #include "include/Renderer/OrthographicCamera.hpp"
-#include "include/Renderer/Rectangle2D.hpp"
 #include "include/Renderer/Renderer2D.hpp"
 #include "include/Renderer/ShaderProgram.hpp"
 #include "include/Renderer/TextRenderer.hpp"

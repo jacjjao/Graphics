@@ -110,7 +110,7 @@ namespace eg
         }
     }
 
-    void Texture::bind(Texture* texture, [[maybe_unused]] const size_t unit_index)
+    void Texture::bind(Texture* texture)
     {
         if (tex_in_bind != texture->m_id)
         {
@@ -119,7 +119,7 @@ namespace eg
         }
     }
 
-    void Texture::unbind([[maybe_unused]] const size_t unit_index)
+    void Texture::unbind()
     {
         if (tex_in_bind != 0)
         {
@@ -128,4 +128,4 @@ namespace eg
         }
     }
 
-}
+} // namespace eg
