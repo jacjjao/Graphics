@@ -36,20 +36,20 @@ public:
 
     void onUpdate() override
     {
+        degree += 0.0003f;
+        if (degree >= 360.0f)
+            degree -= 360.0f;
     }
 
     void onDraw() override
     {
-        static float degree = 90.0f;
-        degree += 1.0f;
-        if (degree >= 360.0f)
-            degree -= 360.0f;
         eg::Renderer2D::begin(cam);
-        eg::Renderer2D::drawQuad(200, 150, 400, 300, eg::Color::Red, degree);
+        eg::Renderer2D::drawQuad(200, 150, 400, 300, eg::Color::Cyan, degree);
         eg::Renderer2D::end();
     }
 
 private:
+    float degree = 0.0f;
     eg::OrthographicCamera cam;
     std::shared_ptr<eg::Texture> tex;
 };

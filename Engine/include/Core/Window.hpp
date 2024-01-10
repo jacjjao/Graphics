@@ -40,9 +40,6 @@ namespace eg
 		virtual unsigned getHeight() const = 0;
 
 		virtual void setEventCallback(const EventCallbackFn& callback) = 0;
-		virtual void setVSync(bool enabled) = 0;
-		[[nodiscard]] 
-		virtual bool isVSync() const = 0;
 
 		[[nodiscard]] 
 		virtual void* getNativeWindowHandle() const = 0;

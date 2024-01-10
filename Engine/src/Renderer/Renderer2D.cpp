@@ -15,12 +15,12 @@ namespace eg
     {
         quad_data = std::make_unique<detail::QuadData>(detail::QuadData{
             VertexArray{max_vertices_num, VertexBuffer::Usage::StreamDraw},
-            ElementBuffer{max_quad_num * 6}
+            ElementBuffer{max_quad_num * quad_indix_count}
         });
 
-        std::vector<uint32_t> indices(max_quad_num * 6);
+        std::vector<uint32_t> indices(max_quad_num * quad_indix_count);
         uint32_t              offset = 0;
-        for (size_t i = 0; i < indices.size(); i += 6, offset += 4)
+        for (size_t i = 0; i < indices.size(); i += quad_indix_count, offset += 4)
         {
             indices[i + 0] = offset + 0;
             indices[i + 1] = offset + 1;
@@ -52,7 +52,7 @@ namespace eg
         {
             quad_data->vao.update();
             quad_data->vao.drawIndices(
-                static_cast<int32_t>(quad_count * 6),
+                static_cast<int32_t>(quad_count * quad_indix_count),
                 PrimitiveType::Triangles
             );
             quad_count = 0;

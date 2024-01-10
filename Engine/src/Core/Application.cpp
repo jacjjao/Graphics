@@ -17,8 +17,6 @@ namespace eg
         for (const auto& layer : m_layerStack)
             layer->onDraw();
         m_window->swapBuffer();
-        if (m_fps_control)
-			m_draw_clock.restart();
     }
 
 	void Application::run()
@@ -31,8 +29,9 @@ namespace eg
 
 			m_window->pollEvent();
 
-			if (!m_fps_control || (m_fps_control && m_draw_clock.getElapsedTime().asSeconds() >= m_draw_interval))
+            if (!m_fps_control || (m_fps_control && m_draw_clock.getElapsedTime().asSeconds() >= m_draw_interval))
             {
+                m_draw_clock.restart();
                 onDraw();
 			}
 		}

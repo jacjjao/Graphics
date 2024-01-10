@@ -45,13 +45,13 @@ namespace eg
 
 		static Application* s_instance;
 
-		bool      m_fps_control = false;
+		bool      m_fps_control   = false;
         double    m_draw_interval = 0.0;
         eg::Clock m_draw_clock;
 
 		struct
 		{
 			float r, g, b, a;
-		} m_clear_color;
+        } m_clear_color{};
 	};
 } // namespace eg

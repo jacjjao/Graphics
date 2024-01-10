@@ -273,19 +273,4 @@ namespace eg
     {
         glfwShowWindow(m_window);
     }
-
-    void WindowsWindow::setVSync(const bool enabled)
-	{
-		if (enabled)
-			glfwSwapInterval(1);
-		else
-			glfwSwapInterval(0);
-
-		m_data.vSync = enabled;
-	}
-
-	bool WindowsWindow::isVSync() const
-	{
-		return m_data.vSync;
-	}
 } // namespace eg

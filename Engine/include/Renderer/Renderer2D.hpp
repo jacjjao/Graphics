@@ -37,6 +37,8 @@ namespace eg
         static void drawCircle(float x, float y, float radius);
 
     private:
+        static constexpr int quad_indix_count = 6;
+
         static std::unique_ptr<detail::QuadData> quad_data;
         static eg::OrthographicCamera* cam;
 

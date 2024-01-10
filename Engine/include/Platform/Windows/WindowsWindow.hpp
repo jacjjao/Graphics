@@ -25,8 +25,6 @@ namespace eg
 		void show() override;
 
 		void setEventCallback(const EventCallbackFn& callback) override { m_data.eventCallBack = callback; }
-		void setVSync(bool enabled) override;
-		[[nodiscard]] bool isVSync() const override;
 		[[nodiscard]] void* getNativeWindowHandle() const override { return m_window; }
 
 	private:
@@ -39,12 +37,11 @@ namespace eg
 		{
 			std::string title;
 			unsigned width, height;
-			bool vSync;
 
 			EventCallbackFn eventCallBack;
 		};
 
-		WindowData m_data;
+		WindowData m_data{};
 	};
 
 }
