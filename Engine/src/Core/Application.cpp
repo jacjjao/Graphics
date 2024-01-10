@@ -3,10 +3,35 @@
 #include "include/Core/Log.hpp"
 #include "include/Input/Input.hpp"
 #include "include/Core/Math.hpp"
+#include "include/Renderer/Renderer2D.hpp"
 
 namespace eg
 {
 	Application* Application::s_instance = nullptr;
+
+	Application::Application(const unsigned width, const unsigned height, const std::string& title)
+    {
+        EG_CORE_ASSERT(s_instance == nullptr, "Application is already exist!");
+        s_instance = this;
+
+        eg::WindowProps props{.title = title, .width = width, .height = height};
+        m_window = Window::create(props);
+        m_window->setEventCallback([this](std::unique_ptr<eg::Event> e) { onEvent(std::move(e)); });
+
+		m_render_thread.start();
+		m_render_thread.assignJob([this] 
+        { 
+            m_window->makeContextCurrent(); 
+            Renderer2D::Init();
+        });
+        m_render_thread.waitUntilJobComplete();
+    }
+
+    Application::~Application()
+    {
+        m_running = false;
+        m_render_thread.join();
+    }
 
 	void Application::onDraw()
     {
@@ -20,75 +45,78 @@ namespace eg
     }
 
 	void Application::run()
-	{
+    {
+        m_render_thread.assignJob(
+            [this] {
+				while (m_running)
+				{
+                    std::lock_guard lock(m_layer_mutex);
+                    for (const auto& layer : m_layerStack)
+                        layer->onUpdate();
+
+                    {
+                        std::lock_guard lock(m_event_mutex);
+                        for (const auto& e : m_event_buf)
+                        {
+                            if (e->getEventType() == EventType::WindowResize)
+                            {
+                                const auto& event = static_cast<const WindowResizeEvent*>(e.get());
+                                glViewport(0, 0, static_cast<GLsizei>(event->getWidth()), static_cast<GLsizei>(event->getHeight()));
+                                continue;
+                            }
+                            for (const auto& layer : m_layerStack)
+                            {
+                                if (e->handled)
+                                    break;
+                                layer->onEvent(*e);
+                            }
+                        }
+                        m_event_buf.clear();
+                    }
+
+                    if (!m_fps_control || (m_fps_control && m_draw_clock.getElapsedTime().asSeconds() >= m_draw_interval))
+                    {
+                        m_draw_clock.restart();
+                        onDraw();
+                    }
+				}
+            });
         m_window->show();
 		while (m_running)
 		{
-			for (const auto& layer : m_layerStack)
-				layer->onUpdate();
-
 			m_window->pollEvent();
-
-            if (!m_fps_control || (m_fps_control && m_draw_clock.getElapsedTime().asSeconds() >= m_draw_interval))
-            {
-                m_draw_clock.restart();
-                onDraw();
-			}
 		}
 	}
 
-	Application::Application(const unsigned width, const unsigned height, const std::string& title)
+	void Application::onEvent(std::unique_ptr<eg::Event> e)
 	{
-		EG_CORE_ASSERT(s_instance == nullptr, "Application is already exist!");
-		s_instance = this;
-
-		eg::WindowProps props{
-			.title = title,
-			.width = width, 
-			.height = height
-        };
-		m_window = Window::create(props);
-		m_window->setEventCallback([this](eg::Event& e) {
-			onEvent(e);
-		});
-
-		const float hw = static_cast<float>(m_window->getWidth()) / 2.0f;
-		const float hh = static_cast<float>(m_window->getHeight()) / 2.0f;
-		auto& shader = DefaultShaderProgram::instance();
-		shader.use();
-		shader.setMat4("view", Constants::identity_mat4);
-		shader.setMat4("proj", ortho(-hw, hw, -hh, hh, -1.0f, 1.0f));
-		shader.unuse();
-	}
-
-	void Application::onEvent(eg::Event& e)
-	{
-		EventDispatcher dispatcher(e);
+		EventDispatcher dispatcher(*e);
 		dispatcher.dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) {
 			return onWindowClosed(e);
 		});
+        /*
 		dispatcher.dispatch<WindowResizeEvent>([this](WindowResizeEvent& e) {
 			glViewport(0, 0, static_cast<GLsizei>(e.getWidth()), static_cast<GLsizei>(e.getHeight()));
 			return true;	
 		});
-
-		for (const auto& layer : m_layerStack | std::views::reverse)
-		{
-			layer->onEvent(e);
-			if (e.handled)
-				break;
-		}
+		*/
+        if (e->handled)
+            return;
+        {
+            std::lock_guard lock(m_event_mutex);
+            m_event_buf.emplace_back(std::move(e));
+        }
 	}
 
 	void Application::pushLayer(Layer* layer)
 	{
-        layer->onAttach();
+        std::lock_guard lock(m_layer_mutex);
 		m_layerStack.pushLayer(layer);
 	}
 
 	void Application::pushOverlay(Layer* overlay)
 	{
-        overlay->onAttach();
+        std::lock_guard lock(m_layer_mutex);
 		m_layerStack.pushOverlay(overlay);
 	}
 
@@ -106,6 +134,7 @@ namespace eg
 	bool Application::onWindowClosed(WindowCloseEvent&)
 	{
 		m_running = false;
+        m_render_thread.stop();
 		return true;
 	}
 

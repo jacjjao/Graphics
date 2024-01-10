@@ -4,6 +4,7 @@
 #include "include/Events/ApplicationEvent.hpp"
 #include "include/Core/Window.hpp"
 #include "include/Core/Clock.hpp"
+#include "include/Core/WorkerThread.hpp"
 #include "LayerStack.hpp"
 
 #include "include/Renderer/OrthographicCamera.hpp"
@@ -11,10 +12,12 @@
 
 namespace eg
 {
-	class Application final
+	class Application
 	{
 	public:
 		explicit Application(unsigned width, unsigned height, const std::string& title);
+
+		~Application();
 
 		static Application& getInstance() { return *s_instance; }
 
@@ -22,7 +25,7 @@ namespace eg
         Application& operator=(const Application&) = delete;
 
 		void run();
-		void onEvent(Event& e);
+		void onEvent(std::unique_ptr<eg::Event> e);
 
 		void pushLayer(Layer* layer);
 		void pushOverlay(Layer* overlay);
@@ -39,15 +42,21 @@ namespace eg
 
 		std::unique_ptr<Window> m_window;
 
+		std::mutex m_layer_mutex;
 		LayerStack m_layerStack;
 
-		bool m_running = true;
+		std::atomic_bool m_running = true;
 
 		static Application* s_instance;
 
 		bool      m_fps_control   = false;
         double    m_draw_interval = 0.0;
         eg::Clock m_draw_clock;
+
+		WorkerThread m_render_thread;
+
+		std::mutex         m_event_mutex;
+		std::vector<std::unique_ptr<eg::Event>> m_event_buf;
 
 		struct
 		{

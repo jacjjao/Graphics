@@ -156,34 +156,19 @@ namespace eg
 		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowPos(m_window, mode->width / 2 - m_data.width / 2, mode->height / 2 - m_data.height / 2);
 
-		// load glad
-		glfwMakeContextCurrent(m_window);
-		auto status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		EG_CORE_ASSERT(status, "Failed to initialized Glad!");
-
 		glfwSetWindowUserPointer(m_window, &m_data);
-		// setVSync(true);
-
-#ifdef EG_ENABLE_DEBUG_OUTPUT
-		glEnable(GL_DEBUG_OUTPUT);
-		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-		glDebugMessageCallback(GLDebugMessageCallback, nullptr);
-#endif
 
 		// Set GLFW callbacks
 		glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, const int width, const int height) {
 			WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 			data.width = width;
 			data.height = height;
-
-			WindowResizeEvent event(width, height);
-			data.eventCallBack(event);
+			data.eventCallBack(std::make_unique<WindowResizeEvent>(width, height));
 		});
 
 		glfwSetWindowCloseCallback(m_window, [](GLFWwindow* window) {
 			WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
-			WindowCloseEvent event{};
-			data.eventCallBack(event);
+			data.eventCallBack(std::make_unique<WindowCloseEvent>());
 		});
 
 		glfwSetKeyCallback(m_window, [](GLFWwindow* window, const int key, [[maybe_unused]]const int scancode, const int action, [[maybe_unused]]const int mods) {
@@ -193,20 +178,17 @@ namespace eg
 			{
 			case GLFW_PRESS:
 			{
-				KeyPressedEvent event(key, false);
-				data.eventCallBack(event);
+                data.eventCallBack(std::make_unique<KeyPressedEvent>(key, false));
 				break;
 			}
 			case GLFW_RELEASE:
 			{
-				KeyReleasedEvent event(key);
-				data.eventCallBack(event);
+                data.eventCallBack(std::make_unique<KeyReleasedEvent>(key));
 				break;
 			}
 			case GLFW_REPEAT:
 			{
-				KeyPressedEvent event(key, true);
-				data.eventCallBack(event);
+                data.eventCallBack(std::make_unique<KeyPressedEvent>(key, true));
 				break;
 			}
 			}
@@ -219,14 +201,12 @@ namespace eg
 			{
 			case GLFW_PRESS:
 			{
-				MouseButtonPressedEvent event(button);
-				data.eventCallBack(event);
+                data.eventCallBack(std::make_unique<MouseButtonPressedEvent>(button));
 				break;
 			}
 			case GLFW_RELEASE:
 			{
-				MouseButtonReleasedEvent event(button);
-				data.eventCallBack(event);
+                data.eventCallBack(std::make_unique<MouseButtonReleasedEvent>(button));
 				break;
 			}
 			}
@@ -234,16 +214,12 @@ namespace eg
 
 		glfwSetScrollCallback(m_window, [](GLFWwindow* window, const double xOffset, const double yOffset) {
 			WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
-
-			MouseScrolledEvent event(xOffset, yOffset);
-			data.eventCallBack(event);
+            data.eventCallBack(std::make_unique<MouseScrolledEvent>(xOffset, yOffset));
 		});
 
 		glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, const double xPos, const double yPos) {
 			WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
-
-			MouseMovedEvent event(xPos, yPos);
-			data.eventCallBack(event);
+            data.eventCallBack(std::make_unique<MouseMovedEvent>(xPos, yPos));
 		});
 	}
 
@@ -273,4 +249,22 @@ namespace eg
     {
         glfwShowWindow(m_window);
     }
+
+    void WindowsWindow::makeContextCurrent()
+    {
+        glfwMakeContextCurrent(m_window);
+
+		static bool glad_init = false;
+        if (glad_init)
+            return;
+        auto status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+        EG_CORE_ASSERT(status, "Failed to initialized Glad!");
+#ifdef EG_ENABLE_DEBUG_OUTPUT
+        glEnable(GL_DEBUG_OUTPUT);
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+        glDebugMessageCallback(GLDebugMessageCallback, nullptr);
+#endif
+        glad_init = true;
+    }
+
 } // namespace eg

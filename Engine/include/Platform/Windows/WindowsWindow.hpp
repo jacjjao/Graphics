@@ -24,6 +24,8 @@ namespace eg
 
 		void show() override;
 
+		void makeContextCurrent() override;
+
 		void setEventCallback(const EventCallbackFn& callback) override { m_data.eventCallBack = callback; }
 		[[nodiscard]] void* getNativeWindowHandle() const override { return m_window; }
 

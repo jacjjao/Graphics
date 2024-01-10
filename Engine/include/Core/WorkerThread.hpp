@@ -7,27 +7,34 @@
 #include <future>
 #include <atomic>
 
-class WorkerThread
+namespace eg
 {
-public:
-    WorkerThread();
 
-    void assignJob(std::function<void()> job);
+    class WorkerThread
+    {
+    public:
+        void start();
 
-    void stop();
+        void assignJob(std::function<void()> job);
+    
+        void stop();
+    
+        bool waitUntilJobComplete();
 
-    bool waitUntilJobComplete();
+        void join();
+    
+    private:
+        void run();
+    
+        std::condition_variable m_cv;
+        std::jthread            m_thread;
+        std::atomic_bool        m_running      = false;
+        std::atomic_bool        m_have_job     = false;
+        std::atomic_bool        m_job_complete = false;
+        std::mutex              m_mutex;
+        std::mutex              m_job_mutex;
+    
+        std::function<void()> m_job;
+    };
 
-private:
-    void run();
-
-    std::condition_variable m_cv;
-    std::jthread            m_thread;
-    std::atomic_bool        m_running = false;
-    std::atomic_bool        m_have_job = false;
-    std::atomic_bool        m_job_complete = false;
-    std::mutex              m_mutex;
-    std::mutex              m_job_mutex;
-
-    std::function<void()> m_job;
-};
+} // namespace eg

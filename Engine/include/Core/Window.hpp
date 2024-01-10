@@ -17,7 +17,7 @@ namespace eg
 	class Window
 	{
 	public:
-		using EventCallbackFn = std::function<void(Event&)>;
+		using EventCallbackFn = std::function<void(std::unique_ptr<Event>)>;
 
 		explicit Window() = default;
 
@@ -33,6 +33,8 @@ namespace eg
 		virtual void setSize(unsigned width, unsigned height) = 0;
 
 		virtual void show() = 0;
+
+		virtual void makeContextCurrent() = 0;
 
 		[[nodiscard]] 
 		virtual unsigned getWidth() const = 0;

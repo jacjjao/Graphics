@@ -14,7 +14,6 @@ public:
 
     void onAttach() override
     {
-        eg::Renderer2D::Init();
     }
 
     void onDetach() override 
@@ -28,15 +27,14 @@ public:
             const int keycode = static_cast<eg::KeyPressedEvent&>(e).GetKeyCode();
             if (keycode == eg::Key::Escape)
             {
-                eg::WindowCloseEvent close_signal{};
-                eg::Application::getInstance().onEvent(close_signal);
+                eg::Application::getInstance().onEvent(std::make_unique<eg::WindowCloseEvent>());
             }
         }
     }
 
     void onUpdate() override
     {
-        degree += 0.0003f;
+        degree += 0.00003f;
         if (degree >= 360.0f)
             degree -= 360.0f;
     }
