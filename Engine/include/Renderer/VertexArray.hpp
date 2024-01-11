@@ -11,7 +11,7 @@
 namespace eg
 {
 
-    struct VertexArrayLayout
+    struct BufferLayout
     {
         uint32_t index;
         int32_t component_count;
@@ -31,8 +31,7 @@ namespace eg
         using const_iterator = container::const_iterator;
 
     public:
-        explicit VertexArray(size_t size, VertexBuffer::Usage usage = VertexBuffer::Usage::StaticDraw);
-        explicit VertexArray(size_t size, std::span<VertexArrayLayout> layouts, VertexBuffer::Usage usage = VertexBuffer::Usage::StaticDraw);
+        explicit VertexArray();
         ~VertexArray();
 
         VertexArray(const VertexArray&) = delete;
@@ -41,58 +40,48 @@ namespace eg
         VertexArray(VertexArray&& other) noexcept;
         VertexArray& operator=(VertexArray&& other) noexcept;
 
-        void update();
-        void draw(PrimitiveType primitive_type = PrimitiveType::Triangles,
+        void draw(size_t count,
+                  PrimitiveType primitive_type = PrimitiveType::Triangles,
                   float color_alpha = 1.0F,
-                  Texture* texture = nullptr);
+                  Texture* texture = nullptr) const;
         void drawIndices(int32_t size,
                          PrimitiveType primitive_type = PrimitiveType::Triangles,
                          float color_alpha = 1.0F,
-                         Texture* texture = nullptr);
+                         Texture* texture = nullptr) const;
 
-        void setElementBuffer(ElementBuffer& ebo);
+        void setElementBuffer(ElementBuffer& ebo) const;
 
-        void resize(size_t size) { m_vertices.resize(size); }
-        void push_back(const value_type& item) { m_vertices.push_back(item); }
-        void pop_back() { m_vertices.pop_back(); }
-        void clear() { m_vertices.clear(); }
+        template<typename T>
+        void addVertexBuffer(const VertexBuffer<T>& buffer, std::span<const BufferLayout> layouts) const
+        {
+            VertexArray::bind(*this);
+            VertexBuffer<T>::bind(buffer);
 
-        value_type& front() { return m_vertices.front(); }
-        value_type& back() { return m_vertices.back(); }
+            for (const auto& layout : layouts)
+            {
+                glVertexAttribPointer(layout.index,
+                                      layout.component_count,
+                                      layout.type,
+                                      layout.normalize,
+                                      layout.stride,
+                                      (void*)layout.offset);
+                glEnableVertexAttribArray(layout.index);
+            }
 
-        [[nodiscard]] 
-        size_t size() const { return m_vertices.size(); }
+            VertexArray::unbind();
+            VertexBuffer<T>::unbind();
+        }
 
-        void setUsage(VertexBuffer::Usage usage) { m_vbo.setUsage(usage); }
-
-        [[nodiscard]] 
-        iterator begin() { return m_vertices.begin(); } 
-        [[nodiscard]] 
-        iterator end() { return m_vertices.end(); }
-
-        [[nodiscard]]
-        const_iterator cbegin() const { return m_vertices.cbegin(); }
-        [[nodiscard]]
-        const_iterator cend() const { return m_vertices.cend(); }
-
-        value_type& operator[](size_t index) { return m_vertices[index]; }
-        const value_type& operator[](size_t index) const { return m_vertices[index]; }
-
-        static void bind(VertexArray* vao);
+        static void bind(const VertexArray& vao);
         static void unbind();
 
     private:
         void create();
-        void create(std::span<VertexArrayLayout> layouts);
         void destroy();
 
         static uint32_t vao_in_bind;
 
         uint32_t m_id;
-
-        VertexBuffer m_vbo;
-
-        container m_vertices;
     };
 
 } // namespace eg

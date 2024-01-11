@@ -18,12 +18,6 @@ namespace eg
 
     unsigned TextRenderer::s_text_size = 0;
 
-    VertexArrayLayout layout{
-        .index = 0
-    };
-
-    VertexArray TextRenderer::s_vao(static_cast<size_t>(sizeof(float) * 6 * 4), std::span<VertexArrayLayout>(std::addressof(layout), 1));
-
     void TextRenderer::init(const unsigned font_size)
     {
         s_text_size = font_size;
@@ -98,10 +92,12 @@ namespace eg
         FT_Done_Face(face);
         FT_Done_FreeType(ft);
 
-        s_vao.update();
-
-        VertexBuffer::unbind();
-        VertexArray::unbind();
+        s_vao.emplace();
+        s_vbo.emplace(sizeof(float) * 6 * 4, VertexBufferUsage::DynamicDraw);
+        constexpr BufferLayout layout{
+            .index = 0, .component_count = 4, .type = GL_FLOAT, .normalize = false, .stride = 4 * sizeof(float), .offset = 0
+        };
+        s_vao->addVertexBuffer(*s_vbo, {std::addressof(layout), 1});
     }
 
     void TextRenderer::renderText(const std::string& text, Vector2f pos, const Color color, const unsigned font_size)
@@ -142,9 +138,10 @@ namespace eg
             Texture::bind(&ch.texture);
             // update content of VBO memory
             
-            //std::copy(std::begin(vertices), std::end(vertices), s_vao.begin());
+            std::ranges::copy(vertices, s_vbo->begin());
+            s_vbo->update();
 
-            VertexArray::bind(&s_vao);
+            VertexArray::bind(*s_vao);
 
             glDrawArrays(GL_TRIANGLES, 0, 6);
             // now advance cursors for next glyph (note that advance is number of 1/64 pixels)

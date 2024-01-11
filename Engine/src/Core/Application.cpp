@@ -24,7 +24,7 @@ namespace eg
         { 
             m_window->makeContextCurrent(); 
             Renderer2D::init();
-            // TextRenderer::init(20);
+            TextRenderer::init(20);
         });
     }
 

@@ -7,6 +7,7 @@
 #include "include/Core/Color.hpp"
 #include "include/Renderer/Texture.hpp"
 #include "include/Renderer/VertexArray.hpp"
+#include "include/Renderer/VertexBuffer.hpp"
 
 namespace eg
 {
@@ -32,7 +33,8 @@ namespace eg
     private:
         static std::array<Character, 128> s_characters;
 
-        static VertexArray s_vao;
+        static inline std::optional<VertexArray> s_vao = std::nullopt;
+        static inline std::optional<VertexBuffer<float>> s_vbo = std::nullopt;
 
         static unsigned s_text_size;
     };

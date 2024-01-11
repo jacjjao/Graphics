@@ -16,6 +16,7 @@ namespace eg
         struct QuadData
         {
             VertexArray vao;
+            VertexBuffer<Vertex> vbo;
             ElementBuffer ebo;
         };
     } // detail

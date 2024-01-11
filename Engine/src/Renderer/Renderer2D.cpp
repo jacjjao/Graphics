@@ -14,7 +14,8 @@ namespace eg
     void Renderer2D::init()
     {
         quad_data = std::make_unique<detail::QuadData>(detail::QuadData{
-            VertexArray{max_vertices_num, VertexBuffer::Usage::StreamDraw},
+            VertexArray{},
+            VertexBuffer<Vertex>{max_quad_num, VertexBufferUsage::StreamDraw},
             ElementBuffer{max_quad_num * quad_indix_count}
         });
 
@@ -34,6 +35,14 @@ namespace eg
         quad_data->ebo = std::move(indices);
         quad_data->ebo.update();
         quad_data->vao.setElementBuffer(quad_data->ebo);
+
+        constexpr auto stride = static_cast<GLsizei>(sizeof(Vertex));
+        constexpr BufferLayout layouts[] = {
+            {.index = 0, .component_count = 3, .type = GL_FLOAT,         .normalize = false, .stride = stride, .offset = 0},
+            {.index = 1, .component_count = 4, .type = GL_UNSIGNED_BYTE, .normalize = true,  .stride = stride, .offset = sizeof(Vertex::position)},
+            {.index = 2, .component_count = 2, .type = GL_FLOAT,         .normalize = false, .stride = stride, .offset = sizeof(Vertex::position) + sizeof(Vertex::color)},
+        };
+        quad_data->vao.addVertexBuffer(quad_data->vbo, layouts);
     }
 
     void Renderer2D::begin(eg::OrthographicCamera& scene_cam)
@@ -50,7 +59,7 @@ namespace eg
     {
         if (quad_count > 0)
         {
-            quad_data->vao.update();
+            quad_data->vbo.update();
             quad_data->vao.drawIndices(
                 static_cast<int32_t>(quad_count * quad_indix_count),
                 PrimitiveType::Triangles
@@ -86,10 +95,10 @@ namespace eg
         top_left.tex_coord = { 0.0F, 1.0F };
         top_left.color = color;
 
-        quad_data->vao[quad_count * 4 + 0] = bottom_left;
-        quad_data->vao[quad_count * 4 + 1] = bottom_right;
-        quad_data->vao[quad_count * 4 + 2] = top_right;
-        quad_data->vao[quad_count * 4 + 3] = top_left;
+        quad_data->vbo[quad_count * 4 + 0] = bottom_left;
+        quad_data->vbo[quad_count * 4 + 1] = bottom_right;
+        quad_data->vbo[quad_count * 4 + 2] = top_right;
+        quad_data->vbo[quad_count * 4 + 3] = top_left;
 
         quad_count++;
     }
@@ -141,10 +150,10 @@ namespace eg
         bottom_left.position += {half_width + x, half_height + y, 0};
         bottom_right.position += {half_width + x, half_height + y, 0};
 
-        quad_data->vao[quad_count * 4 + 0] = bottom_left;
-        quad_data->vao[quad_count * 4 + 1] = bottom_right;
-        quad_data->vao[quad_count * 4 + 2] = top_right;
-        quad_data->vao[quad_count * 4 + 3] = top_left;
+        quad_data->vbo[quad_count * 4 + 0] = bottom_left;
+        quad_data->vbo[quad_count * 4 + 1] = bottom_right;
+        quad_data->vbo[quad_count * 4 + 2] = top_right;
+        quad_data->vbo[quad_count * 4 + 3] = top_left;
 
         quad_count++;
     }
