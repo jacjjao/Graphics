@@ -32,12 +32,10 @@ namespace eg
 
         void update();
         void draw(PrimitiveType primitive_type = PrimitiveType::Triangles,
-                  const Matrix4& model_mat = Constants::identity_mat4,
                   float color_alpha = 1.0F,
                   Texture* texture = nullptr);
         void drawIndices(int32_t size,
                          PrimitiveType primitive_type = PrimitiveType::Triangles,
-                         const Matrix4& model_mat = Constants::identity_mat4,
                          float color_alpha = 1.0F,
                          Texture* texture = nullptr);
 

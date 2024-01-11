@@ -64,14 +64,12 @@ namespace eg
     }
 
     void VertexArray::draw(const PrimitiveType primitive_type,
-                           const Matrix4& model_mat,
                            const float color_alpha,
                            Texture* texture)
     {
         auto& program = DefaultShaderProgram::instance();
 
         program.use();
-        program.setMat4("model", model_mat);
         program.setFloat("color_alpha", color_alpha);
         if (texture != nullptr)
         {
@@ -90,14 +88,12 @@ namespace eg
 
     void VertexArray::drawIndices(const int32_t size,
                                   const PrimitiveType primitive_type,
-                                  const Matrix4& model_mat,
                                   const float color_alpha,
                                   Texture* texture)
     {
         auto& program = DefaultShaderProgram::instance();
 
         program.use();
-        program.setMat4("model", model_mat);
         program.setFloat("color_alpha", color_alpha);
         if (texture != nullptr)
         {

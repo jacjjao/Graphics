@@ -88,7 +88,6 @@ namespace eg
                 layout (location = 1) in vec4 in_color; 
                 layout (location = 2) in vec2 in_tex_coord;
                 
-                uniform mat4 model;
                 uniform mat4 view;
                 uniform mat4 proj;
                 
@@ -97,7 +96,7 @@ namespace eg
                 
                 void main()
                 {
-                	gl_Position = proj * view * model * vec4(in_pos, 1.0);
+                	gl_Position = proj * view * vec4(in_pos, 1.0);
                 	frag_color = in_color;
                 	tex_coord = in_tex_coord;
                 }
