@@ -23,7 +23,7 @@ class TheLayer : public eg::Layer
 public:
     TheLayer()
     {
-        eg::Renderer2D::Init();
+        eg::Renderer2D::init();
 
         const auto width = (float)eg::Application::getInstance().getWindow().getWidth();
         const auto height = (float)eg::Application::getInstance().getWindow().getHeight();
@@ -321,7 +321,7 @@ public:
 
 int main()
 {
-    eg::Log::Init();
+    eg::Log::init();
 
     SandBox app{};
     app.run();

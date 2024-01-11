@@ -22,7 +22,7 @@ namespace eg
 		m_render_thread.assignJob([this] 
         { 
             m_window->makeContextCurrent(); 
-            Renderer2D::Init();
+            Renderer2D::init();
         });
     }
 

@@ -11,7 +11,7 @@ namespace eg
 
     size_t Renderer2D::quad_count = 0;
 
-    void Renderer2D::Init()
+    void Renderer2D::init()
     {
         quad_data = std::make_unique<detail::QuadData>(detail::QuadData{
             VertexArray{max_vertices_num, VertexBuffer::Usage::StreamDraw},

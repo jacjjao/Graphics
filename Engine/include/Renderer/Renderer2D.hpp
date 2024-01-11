@@ -26,7 +26,7 @@ namespace eg
         static constexpr size_t max_quad_num = 10000;
         static constexpr size_t max_vertices_num = max_quad_num * 4;
 
-        static void Init();
+        static void init();
 
         static void begin(eg::OrthographicCamera& scene_cam);
         static void end();

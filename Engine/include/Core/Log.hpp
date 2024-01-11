@@ -12,8 +12,6 @@ namespace eg
 	private:
 		using logger_ptr = std::shared_ptr<spdlog::logger>;
 	public:
-		static void Init();
-
 		static logger_ptr& GetCoreLogger() { return s_CoreLogger; }
 		static logger_ptr& GetClientLogger() { return s_ClientLogger; }
 
