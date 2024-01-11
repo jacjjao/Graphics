@@ -16,10 +16,10 @@ namespace eg
         void start();
 
         void assignJob(std::function<void()> job);
+        
+        bool waitUntilJobComplete();
     
         void stop();
-    
-        bool waitUntilJobComplete();
 
         void join();
     
@@ -28,11 +28,10 @@ namespace eg
     
         std::condition_variable m_cv;
         std::jthread            m_thread;
-        std::atomic_bool        m_running      = false;
-        std::atomic_bool        m_have_job     = false;
+        std::atomic_bool        m_running  = false;
+        std::atomic_bool        m_have_job = false;
         std::atomic_bool        m_job_complete = false;
-        std::mutex              m_mutex;
-        std::mutex              m_job_mutex;
+        std::mutex              m_mutex, m_job_mutex;
     
         std::function<void()> m_job;
     };

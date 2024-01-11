@@ -44,43 +44,46 @@ namespace eg
         m_window->swapBuffer();
     }
 
+    void Application::renderThreadLoop()
+    {
+        while (m_rendering)
+        {
+            std::lock_guard layer_lock(m_layer_mutex);
+            for (const auto& layer : m_layerStack)
+                layer->onUpdate();
+
+            {
+                std::lock_guard event_lock(m_event_mutex);
+                for (const auto& e : m_event_buf)
+                {
+                    if (e->getEventType() == EventType::WindowResize)
+                    {
+                        const auto event = static_cast<const WindowResizeEvent*>(e.get());
+                        glViewport(0, 0, static_cast<GLsizei>(event->getWidth()), static_cast<GLsizei>(event->getHeight()));
+                        continue;
+                    }
+                    for (const auto& layer : m_layerStack)
+                    {
+                        if (e->handled)
+                            break;
+                        layer->onEvent(*e);
+                    }
+                }
+                m_event_buf.clear();
+            }
+
+            if (!m_fps_control || (m_fps_control && m_draw_clock.getElapsedTime().asSeconds() >= m_draw_interval))
+            {
+                m_draw_clock.restart();
+                onDraw();
+            }
+        }
+    }
+
 	void Application::run()
     {
-        m_render_thread.assignJob(
-            [this] {
-				while (m_running)
-				{
-                    std::lock_guard lock(m_layer_mutex);
-                    for (const auto& layer : m_layerStack)
-                        layer->onUpdate();
-
-                    {
-                        std::lock_guard lock(m_event_mutex);
-                        for (const auto& e : m_event_buf)
-                        {
-                            if (e->getEventType() == EventType::WindowResize)
-                            {
-                                const auto& event = static_cast<const WindowResizeEvent*>(e.get());
-                                glViewport(0, 0, static_cast<GLsizei>(event->getWidth()), static_cast<GLsizei>(event->getHeight()));
-                                continue;
-                            }
-                            for (const auto& layer : m_layerStack)
-                            {
-                                if (e->handled)
-                                    break;
-                                layer->onEvent(*e);
-                            }
-                        }
-                        m_event_buf.clear();
-                    }
-
-                    if (!m_fps_control || (m_fps_control && m_draw_clock.getElapsedTime().asSeconds() >= m_draw_interval))
-                    {
-                        m_draw_clock.restart();
-                        onDraw();
-                    }
-				}
-            });
+        m_rendering = true;
+        m_render_thread.assignJob([this] { renderThreadLoop(); });
         m_window->show();
 		while (m_running)
 		{
@@ -94,12 +97,7 @@ namespace eg
 		dispatcher.dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) {
 			return onWindowClosed(e);
 		});
-        /*
-		dispatcher.dispatch<WindowResizeEvent>([this](WindowResizeEvent& e) {
-			glViewport(0, 0, static_cast<GLsizei>(e.getWidth()), static_cast<GLsizei>(e.getHeight()));
-			return true;	
-		});
-		*/
+
         if (e->handled)
             return;
         {
@@ -134,6 +132,7 @@ namespace eg
 	bool Application::onWindowClosed(WindowCloseEvent&)
 	{
 		m_running = false;
+        m_rendering = false;
         m_render_thread.stop();
 		return true;
 	}

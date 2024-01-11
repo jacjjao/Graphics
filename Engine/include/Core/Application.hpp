@@ -4,7 +4,7 @@
 #include "include/Events/ApplicationEvent.hpp"
 #include "include/Core/Window.hpp"
 #include "include/Core/Clock.hpp"
-#include "include/Core/WorkerThread.hpp"
+#include "src/Core/WorkerThread.hpp"
 #include "LayerStack.hpp"
 
 #include "include/Renderer/OrthographicCamera.hpp"
@@ -37,6 +37,7 @@ namespace eg
 		void setClearColor(const eg::Color color);
 
 	private:
+        void renderThreadLoop();
         void onDraw();
 		bool onWindowClosed(WindowCloseEvent& e);
 
@@ -45,12 +46,13 @@ namespace eg
 		std::mutex m_layer_mutex;
 		LayerStack m_layerStack;
 
-		std::atomic_bool m_running = true;
+		bool m_running = true;
+        std::atomic_bool m_rendering = false;
 
 		static Application* s_instance;
 
-		bool      m_fps_control   = false;
-        double    m_draw_interval = 0.0;
+		std::atomic_bool m_fps_control = false;
+        std::atomic<double> m_draw_interval = 0.0;
         eg::Clock m_draw_clock;
 
 		WorkerThread m_render_thread;

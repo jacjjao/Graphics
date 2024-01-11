@@ -1,23 +1,26 @@
 #include "pch.hpp"
-#include "include/Core/WorkerThread.hpp"
+#include "src/Core/WorkerThread.hpp"
 #include "include/Core/Log.hpp"
 
 void eg::WorkerThread::start()
 {
     m_running = false;
-    m_cv.notify_one();
+    m_cv.notify_all();
     if (m_thread.joinable())
         m_thread.join();
     m_running = true;
+    m_have_job = false;
     m_thread = std::jthread([this] { run(); });
 }
 
 void eg::WorkerThread::assignJob(std::function<void()> job)
 {
-    m_job = job;
+    if (m_have_job)
+        waitUntilJobComplete();
+    m_job          = job;
     m_have_job     = true;
     m_job_complete = false;
-    m_cv.notify_one();
+    m_cv.notify_all();
 }
 
 void eg::WorkerThread::stop()
