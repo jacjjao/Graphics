@@ -24,7 +24,6 @@ namespace eg
             m_window->makeContextCurrent(); 
             Renderer2D::Init();
         });
-        m_render_thread.waitUntilJobComplete();
     }
 
     Application::~Application()
