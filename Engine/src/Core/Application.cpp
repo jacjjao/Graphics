@@ -4,6 +4,7 @@
 #include "include/Input/Input.hpp"
 #include "include/Core/Math.hpp"
 #include "include/Renderer/Renderer2D.hpp"
+#include "include/Renderer/TextRenderer.hpp"
 
 namespace eg
 {
@@ -23,6 +24,7 @@ namespace eg
         { 
             m_window->makeContextCurrent(); 
             Renderer2D::init();
+            // TextRenderer::init(20);
         });
     }
 

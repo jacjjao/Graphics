@@ -11,6 +11,16 @@
 namespace eg
 {
 
+    struct VertexArrayLayout
+    {
+        uint32_t index;
+        int32_t component_count;
+        uint32_t type;
+        bool     normalize;
+        int32_t  stride;
+        uint64_t offset;
+    };
+
     class VertexArray
     {
     private:
@@ -22,6 +32,7 @@ namespace eg
 
     public:
         explicit VertexArray(size_t size, VertexBuffer::Usage usage = VertexBuffer::Usage::StaticDraw);
+        explicit VertexArray(size_t size, std::span<VertexArrayLayout> layouts, VertexBuffer::Usage usage = VertexBuffer::Usage::StaticDraw);
         ~VertexArray();
 
         VertexArray(const VertexArray&) = delete;
@@ -72,6 +83,7 @@ namespace eg
 
     private:
         void create();
+        void create(std::span<VertexArrayLayout> layouts);
         void destroy();
 
         static uint32_t vao_in_bind;

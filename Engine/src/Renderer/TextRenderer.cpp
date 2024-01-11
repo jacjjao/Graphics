@@ -14,16 +14,19 @@
 
 namespace eg
 {
+    std::array<Character, 128> TextRenderer::s_characters;
 
-    std::array<Character, 128> TextRenderer::characters;
+    unsigned TextRenderer::s_text_size = 0;
 
-    uint32_t TextRenderer::VAO = 0, TextRenderer::VBO = 0;
+    VertexArrayLayout layout{
+        .index = 0
+    };
 
-    unsigned TextRenderer::text_size = 0;
+    VertexArray TextRenderer::s_vao(static_cast<size_t>(sizeof(float) * 6 * 4), std::span<VertexArrayLayout>(std::addressof(layout), 1));
 
-    void TextRenderer::initialize(const unsigned font_size)
+    void TextRenderer::init(const unsigned font_size)
     {
-        text_size = font_size;
+        s_text_size = font_size;
         const auto half_width = static_cast<float>(Application::getInstance().getWindow().getWidth()) * 0.5f;
         const auto half_height = static_cast<float>(Application::getInstance().getWindow().getHeight()) * 0.5f;
 
@@ -83,7 +86,7 @@ namespace eg
                             parameters };
 
             // now store character for later use
-            characters[c] = Character{ std::move(texture),
+            s_characters[c] = Character{ std::move(texture),
                                       Vector2f(static_cast<float>(face->glyph->bitmap.width),
                                                static_cast<float>(face->glyph->bitmap.rows)),
                                       Vector2f(static_cast<float>(face->glyph->bitmap_left),
@@ -95,25 +98,17 @@ namespace eg
         FT_Done_Face(face);
         FT_Done_FreeType(ft);
 
-        glGenVertexArrays(1, &VAO);
-        glGenBuffers(1, &VBO);
-        glBindVertexArray(VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, nullptr, GL_DYNAMIC_DRAW);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
+        s_vao.update();
 
         VertexBuffer::unbind();
         VertexArray::unbind();
     }
 
-    void TextRenderer::renderText(std::string_view text, Vector2f pos, const Color color, const unsigned font_size)
+    void TextRenderer::renderText(const std::string& text, Vector2f pos, const Color color, const unsigned font_size)
     {
         glEnable(GL_BLEND);
 
-        const float scale = static_cast<float>(font_size) / static_cast<float>(text_size);
+        const float scale = static_cast<float>(font_size) / static_cast<float>(s_text_size);
 
         pos.y -= static_cast<float>(font_size);
 
@@ -124,7 +119,7 @@ namespace eg
         // iterate through all characters
         for (const char& c : text)
         {
-            auto& ch = characters[c];
+            auto& ch = s_characters[c];
 
             const float xpos = pos.x + ch.bearing.x * scale;
             const float ypos = pos.y - (ch.size.y - ch.bearing.y) * scale;
@@ -146,30 +141,20 @@ namespace eg
             // render glyph texture over quad
             Texture::bind(&ch.texture);
             // update content of VBO memory
-            glBindBuffer(GL_ARRAY_BUFFER, VBO);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // be sure to use glBufferSubData and not glBufferData
+            
+            //std::copy(std::begin(vertices), std::end(vertices), s_vao.begin());
 
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            // render quad
-            glBindVertexArray(VAO);
+            VertexArray::bind(&s_vao);
+
             glDrawArrays(GL_TRIANGLES, 0, 6);
             // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
             // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
             pos.x += (ch.advance >> 6) * scale;
         }
-        glBindVertexArray(0);
         VertexArray::unbind();
         Texture::unbind();
 
         glDisable(GL_BLEND);
-    }
-
-    void TextRenderer::releaseResources()
-    {
-        for (auto& character : characters)
-        {
-            character.texture.destroy();
-        }
     }
 
 } // namespace eg

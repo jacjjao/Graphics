@@ -1,12 +1,12 @@
 #pragma once
 
 #include <array>
-#include <string_view>
 
 #include "include/Core/Vector.hpp"
 #include "include/Core/Matrix.hpp"
 #include "include/Core/Color.hpp"
 #include "include/Renderer/Texture.hpp"
+#include "include/Renderer/VertexArray.hpp"
 
 namespace eg
 {
@@ -22,21 +22,19 @@ namespace eg
     class TextRenderer
     {
     public:
-        static void initialize(unsigned font_size);
+        static void init(unsigned font_size);
 
-        static void renderText(std::string_view text,
+        static void renderText(const std::string& text,
                                Vector2f pos,
                                Color    color = Color::White,
-                               unsigned font_size = text_size);
-
-        static void releaseResources();
+                               unsigned font_size = s_text_size);
 
     private:
-        static std::array<Character, 128> characters;
+        static std::array<Character, 128> s_characters;
 
-        static uint32_t VAO, VBO;
+        static VertexArray s_vao;
 
-        static unsigned text_size;
+        static unsigned s_text_size;
     };
 
 } // namespace eg

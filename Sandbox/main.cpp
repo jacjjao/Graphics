@@ -73,6 +73,7 @@ public:
         eg::Renderer2D::begin(cam);
         eg::Renderer2D::drawQuad(x, y, 100, 100, eg::Color::Cyan, degree);
         eg::Renderer2D::end();
+        // eg::TextRenderer::renderText("Hello World", {100, 100});
     }
 
 private:

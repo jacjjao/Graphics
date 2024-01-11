@@ -17,6 +17,14 @@ namespace eg
         create();
     }
 
+    VertexArray::VertexArray(const size_t size, std::span<VertexArrayLayout> layouts, const VertexBuffer::Usage usage) :
+        m_vertices(size),
+        m_id{0},
+        m_vbo{size, usage}
+    {
+        create(layouts);
+    }
+
     VertexArray::~VertexArray()
     {
         destroy();
@@ -137,7 +145,7 @@ namespace eg
     }
 
     void VertexArray::create()
-    {
+    { 
         glGenVertexArrays(1, &m_id);
 
         VertexArray::bind(this);
@@ -152,6 +160,23 @@ namespace eg
 
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)(sizeof(element_type::position) + sizeof(element_type::color)));
         glEnableVertexAttribArray(2);
+
+        VertexArray::unbind();
+        VertexBuffer::unbind();
+    }
+
+    void VertexArray::create(std::span<VertexArrayLayout> layouts)
+    {
+        glGenVertexArrays(1, &m_id);
+
+        VertexArray::bind(this);
+        VertexBuffer::bind(&m_vbo);
+
+        for (const auto& layout : layouts)
+        {
+            glVertexAttribPointer(layout.index, layout.component_count, layout.type, layout.normalize, layout.stride, (void*)layout.offset);
+            glEnableVertexAttribArray(layout.index);
+        }
 
         VertexArray::unbind();
         VertexBuffer::unbind();
