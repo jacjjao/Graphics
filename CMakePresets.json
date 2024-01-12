@@ -27,7 +27,7 @@
             "generator": "Ninja",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release",
-                "CMAKE_CXX_FLAGS": "/analyze /W4 /MP /MD /GL /O2 /EHsc"
+                "CMAKE_CXX_FLAGS": "/analyze /W4 /MP /MD /GL /incremental /O2 /EHsc"
             }
         }
     ]
