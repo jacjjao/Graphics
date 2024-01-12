@@ -1,5 +1,6 @@
 #pragma once
 
+#include "include/Core/Core.hpp"
 #include "include/Core/Vector.hpp"
 
 #include <filesystem>
@@ -9,10 +10,10 @@
 
 namespace eg
 {
-    class Texture
+    class EG_API Texture
     {
     public:
-        struct Params
+        struct EG_API Params
         {
         public:
             enum class Wrapping : uint32_t

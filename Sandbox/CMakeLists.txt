@@ -10,6 +10,11 @@ PRIVATE
 	MyGraphicsLib
 )
 
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD 
+               COMMAND ${CMAKE_COMMAND} -E copy_if_different
+               "${CMAKE_BINARY_DIR}/Engine/MyGraphicsLib.dll"              
+               "${CMAKE_BINARY_DIR}/Sandbox")
+
 #add_executable("PhysicsDemo"
 #	"PhysicsDemo.cpp"
 #)

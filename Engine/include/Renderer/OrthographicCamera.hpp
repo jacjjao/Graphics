@@ -1,12 +1,13 @@
 #pragma once
 
+#include "include/Core/Core.hpp"
 #include "include/Core/Vector.hpp"
 #include "include/Core/Matrix.hpp"
 
 namespace eg
 {
 
-    class OrthographicCamera
+    class EG_API OrthographicCamera
     {
     public:
         explicit OrthographicCamera(float width, float height);

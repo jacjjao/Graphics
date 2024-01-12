@@ -5,7 +5,6 @@
 #include "include/Core/Clock.hpp"
 #include "include/Core/Color.hpp"
 #include "include/Core/Layer.hpp"
-#include "include/Core/LayerStack.hpp"
 #include "include/Core/Log.hpp"
 #include "include/Core/Math.hpp"
 #include "include/Core/Matrix.hpp"

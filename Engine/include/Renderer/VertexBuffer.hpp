@@ -4,11 +4,12 @@
 #include <span>
 #include <glad/glad.h>
 #include "include/Core/Vertex.hpp"
+#include "include/Core/Core.hpp"
 
 namespace eg
 {
 
-    enum class VertexBufferUsage : uint32_t
+    enum class EG_API VertexBufferUsage : uint32_t
     {
         StreamDraw  = 0x88E0,
         StaticDraw  = 0x88E4,
@@ -16,7 +17,7 @@ namespace eg
     };
 
     template<typename T>
-    class VertexBuffer
+    class EG_API VertexBuffer
     {
     private:
         using container = std::vector<T>;

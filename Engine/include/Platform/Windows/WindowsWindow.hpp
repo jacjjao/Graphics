@@ -1,5 +1,6 @@
 #pragma once
 
+#include "include/Core/Core.hpp"
 #include "include/Core/Window.hpp"
 
 struct GLFWwindow;
@@ -7,7 +8,7 @@ struct GLFWwindow;
 namespace eg
 {
 
-	class WindowsWindow : public Window
+	class EG_API WindowsWindow : public Window
 	{
 	public:
 		explicit WindowsWindow(const WindowProps& props);

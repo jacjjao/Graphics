@@ -1,5 +1,6 @@
 #pragma once
 
+#include "include/Core/Core.hpp"
 #include "VertexBuffer.hpp"
 #include "ElementBuffer.hpp"
 #include "include/Core/PrimitiveType.hpp"
@@ -11,7 +12,7 @@
 namespace eg
 {
 
-    struct BufferLayout
+    struct EG_API BufferLayout
     {
         uint32_t index;
         int32_t component_count;
@@ -21,7 +22,7 @@ namespace eg
         uint64_t offset;
     };
 
-    class VertexArray
+    class EG_API VertexArray
     {
     private:
         using element_type   = Vertex;

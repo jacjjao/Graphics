@@ -1,10 +1,11 @@
 #pragma once
 
+#include "include/Core/Core.hpp"
 #include "Event.hpp"
 
 namespace eg
 {
-	class MouseMovedEvent : public Event
+	class EG_API MouseMovedEvent : public Event
 	{
 	public:
         explicit MouseMovedEvent(const double x, const double y)
@@ -26,7 +27,7 @@ namespace eg
         double m_mouseX, m_mouseY;
 	};
 
-	class MouseScrolledEvent : public Event
+	class EG_API MouseScrolledEvent : public Event
 	{
 	public:
         explicit MouseScrolledEvent(const double xOffset, const double yOffset)
@@ -48,7 +49,7 @@ namespace eg
         double m_xOffset, m_yOffset;
 	};
 
-	class MouseButtonEvent : public Event
+	class EG_API MouseButtonEvent : public Event
 	{
 	public:
 		[[nodiscard]] int getMouseButton() const { return m_button; }
@@ -61,7 +62,7 @@ namespace eg
 		int m_button;
 	};
 
-	class MouseButtonPressedEvent : public MouseButtonEvent
+	class EG_API MouseButtonPressedEvent : public MouseButtonEvent
 	{
 	public:
 		explicit MouseButtonPressedEvent(const int button)
@@ -77,7 +78,7 @@ namespace eg
 		EVENT_CLASS_TYPE(MouseButtonPressed)
 	};
 
-	class MouseButtonReleasedEvent : public MouseButtonEvent
+	class EG_API MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:
 		explicit MouseButtonReleasedEvent(const int button)

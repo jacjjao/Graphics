@@ -1,13 +1,14 @@
 #pragma once
 
-#include "include/Core/Matrix.hpp"
+#include "Core.hpp"
+#include "Matrix.hpp"
 
 namespace eg
 {
 
-	float radians(float degrees);
+	float EG_API radians(float degrees);
 
-	Matrix4 ortho(
+	Matrix4 EG_API ortho(
 		float left,
 		float right,
 		float bottom,

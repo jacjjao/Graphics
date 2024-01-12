@@ -7,14 +7,14 @@
 
 namespace eg
 {
-	struct WindowProps
+	struct EG_API WindowProps
 	{
 		std::string title = "Graphics eg";
 		unsigned width = 2000;
 		unsigned height = 1200;
 	};
 
-	class Window
+	class EG_API Window
 	{
 	public:
 		using EventCallbackFn = std::function<void(std::unique_ptr<Event>)>;

@@ -1,12 +1,13 @@
 #pragma once
 
+#include "Core.hpp"
 #include <chrono>
 #include <cstdint>
 
 namespace eg
 {
 
-    class Duration
+    class EG_API Duration
     {
     public:
         explicit Duration(std::chrono::system_clock::duration duration) : m_duration(duration) {}
@@ -39,7 +40,7 @@ namespace eg
         std::chrono::system_clock::duration m_duration;
     };
 
-    class Clock
+    class EG_API Clock
     {
     public:
         Clock() 

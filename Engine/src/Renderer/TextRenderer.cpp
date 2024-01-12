@@ -7,7 +7,7 @@
 #include "include/Renderer/VertexBuffer.hpp"
 #include "include/Renderer/VertexArray.hpp"
 
-#include "include/Core/FileSystem.hpp"
+#include "src/Core/FileSystem.hpp"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H

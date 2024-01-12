@@ -1,5 +1,6 @@
 #pragma once
 
+#include "include/Core/Core.hpp"
 #include "VertexArray.hpp"
 #include "OrthographicCamera.hpp"
 #include "ShaderProgram.hpp"
@@ -21,7 +22,7 @@ namespace eg
         };
     } // detail
 
-    class Renderer2D
+    class EG_API Renderer2D
     {
     public:
         static constexpr size_t max_quad_num = 10000;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "include/Core/Core.hpp"
 #include <cstdint>
 #include <initializer_list>
 #include <vector>
@@ -7,7 +8,7 @@
 namespace eg
 {
 
-    class ElementBuffer
+    class EG_API ElementBuffer
     {
     public:
         explicit ElementBuffer(size_t size);

@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <unordered_map>
 
+#include "include/Core/Core.hpp"
 #include "include/Core/Matrix.hpp"
 #include "include/Core/Vector.hpp"
 #include "include/Core/Color.hpp"
@@ -16,7 +17,7 @@ namespace eg
     static bool checkShaderCompileStatus(uint32_t shader);
     static bool checkProgramLinkStatus(uint32_t program);
 
-    class ShaderProgram
+    class EG_API ShaderProgram
     {
     public:
         ShaderProgram() = default;

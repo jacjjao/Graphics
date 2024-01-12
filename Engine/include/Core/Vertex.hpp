@@ -1,12 +1,13 @@
 #pragma once
 
+#include "Core.hpp"
 #include "Vector.hpp"
 #include "Color.hpp"
 
 namespace eg
 {
 
-    struct Vertex
+    struct EG_API Vertex
     {
         Vector3f position;
         Color    color;

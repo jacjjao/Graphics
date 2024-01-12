@@ -1,12 +1,13 @@
 #pragma once
 
+#include "include/Core/Core.hpp"
 #include "Event.hpp"
 #include <sstream>
 
 namespace eg
 {
 
-	class WindowResizeEvent : public Event
+	class EG_API WindowResizeEvent : public Event
 	{
 	public:
 		explicit WindowResizeEvent(const unsigned width, const unsigned height) :
@@ -39,28 +40,28 @@ namespace eg
 		unsigned m_Width, m_Height;
 	};
 
-	class WindowCloseEvent : public Event
+	class EG_API WindowCloseEvent : public Event
 	{
 	public:
 		EVENT_CLASS_TYPE(WindowClose)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class AppTickEvent : public Event
+	class EG_API AppTickEvent : public Event
 	{
 	public:
 		EVENT_CLASS_TYPE(AppTick)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class AppUpdateEvent : public Event
+	class EG_API AppUpdateEvent : public Event
 	{
 	public:
 		EVENT_CLASS_TYPE(AppUpdate)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class AppRenderEvent : public Event
+	class EG_API AppRenderEvent : public Event
 	{
 	public:
 		EVENT_CLASS_TYPE(AppRender)

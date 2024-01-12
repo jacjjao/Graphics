@@ -1,5 +1,4 @@
 #include "Graphics.hpp"
-#include "include/Core/FileSystem.hpp"
 #include "include/Input/Input.hpp"
 
 class TheLayer : public eg::Layer

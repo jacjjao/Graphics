@@ -7,7 +7,7 @@
 
 namespace eg
 {
-	class Log
+	class EG_API Log
 	{
 	private:
 		using logger_ptr = std::shared_ptr<spdlog::logger>;

@@ -5,7 +5,7 @@
 
 namespace eg
 {
-	class Layer
+	class EG_API Layer
 	{
 	public:
 		virtual ~Layer() = default;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "include/Core/Core.hpp"
 #include <string>
 #include <concepts>
 
@@ -7,7 +8,7 @@
 
 namespace eg
 {
-	enum class EventType
+	enum class EG_API EventType
 	{
 		None = 0,
 		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
@@ -16,7 +17,7 @@ namespace eg
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 	};
 
-	enum EventCategory
+	enum EG_API EventCategory
 	{
 		EventCategoryNone		 = 0,
 		EventCategoryApplication = BIT(0),
@@ -32,7 +33,7 @@ namespace eg
 
 	#define EVENT_CLASS_CATEGORY(category) int getCategoryFlag() const override { return EventCategory::category; }
 
-	class Event
+	class EG_API Event
 	{
 	private:
 		friend class EventDispatcher;
@@ -53,7 +54,7 @@ namespace eg
 		bool handled = false;
 	};
 
-	class EventDispatcher
+	class EG_API EventDispatcher
 	{
 	public:
 		explicit EventDispatcher(Event& event) : m_event(event)

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core.hpp"
 #include <cstdint>
 #include <cassert>
 #include <initializer_list>
@@ -9,7 +10,7 @@ namespace eg
 {
 
     template <typename T, size_t Height, size_t Width>
-    class Matrix
+    class EG_API Matrix
     {
     public:
         static_assert(Width > 0, "Invalid width value");
@@ -74,12 +75,5 @@ namespace eg
 
     using Matrix3 = Matrix<float, 3, 3>;
     using Matrix4 = Matrix<float, 4, 4>;
-
-    namespace Constants
-    {
-
-        static inline Matrix4 identity_mat4 = Matrix4::makeIdentity();
-
-    } // namespace Constants
 
 } // namespace eg

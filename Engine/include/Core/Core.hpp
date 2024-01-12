@@ -7,3 +7,9 @@
 #define EG_ASSERT(x, ...)
 #define EG_CORE_ASSERT(x, ...)
 #endif
+
+#ifdef EG_DLL_EXPORT
+#define EG_API __declspec(dllexport)
+#else 
+#define EG_API __declspec(dllimport)
+#endif

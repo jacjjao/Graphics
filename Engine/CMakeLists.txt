@@ -4,13 +4,16 @@ project(GraphicsEngine VERSION 0.1.0)
 add_subdirectory("dependencies/glad")
 
 file (GLOB_RECURSE LibFiles "*.cpp" "*.hpp")
-add_library(MyGraphicsLib STATIC ${LibFiles})
+add_library(MyGraphicsLib SHARED ${LibFiles})
 
 target_compile_definitions(MyGraphicsLib 
 PUBLIC 
 	$<$<CONFIG:Debug>:EG_DEBUG>
 	$<$<CONFIG:Debug>:EG_ENABLE_ASSERTS>
 	$<$<CONFIG:Debug>:EG_ENABLE_DEBUG_OUTPUT>
+
+PRIVATE 
+	EG_DLL_EXPORT
 )
 
 target_precompile_headers(MyGraphicsLib
@@ -25,10 +28,10 @@ find_package(spdlog CONFIG REQUIRED)
 target_link_libraries(MyGraphicsLib 
 	PUBLIC
 		spdlog::spdlog
+		freetype
 	PRIVATE
 		glad
 		glfw
-		freetype
 )
 
 target_include_directories(MyGraphicsLib

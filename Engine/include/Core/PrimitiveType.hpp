@@ -1,11 +1,12 @@
 #pragma once
 
+#include "Core.hpp"
 #include <cstdint>
 
 namespace eg
 {
 
-    enum class PrimitiveType : uint32_t
+    enum class EG_API PrimitiveType : uint32_t
     {
         Points = 0x0000,
         Lines = 0x0001,

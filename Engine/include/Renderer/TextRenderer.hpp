@@ -2,6 +2,7 @@
 
 #include <array>
 
+#include "include/Core/Core.hpp"
 #include "include/Core/Vector.hpp"
 #include "include/Core/Matrix.hpp"
 #include "include/Core/Color.hpp"
@@ -12,7 +13,7 @@
 namespace eg
 {
 
-    struct Character
+    struct EG_API Character
     {
         Texture      texture; // ID handle of the glyph texture
         Vector2f     size;      // size of glyph
@@ -20,7 +21,7 @@ namespace eg
         unsigned int advance;   // Horizontal offset to advance to next glyph
     };
 
-    class TextRenderer
+    class EG_API TextRenderer
     {
     public:
         static void init(unsigned font_size);

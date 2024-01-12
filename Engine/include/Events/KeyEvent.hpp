@@ -1,11 +1,12 @@
 #pragma once
 
+#include "include/Core/Core.hpp"
 #include "Event.hpp"
 
 namespace eg
 {
 	
-	class KeyEvent : public Event
+	class EG_API KeyEvent : public Event
 	{
 	public:
 		[[nodiscard]] int GetKeyCode() const { return m_keycode; }
@@ -20,7 +21,7 @@ namespace eg
 		int m_keycode;
 	};
 
-	class KeyPressedEvent : public KeyEvent
+	class EG_API KeyPressedEvent : public KeyEvent
 	{
 	public:
 		explicit KeyPressedEvent(const int keycode, bool isRepeat = false)
@@ -40,7 +41,7 @@ namespace eg
 		bool m_isRepeat;
 	};
 
-	class KeyReleasedEvent : public KeyEvent
+	class EG_API KeyReleasedEvent : public KeyEvent
 	{
 	public:
 		explicit KeyReleasedEvent(const int keycode)
@@ -56,7 +57,7 @@ namespace eg
 		EVENT_CLASS_TYPE(KeyReleased)
 	};
 
-	class KeyTypedEvent : public KeyEvent
+	class EG_API KeyTypedEvent : public KeyEvent
 	{
 	public:
 		explicit KeyTypedEvent(const int keycode)

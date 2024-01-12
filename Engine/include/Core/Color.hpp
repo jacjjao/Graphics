@@ -1,11 +1,12 @@
 #pragma once
 
+#include "Core.hpp"
 #include <cstdint>
 
 namespace eg
 {
 
-    class Color
+    class EG_API Color
     {
     public:
         Color() = default;

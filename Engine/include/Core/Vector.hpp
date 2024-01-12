@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core.hpp"
 #include <cmath>
 #include <compare>
 
@@ -7,7 +8,7 @@ namespace eg
 {
 
     template <typename T>
-    class Vector2
+    class EG_API Vector2
     {
     public:
         constexpr Vector2() = default;
@@ -92,7 +93,7 @@ namespace eg
     using Vector2f = Vector2<float>;
 
     template <typename T>
-    class Vector3
+    class EG_API Vector3
     {
     public:
         constexpr Vector3() = default;

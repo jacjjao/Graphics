@@ -1,10 +1,11 @@
 #pragma once
 
+#include "include/Core/Core.hpp"
 #include <utility>
 
 namespace eg
 {
-	class Input
+	class EG_API Input
 	{
 	public:
 		static bool isKeyPressed(int keycode) { return s_instance->isKeyPressedImpl(keycode); }

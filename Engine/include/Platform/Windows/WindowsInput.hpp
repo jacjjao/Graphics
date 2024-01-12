@@ -1,11 +1,12 @@
 #pragma once
 
+#include "include/Core/Core.hpp"
 #include "include/Input/Input.hpp"
 
 namespace eg
 {
 
-	class WindowsInput : public Input
+	class EG_API WindowsInput : public Input
 	{
 	protected:
 		bool isKeyPressedImpl(int keycode) override;

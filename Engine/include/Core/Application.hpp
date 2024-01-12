@@ -5,14 +5,14 @@
 #include "include/Core/Window.hpp"
 #include "include/Core/Clock.hpp"
 #include "src/Core/WorkerThread.hpp"
-#include "LayerStack.hpp"
+#include "src/Core/LayerStack.hpp"
 
 #include "include/Renderer/OrthographicCamera.hpp"
 #include "include/Renderer/ShaderProgram.hpp"
 
 namespace eg
 {
-	class Application
+	class EG_API Application
 	{
 	public:
 		explicit Application(unsigned width, unsigned height, const std::string& title);
