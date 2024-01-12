@@ -73,7 +73,7 @@ namespace eg
                 m_event_buf.clear();
             }
 
-            if (!m_fps_control || (m_fps_control && m_draw_clock.getElapsedTime().asSeconds() >= m_draw_interval))
+            if (!m_fps_control || m_draw_clock.getElapsedTime().asSeconds() >= m_draw_interval)
             {
                 m_draw_clock.restart();
                 onDraw();
