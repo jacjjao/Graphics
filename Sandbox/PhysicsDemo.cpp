@@ -119,12 +119,19 @@ public:
 
     void onUpdate() override
     {
-        static auto& program = eg::DefaultShaderProgram::instance();
-        program.use();
-        program.setMat4("view", m_cam->getViewMatrix());
-        program.setMat4("proj", m_cam->getProjMatrix());
-     
-        updateWorld();
+        static double freq = 1.0 / 240.0;
+        static eg::Clock update_clock;
+        if (update_clock.getElapsedTime().asSeconds() >= freq)
+        {
+            static auto& program = eg::DefaultShaderProgram::instance();
+            program.use();
+            program.setMat4("view", m_cam->getViewMatrix());
+            program.setMat4("proj", m_cam->getProjMatrix());
+
+            updateWorld();
+
+            update_clock.restart();
+        }
 
         for (int i = 0; i < rects.size(); i++)
         {
