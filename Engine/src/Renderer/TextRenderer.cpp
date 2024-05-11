@@ -20,14 +20,11 @@ namespace eg
 
     void TextRenderer::init(const unsigned font_size)
     {
+        EG_CORE_WARN("!!!!!!TextRenderer is broken now don't use it!!!!!!");
+
         s_text_size = font_size;
-        const auto half_width = static_cast<float>(Application::getInstance().getWindow().getWidth()) * 0.5f;
-        const auto half_height = static_cast<float>(Application::getInstance().getWindow().getHeight()) * 0.5f;
 
         auto& shader = TextShaderProgram::instance();
-        shader.use();
-        shader.setMat4("proj", ortho(-half_width, half_width, -half_height, half_height, -1.0f, 1.0f));
-        shader.unuse();
 
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -93,45 +90,50 @@ namespace eg
         FT_Done_FreeType(ft);
 
         s_vao.emplace();
-        s_vbo.emplace(sizeof(float) * 6 * 4, VertexBufferUsage::DynamicDraw);
+        s_vbo.emplace(s_max_char_count * sizeof(float) * s_char_vertex_count, VertexBufferUsage::DynamicDraw);
         constexpr BufferLayout layout{
             .index = 0, .component_count = 4, .type = GL_FLOAT, .normalize = false, .stride = 4 * sizeof(float), .offset = 0
         };
         s_vao->addVertexBuffer(*s_vbo, {std::addressof(layout), 1});
     }
 
-    void TextRenderer::renderText(const std::string& text, Vector2f pos, const Color color, const unsigned font_size)
+    void TextRenderer::drawText(const std::string& text, float x, float y, const Color color, const unsigned font_size)
     {
         glEnable(GL_BLEND);
 
         const float scale = static_cast<float>(font_size) / static_cast<float>(s_text_size);
 
-        pos.y -= static_cast<float>(font_size);
+        y += static_cast<float>(font_size) * scale;
 
         auto& shader = TextShaderProgram::instance();
         shader.use();
         shader.setVec4("textColor", color);
+
+        const auto width = static_cast<float>(Application::getInstance().getWindow().getWidth());
+        const auto height = static_cast<float>(Application::getInstance().getWindow().getHeight());
+        shader.setMat4("proj", ortho(0, width, height, 0, -1.0f, 1.0f));
 
         // iterate through all characters
         for (const char& c : text)
         {
             auto& ch = s_characters[c];
 
-            const float xpos = pos.x + ch.bearing.x * scale;
-            const float ypos = pos.y - (ch.size.y - ch.bearing.y) * scale;
+            const float xpos = x + ch.bearing.x * scale;
+            const float ypos = y - (ch.size.y - ch.bearing.y) * scale;
 
             const float w = ch.size.x * scale;
             const float h = ch.size.y * scale;
             // update VBO for each character
 
             // clang-format off
-            const float vertices[24] = { xpos,     ypos + h, 0.0f, 0.0f,
-                                         xpos,     ypos,     0.0f, 1.0f,
-                                         xpos + w, ypos,     1.0f, 1.0f,
-
-                                         xpos,     ypos + h, 0.0f, 0.0f,
-                                         xpos + w, ypos,     1.0f, 1.0f,
-                                         xpos + w, ypos + h, 1.0f, 0.0f };
+            constexpr size_t vertex_count = 24;
+            const float vertices[vertex_count] = { xpos,     ypos - h, 0.0f, 0.0f,
+                                                   xpos,     ypos,     0.0f, 1.0f,
+                                                   xpos + w, ypos,     1.0f, 1.0f,
+                                                   
+                                                   xpos,     ypos - h, 0.0f, 0.0f,
+                                                   xpos + w, ypos,     1.0f, 1.0f,
+                                                   xpos + w, ypos - h, 1.0f, 0.0f };
             // clang-format on
 
             // render glyph texture over quad
@@ -140,15 +142,12 @@ namespace eg
             
             std::ranges::copy(vertices, s_vbo->begin());
             s_vbo->update();
+            s_vao->draw(6);
 
-            VertexArray::bind(*s_vao);
-
-            glDrawArrays(GL_TRIANGLES, 0, 6);
             // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
             // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
-            pos.x += (ch.advance >> 6) * scale;
+            x += (ch.advance >> 6) * scale;
         }
-        VertexArray::unbind();
         Texture::unbind();
 
         glDisable(GL_BLEND);

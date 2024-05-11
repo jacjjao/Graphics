@@ -1,6 +1,7 @@
 #pragma once
 
 #include "include/Core/Core.hpp"
+#include "ShaderProgram.hpp"
 #include "VertexArray.hpp"
 #include "OrthographicCamera.hpp"
 #include "ShaderProgram.hpp"
@@ -20,6 +21,15 @@ namespace eg
             VertexBuffer<Vertex> vbo;
             ElementBuffer ebo;
         };
+
+        struct Character
+        {
+            Texture      texture; // ID handle of the glyph texture
+            Vector2f     size;      // size of glyph
+            Vector2f     bearing;   // Offset from baseline to left/top of glyph
+            unsigned int advance;   // Horizontal offset to advance to next glyph
+        };
+
     } // detail
 
     class EG_API Renderer2D
@@ -38,7 +48,18 @@ namespace eg
 
         static void drawCircle(float x, float y, float radius);
 
+        static void beginShader(const ShaderProgram& shader);
+        static void endShader();
+
     private:
+        static void initQuad();
+        static void renderQuads();
+
+        static constexpr unsigned s_default_font_size = 20;
+        static inline detail::Character s_characters[128];
+        static inline std::optional<VertexArray> s_text_vao;
+        static inline std::optional<VertexBuffer<float>> s_text_vbo;
+
         static constexpr int quad_indix_count = 6;
 
         static std::unique_ptr<detail::QuadData> quad_data;

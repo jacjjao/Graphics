@@ -46,52 +46,18 @@ namespace eg
         }
     }
 
-    void VertexArray::draw(const size_t count,
-                           const PrimitiveType primitive_type, 
-                           const float color_alpha, 
-                           Texture* texture) const
+    void VertexArray::draw(const size_t count, const PrimitiveType primitive_type) const
     {
-        auto& program = DefaultShaderProgram::instance();
-
-        program.use();
-        program.setFloat("color_alpha", color_alpha);
-        if (texture != nullptr)
-        {
-            Texture::bind(texture);
-        }
-        
         VertexArray::bind(*this);
         glDrawArrays(static_cast<GLenum>(primitive_type), 0, static_cast<GLsizei>(count));
         VertexArray::unbind();
-        if (texture != nullptr)
-        {
-            Texture::unbind();
-        }
-        program.unuse();
     }
 
-    void VertexArray::drawIndices(const int32_t size,
-                                  const PrimitiveType primitive_type,
-                                  const float color_alpha,
-                                  Texture* texture) const
+    void VertexArray::drawIndices(const int32_t size, const PrimitiveType primitive_type) const
     {
-        auto& program = DefaultShaderProgram::instance();
-
-        program.use();
-        program.setFloat("color_alpha", color_alpha);
-        if (texture != nullptr)
-        {
-            Texture::bind(texture);
-        }
-
         VertexArray::bind(*this);
         glDrawElements(static_cast<GLenum>(primitive_type), size, GL_UNSIGNED_INT, 0);
         VertexArray::unbind();
-        if (texture != nullptr)
-        {
-            Texture::unbind();
-        }
-        program.unuse();
     }
 
     void VertexArray::setElementBuffer(ElementBuffer& ebo) const

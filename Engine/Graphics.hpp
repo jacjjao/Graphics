@@ -20,6 +20,7 @@
 #include "include/Events/MouseEvent.hpp"
 
 // Input
+#include "include/Input/Input.hpp"
 #include "include/Input/KeyCodes.hpp"
 #include "include/Input/MouseCodes.hpp"
 

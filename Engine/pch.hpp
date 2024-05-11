@@ -6,6 +6,9 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <GLFW/glfw3.h>
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 #include <cmath>
 #include <memory>
 #include <utility>
@@ -25,5 +28,3 @@
 #include <fstream>
 #include <stdexcept>
 #include <numbers>
-
-#include "include/Core/Clock.hpp"

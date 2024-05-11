@@ -1,5 +1,4 @@
 #include "Graphics.hpp"
-#include "include/Input/Input.hpp"
 
 class TheLayer : public eg::Layer
 {
@@ -72,7 +71,7 @@ public:
         eg::Renderer2D::begin(cam);
         eg::Renderer2D::drawQuad(x, y, 100, 100, eg::Color::Cyan, degree);
         eg::Renderer2D::end();
-        eg::TextRenderer::renderText("Hello World", {100, 100});
+        eg::TextRenderer::drawText("Hello World", 350, 250);
     }
 
 private:

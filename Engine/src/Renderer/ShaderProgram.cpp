@@ -106,7 +106,7 @@ namespace eg
         glDeleteShader(fragment);
     }
 
-    void ShaderProgram::use()
+    void ShaderProgram::use() const
     {
         if (program_in_use != m_id)
         {

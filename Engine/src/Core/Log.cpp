@@ -3,19 +3,13 @@
 
 namespace eg
 {
-	Log::logger_ptr Log::s_CoreLogger = [] 
+	void eg::Log::init()
 	{
 		spdlog::set_pattern("%^[%T] %n: %v%$");
-		auto core_logger = spdlog::stdout_color_mt("eg");
-		core_logger->set_level(spdlog::level::trace);
-		return core_logger;
-	}();
+		s_CoreLogger = spdlog::stdout_color_mt("eg");
+		s_CoreLogger->set_level(spdlog::level::trace);
 
-	Log::logger_ptr Log::s_ClientLogger = []
-    {
-        spdlog::set_pattern("%^[%T] %n: %v%$");
-        auto client_logger = spdlog::stdout_color_mt("APP");
-        client_logger->set_level(spdlog::level::trace);
-        return client_logger;
-    }();
+		s_ClientLogger = spdlog::stdout_color_mt("APP");
+		s_ClientLogger->set_level(spdlog::level::trace);
+	}
 }

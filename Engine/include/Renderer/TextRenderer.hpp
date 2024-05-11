@@ -13,7 +13,7 @@
 namespace eg
 {
 
-    struct EG_API Character
+    struct Character
     {
         Texture      texture; // ID handle of the glyph texture
         Vector2f     size;      // size of glyph
@@ -26,13 +26,16 @@ namespace eg
     public:
         static void init(unsigned font_size);
 
-        static void renderText(const std::string& text,
-                               Vector2f pos,
-                               Color    color = Color::White,
-                               unsigned font_size = s_text_size);
+        static void drawText(const std::string& text,
+                             float x, float y,
+                             Color color = Color::White,
+                             unsigned font_size = s_text_size);
 
     private:
         static std::array<Character, 128> s_characters;
+
+        static constexpr size_t s_max_char_count = 100;
+        static constexpr size_t s_char_vertex_count = 6 * 4;
 
         static inline std::optional<VertexArray> s_vao = std::nullopt;
         static inline std::optional<VertexBuffer<float>> s_vbo = std::nullopt;

@@ -26,7 +26,7 @@ namespace eg
 
         void create(const std::string& vertex_src, const std::string& fragment_src);
 
-        void use();
+        void use() const;
         static void unuse();
 
         [[nodiscard]] 

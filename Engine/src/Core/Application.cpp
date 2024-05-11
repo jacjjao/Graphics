@@ -12,6 +12,8 @@ namespace eg
 
 	Application::Application(const unsigned width, const unsigned height, const std::string& title)
     {
+        Log::init();
+
         EG_CORE_ASSERT(s_instance == nullptr, "Application is already exist!");
         s_instance = this;
 

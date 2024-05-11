@@ -1,6 +1,10 @@
 #include "pch.hpp"
 #include "include/Renderer/Renderer2D.hpp"
 #include "include/Core/Math.hpp"
+#include "include/Core/Application.hpp"
+#include "include/Core/Log.hpp"
+#include "include/Renderer/TextRenderer.hpp"
+#include "src/Core/FileSystem.hpp"
 
 namespace eg
 {
@@ -11,7 +15,7 @@ namespace eg
 
     size_t Renderer2D::quad_count = 0;
 
-    void Renderer2D::init()
+    void Renderer2D::initQuad()
     {
         quad_data = std::make_unique<detail::QuadData>(detail::QuadData{
             VertexArray{},
@@ -45,6 +49,11 @@ namespace eg
         quad_data->vao.addVertexBuffer(quad_data->vbo, layouts);
     }
 
+    void Renderer2D::init()
+    {
+        initQuad();
+    }
+
     void Renderer2D::begin(eg::OrthographicCamera& scene_cam)
     {
         cam = &scene_cam;
@@ -53,9 +62,15 @@ namespace eg
         program.use();
         program.setMat4("view", cam->getViewMatrix());
         program.setMat4("proj", cam->getProjMatrix());
+        program.setFloat("color_alpha", 1.0f);
     }
 
     void Renderer2D::end()
+    {
+        renderQuads();
+    }
+
+    void Renderer2D::renderQuads()
     {
         if (quad_count > 0)
         {
@@ -72,7 +87,7 @@ namespace eg
     {
         if (quad_count * 6 >= max_vertices_num)
         {
-            end();
+            renderQuads();
         }
 
         Vertex bottom_left;
@@ -107,7 +122,7 @@ namespace eg
     {
         if (quad_count * 6 >= max_vertices_num)
         {
-            end();
+            renderQuads();
         }
 
         const float half_width = width / 2.0f;
@@ -160,6 +175,16 @@ namespace eg
 
     void Renderer2D::drawCircle(const float x, const float y, const float radius)
     {
+    }
+
+    void Renderer2D::beginShader(const ShaderProgram& shader)
+    {
+        shader.use();
+    }
+
+    void Renderer2D::endShader()
+    {
+        DefaultShaderProgram::instance().use();
     }
 
 } // namespace eg

@@ -41,14 +41,8 @@ namespace eg
         VertexArray(VertexArray&& other) noexcept;
         VertexArray& operator=(VertexArray&& other) noexcept;
 
-        void draw(size_t count,
-                  PrimitiveType primitive_type = PrimitiveType::Triangles,
-                  float color_alpha = 1.0F,
-                  Texture* texture = nullptr) const;
-        void drawIndices(int32_t size,
-                         PrimitiveType primitive_type = PrimitiveType::Triangles,
-                         float color_alpha = 1.0F,
-                         Texture* texture = nullptr) const;
+        void draw(size_t count, PrimitiveType primitive_type = PrimitiveType::Triangles) const;
+        void drawIndices(int32_t size, PrimitiveType primitive_type = PrimitiveType::Triangles) const;
 
         void setElementBuffer(ElementBuffer& ebo) const;
 
